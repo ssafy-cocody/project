@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const isProduction = process.env.NODE_ENV === 'production';
-import * as TerserPlugin from 'terser-webpack-plugin';
+// const TerserPlugin = require('terser-webpack-plugin');
+import TerserPlugin from 'terser-webpack-plugin';
 const nextConfig = {
   webpack: (config) => {
     // 기존 대비 약 50% bundle file size 감소 효과
