@@ -22,7 +22,7 @@ docker-compose up -d
 
 ### 루트 ngnix 설정
 docker-compose 파일 경로에서<br>
-[root-ngnix-conf](root-ngnix-conf) 파일 내용 넣기
+[root_ngnix](root_ngnix) 파일 내용 넣기
 #### Example
 ```
 cd ./docker_volumes/nginx/vhost.d
@@ -50,5 +50,6 @@ vi www.example.com
 요구사항 Default (Plugin)
 ```
 NodeJs
+Gradle
 ```
 
