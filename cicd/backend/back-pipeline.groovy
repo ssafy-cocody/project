@@ -79,7 +79,7 @@ pipeline {
                         def response = ''
                         while (!success && retries < maxRetries) {
                             try {
-                                response = sh(script: "curl -s -o /dev/null -w '%{http_code}' -k http://backend-${NEXT_ENV}:8080/public/health", returnStdout: true).trim()
+                                response = sh(script: "curl -s -o /dev/null -w '%{http_code}' -k http://backend-${NEXT_ENV}:8080/api/public/health", returnStdout: true).trim()
                                 if (response == '200') {
                                     success = true
                                     echo "Service is up and running"
