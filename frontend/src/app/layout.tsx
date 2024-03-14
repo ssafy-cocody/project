@@ -1,5 +1,4 @@
-import type { Metadata } from 'next';
-import type { Viewport } from 'next';
+import type { Metadata, Viewport } from 'next';
 import '@/styles/globals.scss';
 
 export const metadata: Metadata = {
@@ -18,7 +17,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html>
+    <html lang="ko">
       <body>{children}</body>
     </html>
   );
