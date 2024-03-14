@@ -107,7 +107,13 @@
     "import/no-extraneous-dependencies": [
       "error",
       {
-        "devDependencies": ["**/*.test.tsx", "**/*.stories.*", "**/.storybook/**/*.*", "setupTests.ts"],
+        "devDependencies": [
+          "**/*.test.tsx",
+          "**/*.stories.*",
+          "**/.storybook/**/*.*",
+          "setupTests.ts",
+          "**/next.config.mjs"
+        ],
         "peerDependencies": true
       }
     ],
@@ -121,6 +127,9 @@
         "tsx": "never"
       }
     ],
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts", ".tsx"]
+    },
     "no-param-reassign": ["error", { "props": false }],
     "no-unused-expressions": ["warn"],
     "no-unused-vars": "error",
