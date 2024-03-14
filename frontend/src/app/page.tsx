@@ -1,3 +1,3 @@
 export default function Home() {
-  return <></>;
+  return <>스윗 마이 홈</>;
 }
