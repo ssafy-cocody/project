@@ -81,6 +81,12 @@
   --color-yellow: #ffff55;
   --color-purple: #b27ffd;
   --color-white: #fff;
+
+  --zIndex-hidden: -2;
+  --zIndex-background: -1;
+  --zIndex-main: 0;
+  --zIndex-overlay: 1;
+  --zIndex-modal: 2;
 }
 
 body {

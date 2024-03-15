@@ -72,7 +72,7 @@
         // radio 버튼 커스텀을 위해 숨김
         position: absolute;
         visibility: hidden;
-        z-index: -1;
+        z-index: var(--zIndex-hidden);
       }
     }
   }
