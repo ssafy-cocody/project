@@ -11,41 +11,45 @@ const Nav = () => {
   return (
     <nav className={styles['container']}>
       <Link href={'/'} className={styles['navigation']}>
-        <HomeIcon className={styles['icon']} fill={path === '/' ? 'var(--color-main)' : 'black'} />
+        <HomeIcon fill={path === '/' ? 'var(--color-main)' : 'black'} />
         <span
           style={{
             color: path === '/' ? 'var(--color-main)' : 'black',
           }}
+          className={styles['navigation-text']}
         >
           홈
         </span>
       </Link>
       <Link href={'/closet'} className={styles['navigation']}>
-        <ClosetIcon className={styles['icon']} fill={path === '/closet' ? 'var(--color-main)' : 'black'} />
+        <ClosetIcon fill={path === '/closet' ? 'var(--color-main)' : 'black'} />
         <span
           style={{
             color: path === '/closet' ? 'var(--color-main)' : 'black',
           }}
+          className={styles['navigation-text']}
         >
           옷장
         </span>
       </Link>
       <Link href={'/calendar'} className={styles['navigation']}>
-        <CalendarIcon className={styles['icon']} fill={path === '/calendar' ? 'var(--color-main)' : 'black'} />
+        <CalendarIcon fill={path === '/calendar' ? 'var(--color-main)' : 'black'} />
         <span
           style={{
             color: path === '/calendar' ? 'var(--color-main)' : 'black',
           }}
+          className={styles['navigation-text']}
         >
           캘린더
         </span>
       </Link>
       <Link href={'/mypage'} className={styles['navigation']}>
-        <MypageIcon className={styles['icon']} fill={path === '/mypage' ? 'var(--color-main)' : 'black'} />
+        <MypageIcon fill={path === '/mypage' ? 'var(--color-main)' : 'black'} />
         <span
           style={{
             color: path === '/mypage' ? 'var(--color-main)' : 'black',
           }}
+          className={styles['navigation-text']}
         >
           마이
         </span>
