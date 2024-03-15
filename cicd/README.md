@@ -13,9 +13,7 @@ docker-compose --version
 ```
 ## 환경 설치
 ```
-docker create network nginx-proxy
-docker create network infra
-docker create network api
+docker network create infra
 
 docker-compose up -d
 ```
