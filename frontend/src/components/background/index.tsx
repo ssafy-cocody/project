@@ -8,7 +8,7 @@ const BackgroundDiv = styled.div<BackgroundProps>`
   top: 0;
   width: 100vw;
   height: 100vh;
-  z-index: -100;
+  z-index: var(--zIndex-background);
   background: linear-gradient(
     0deg,
     var(--color-white) 0%,
