@@ -1,0 +1,153 @@
+// TODO 애니메이션 개선
+@keyframes leftToRight {
+  0% {
+    transform: translateX(300px);
+  }
+  100% {
+    transform: translateX(-300px);
+  }
+}
+
+@keyframes rightToLeft {
+  0% {
+    transform: translateX(-300px);
+  }
+  100% {
+    transform: translateX(300px);
+  }
+}
+
+.container {
+  flex: 1;
+
+  padding-top: 76px;
+
+  background: linear-gradient(-180deg, #5279fc 0%, var(--color-white) 100%);
+}
+
+.title-container {
+  margin-bottom: 60px;
+
+  text-align: center;
+  color: var(--color-white);
+
+  .title {
+    margin-bottom: 4px;
+
+    font-size: 24px;
+    font-weight: bold;
+  }
+
+  .desc {
+    font-size: 14px;
+  }
+}
+
+.clothes-slider {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+
+  height: 316px;
+  margin-bottom: 78px;
+  overflow: hidden;
+
+  .row {
+    position: absolute;
+    display: flex;
+    gap: 16px;
+
+    &:nth-child(1) {
+      animation: leftToRight 12s linear infinite;
+      animation-direction: alternate;
+    }
+
+    &:nth-child(2) {
+      top: 166px;
+
+      animation: rightToLeft 12s linear infinite;
+      animation-direction: alternate;
+    }
+  }
+
+  .item {
+    position: relative;
+
+    min-width: 150px;
+    width: 150px;
+    height: 150px;
+
+    overflow: hidden;
+
+    background: var(--color-white);
+    border-radius: 8px;
+
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  padding: 0 16px;
+
+  text-align: center;
+
+  .button {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    align-self: center;
+    justify-content: center;
+
+    width: 100%;
+    max-width: 358px;
+    height: 48px;
+    border-radius: 8px;
+
+    color: var(--color-black);
+  }
+
+  .icon {
+    width: 26px;
+    height: 26px;
+
+    background: no-repeat center;
+    background-size: cover;
+  }
+
+  .text {
+    font-size: 18px;
+    font-weight: 800;
+  }
+
+  .kakao {
+    background: #f9e000;
+
+    .icon {
+      background-image: url('/images/kakao.png');
+    }
+  }
+
+  .instagram {
+    box-sizing: border-box;
+    border: 1px solid var(--color-gray);
+
+    background: var(--color-white);
+    .icon {
+      background-image: url('/images/instagram.png');
+    }
+  }
+
+  .desc {
+    font-size: 12px;
+    font-weight: 300;
+  }
+}
