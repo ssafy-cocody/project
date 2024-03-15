@@ -1,3 +1,9 @@
+import Nav from '@/components/nav';
+
 export default function Home() {
-  return <>스윗 마이 홈</>;
+  return (
+    <>
+      <Nav></Nav>
+    </>
+  );
 }
