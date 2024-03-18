@@ -1,6 +1,6 @@
 package com.cocodi.codi.domain.model;
 
-import com.cocodi.member.domain.model.Member;
+import com.cocodi.clothes.domain.model.Clothes;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,17 +12,26 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-public class MyCodi {
+public class Cody {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    private Long myCodiId;
+    private Long codiId;
 
-    private String name;
-
-    @OneToOne(fetch = LAZY)
-    private Codi codi;
+    private String image;
 
     @ManyToOne(fetch = LAZY)
-    private Member member;
+    private Clothes top;
+
+    @ManyToOne(fetch = LAZY)
+    private Clothes bottom;
+
+    @ManyToOne(fetch = LAZY)
+    private Clothes outer;
+
+    @ManyToOne(fetch = LAZY)
+    private Clothes onepiece;
+
+    @ManyToOne(fetch = LAZY)
+    private Clothes shoes;
 }
