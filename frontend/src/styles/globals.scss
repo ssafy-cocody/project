@@ -90,6 +90,14 @@
   --zIndex-modal: 2;
 }
 
+a,
+a:visited,
+a:link,
+a:hover,
+a:active {
+  color: var(--color-black);
+}
+
 body {
   max-width: 768px;
   min-width: 320px;
