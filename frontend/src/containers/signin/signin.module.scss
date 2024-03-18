@@ -20,13 +20,22 @@
 .container {
   flex: 1;
 
-  padding-top: 76px;
+  @media (min-height: 770px) {
+    padding-top: 76px;
+  }
+  @media (min-height: 740px) {
+    padding-top: 52px;
+  }
+  padding-top: 28px;
 
   background: linear-gradient(-180deg, #5279fc 0%, var(--color-white) 100%);
 }
 
 .title-container {
-  margin-bottom: 60px;
+  @media (min-height: 770px) {
+    margin-bottom: 60px;
+  }
+  margin-bottom: 40px;
 
   text-align: center;
   color: var(--color-white);
@@ -51,7 +60,11 @@
   align-items: center;
 
   height: 316px;
-  margin-bottom: 78px;
+  @media (min-height: 770px) {
+    margin-bottom: 78px;
+  }
+  margin-bottom: 40px;
+
   overflow: hidden;
 
   .row {
