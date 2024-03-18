@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import style from '@/app/signin/styles.module.scss';
+import style from '@/containers/signin/Signin.module.scss';
 
 const Page = () => {
   return (

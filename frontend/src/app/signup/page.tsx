@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import styles from '@/app/signup/styles.module.scss';
+import styles from '@/containers/signup/Signup.module.scss';
 import TextInput from '@/components/TextInput';
 import Button from '@/components/Button';
 
