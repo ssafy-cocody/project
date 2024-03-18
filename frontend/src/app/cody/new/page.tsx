@@ -1,4 +1,4 @@
-import Header from '@/components/header';
+import Header from '@/components/Header';
 import Nav from '@/components/nav';
 import Background from '@/components/background';
 import SaveButton from '@/containers/cody/new/saveButton';

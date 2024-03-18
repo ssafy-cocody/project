@@ -1,0 +1,43 @@
+'use client';
+
+import { useState } from 'react';
+import style from '@/components/ImageInput/ImageInput.module.scss';
+import { CameraIcon } from '@/../public/svgs/';
+
+interface ImageInputProps {
+  name?: string;
+  id?: string;
+}
+
+const ImageInput = ({ name, id }: ImageInputProps) => {
+  const [imgUrl, setImgUrl] = useState('');
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      URL.revokeObjectURL(imgUrl);
+      setImgUrl(URL.createObjectURL(file));
+    }
+  };
+
+  return (
+    <div className={style['image-upload-button']}>
+      <label htmlFor={id} className={style['image-upload']}>
+        {imgUrl && (
+          <div className={style.preview}>
+            <img src={imgUrl} alt="" />
+          </div>
+        )}
+        {!imgUrl && (
+          <>
+            <CameraIcon width={40} />
+            등록할 이미지를 선택 해주세요.
+          </>
+        )}
+      </label>
+      <input type="file" name={name} accept="image/*" id={id} onChange={handleChange} />
+    </div>
+  );
+};
+
+export default ImageInput;
