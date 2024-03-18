@@ -1,0 +1,115 @@
+.viewer-container {
+  display: flex;
+  width: 100%;
+  padding: 20px;
+  gap: 8px;
+  border: 2px solid var(--color-black);
+  border-radius: 5px;
+  background-color: var(--color-gray);
+  box-sizing: border-box;
+
+  .recommend-image {
+    border: 2px solid var(--color-black);
+  }
+
+  .context-area {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
+
+    .text-area {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+
+      .title {
+        font-weight: 900;
+        font-size: 18px;
+      }
+
+      .sub-text {
+        font-weight: 500;
+        font-size: 12px;
+        white-space: pre-line;
+        line-height: 14px;
+        margin-top: 2px;
+      }
+    }
+
+    .button-area {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+
+      .regist-button,
+      .cody-save-button {
+        width: 95px;
+        height: 35px;
+        font-family: var(--Pretendard);
+        font-size: 12px;
+        font-weight: 700;
+        border: 1px solid var(--color-black);
+        border-radius: 0;
+      }
+
+      .regist-button {
+        background-color: var(--color-yellow);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 4px;
+
+        .inner-border {
+          width: 100%;
+          height: 100%;
+          border: 1px dashed var(--color-black);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+      }
+
+      .cody-save-button {
+        background-color: transparent;
+      }
+    }
+  }
+
+  .modal-container {
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+
+    .ootd-image {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .input-container {
+      width: 100%;
+    }
+
+    .button-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%;
+
+      .button-text {
+        font-family: var(--font-family);
+        font-weight: 500;
+        font-size: 18px;
+      }
+    }
+  }
+}

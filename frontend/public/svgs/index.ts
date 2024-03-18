@@ -5,5 +5,7 @@ import HomeIcon from './homeIcon.svg';
 import LeftArrow from './leftArrow.svg';
 import MypageIcon from './mypageIcon.svg';
 import PencilIcon from './pencilIcon.svg';
+import ReloadIcon from './reload.svg';
+import RightArrow from './rightArrow.svg';
 
-export { CalendarIcon, CameraIcon, ClosetIcon, HomeIcon, LeftArrow, MypageIcon, PencilIcon };
+export { CalendarIcon, CameraIcon, ClosetIcon, HomeIcon, LeftArrow, MypageIcon, PencilIcon, ReloadIcon, RightArrow };

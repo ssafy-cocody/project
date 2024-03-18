@@ -86,16 +86,27 @@
   --zIndex-hidden: -2;
   --zIndex-background: -1;
   --zIndex-main: 0;
-  --zIndex-overlay: 1;
-  --zIndex-modal: 2;
+  --zIndex-under: 1;
+  --zIndex-above: 2;
+  --zIndex-navigation: 3;
+  --zIndex-overlay: 4;
+  --zIndex-modal: 5;
+}
+
+a,
+a:visited,
+a:link,
+a:hover,
+a:active {
+  color: var(--color-black);
 }
 
 body {
   max-width: 768px;
   min-width: 320px;
   min-height: 640px;
-  width: 100vw;
-  height: 100vh;
+  width: 100svw;
+  height: 100svh;
   margin: 0 auto !important;
   display: flex;
   flex-direction: column;
@@ -124,7 +135,10 @@ main {
 }
 
 nav {
+  position: fixed;
+  bottom: 0;
   height: 100px;
   width: 100%;
   background-color: transparent;
+  z-index: var(--zIndex-navigation);
 }
