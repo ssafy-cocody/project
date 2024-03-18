@@ -88,8 +88,9 @@
   --zIndex-main: 0;
   --zIndex-under: 1;
   --zIndex-above: 2;
-  --zIndex-overlay: 3;
-  --zIndex-modal: 4;
+  --zIndex-navigation: 3;
+  --zIndex-overlay: 4;
+  --zIndex-modal: 5;
 }
 
 a,
@@ -139,4 +140,5 @@ nav {
   height: 100px;
   width: 100%;
   background-color: transparent;
+  z-index: var(--zIndex-navigation);
 }
