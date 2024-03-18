@@ -8,6 +8,7 @@
 }
 
 .home-content {
+  width: 100%;
   padding: 20px 16px 100px;
   background: linear-gradient(180deg, var(--color-main) 0%, var(--color-sub) 100%);
   display: flex;
@@ -15,6 +16,7 @@
   justify-content: center;
   align-items: center;
   gap: 20px;
+  box-sizing: border-box;
 }
 
 .home-navigation {
