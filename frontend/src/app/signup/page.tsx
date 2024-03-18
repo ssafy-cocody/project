@@ -1,5 +1,7 @@
 import Image from 'next/image';
 import styles from '@/app/signup/styles.module.scss';
+import TextInput from '@/components/TextInput';
+import Button from '@/components/Button';
 
 const Page = () => {
   return (
@@ -39,20 +41,11 @@ const Page = () => {
           </div>
 
           <div className={styles['input-container']}>
-            <div className={styles.input}>
-              <label htmlFor="age">나이(출생 연도)</label>
-              <input type="text" name="age" id="age" />
-            </div>
-            <div className={styles.input}>
-              <label htmlFor="nickname">닉네임</label>
-              <input type="text" name="nickname" id="nickname" />
-              <p className={styles.desc}>영어, 한글, 숫자, 언더바(_)로 이뤄진 2~20</p>
-            </div>
+            <TextInput label="나이(출생 연도)" name="age" />
+            <TextInput label="닉네임" name="nickname" describe="영어, 한글, 숫자, 언더바(_)로 이뤄진 2~20 글자" />
           </div>
 
-          <button type="submit" disabled>
-            완료
-          </button>
+          <Button type="submit">완료</Button>
         </form>
       </div>
     </main>

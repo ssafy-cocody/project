@@ -1,0 +1,52 @@
+.input {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  color: var(--color-black);
+
+  label {
+    font-weight: 600;
+    font-size: 18px;
+  }
+
+  input {
+    height: 48px;
+
+    padding: 0 12px;
+    border-radius: 8px;
+
+    border: none;
+    outline: none;
+    box-shadow: 0 0 0 1px inset var(--color-gray);
+    background: var(--color-white);
+
+    font-size: 18px;
+    &:focus {
+      box-shadow: 0 0 0 1px inset var(--color-black);
+    }
+
+    &::placeholder {
+      color: var(--color-gray);
+    }
+
+    &:disabled {
+      background: var(--color-lightGray);
+    }
+  }
+
+  .desc {
+    font-weight: 400;
+    font-size: 12px;
+    text-align: left;
+    color: var(--color-black);
+  }
+
+  .error-messages {
+    font-weight: 400;
+    font-size: 12px;
+    text-align: left;
+    color: var(--color-warn);
+  }
+}
