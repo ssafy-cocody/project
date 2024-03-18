@@ -28,7 +28,7 @@
 
       .cody-image {
         width: calc(calc(100% - 24px) / 4);
-        aspect-ratio: 1 / 1;
+        aspect-ratio: 1;
         position: relative;
         z-index: var(--zIndex-above);
         background-color: var(--color-white);

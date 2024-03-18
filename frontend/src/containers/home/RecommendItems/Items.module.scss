@@ -21,7 +21,7 @@
     padding: 5px;
     background-color: var(--color-white);
     width: 28px;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 1;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -29,12 +29,12 @@
 
   .items-info {
     width: 100%;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 1;
     position: relative;
 
     .info {
       width: calc(100% / 3 * 2);
-      aspect-ratio: 1 / 1;
+      aspect-ratio: 1;
       background-color: var(--color-white);
       border: 1px solid var(--color-black);
       box-shadow: 2px 3px 0 var(--color-black);
@@ -50,7 +50,7 @@
 
       .item-image {
         width: 60%;
-        aspect-ratio: 1 / 1;
+        aspect-ratio: 1;
         position: relative;
       }
 
@@ -109,7 +109,7 @@
   .recommend-item-image {
     position: relative;
     width: 100%;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 1;
     display: flex;
     align-items: center;
     justify-content: center;
