@@ -26,7 +26,7 @@ public class Ootd {
     private String snapShot;
 
     @ManyToOne(fetch = LAZY)
-    private Codi codi;
+    private Cody cody;
 
     @ManyToOne(fetch = LAZY)
     private Member member;
