@@ -1,9 +1,10 @@
-import LeftArrow from './leftArrow.svg';
-import HomeIcon from './homeIcon.svg';
-import ClosetIcon from './closetIcon.svg';
 import CalendarIcon from './calendarIcon.svg';
-import MypageIcon from './mypageIcon.svg';
 import CameraIcon from './camera.svg';
+import ClosetIcon from './closetIcon.svg';
+import HomeIcon from './homeIcon.svg';
+import LeftArrow from './leftArrow.svg';
+import MypageIcon from './mypageIcon.svg';
 import ReloadIcon from './reload.svg';
+import RightArrow from './rightArrow.svg';
 
-export { LeftArrow, HomeIcon, ClosetIcon, CalendarIcon, MypageIcon, CameraIcon, ReloadIcon };
+export { CalendarIcon, CameraIcon, ClosetIcon, HomeIcon, LeftArrow, MypageIcon, ReloadIcon, RightArrow };
