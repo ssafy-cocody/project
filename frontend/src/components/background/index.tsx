@@ -1,7 +1,8 @@
 'use client';
 
-import { BackgroundProps } from './type';
 import styled from 'styled-components';
+
+import { BackgroundProps } from '@/components/background/type';
 
 const BackgroundDiv = styled.div<BackgroundProps>`
   position: absolute;

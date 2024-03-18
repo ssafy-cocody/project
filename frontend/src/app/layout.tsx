@@ -1,5 +1,6 @@
-import type { Metadata, Viewport } from 'next';
 import '@/styles/globals.scss';
+
+import type { Metadata, Viewport } from 'next';
 
 export const metadata: Metadata = {
   title: 'Co.Cody',
@@ -11,14 +12,16 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({
+const RootLayout = ({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {
+}>) => {
   return (
     <html lang="ko">
       <body>{children}</body>
     </html>
   );
-}
+};
+
+export default RootLayout;
