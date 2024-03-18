@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Nav from '@/components/nav';
 import RecommendViewer from '@/containers/home/RecommendViewer';
+import RecommendTab from '@/containers/home/RecommendTab';
 import styles from '@/containers/home/Home.module.scss';
 
 export default function Home() {
@@ -14,6 +15,7 @@ export default function Home() {
         </header>
         <div className={styles['home-content']}>
           <RecommendViewer />
+          <RecommendTab />
         </div>
         <div className={styles['home-navigation']}>
           <Nav></Nav>
