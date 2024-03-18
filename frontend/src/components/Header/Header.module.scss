@@ -10,5 +10,11 @@
 }
 
 .header-title {
+  position: absolute;
+  left: 0;
+  right: 0;
+
   font-weight: 900;
+  flex: 1;
+  text-align: center;
 }

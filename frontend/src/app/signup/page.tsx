@@ -41,8 +41,13 @@ const Page = () => {
           </div>
 
           <div className={styles['input-container']}>
-            <TextInput label="나이(출생 연도)" name="age" />
-            <TextInput label="닉네임" name="nickname" describe="영어, 한글, 숫자, 언더바(_)로 이뤄진 2~20 글자" />
+            <TextInput label="나이(출생 연도)" id="age" name="age" />
+            <TextInput
+              label="닉네임"
+              id="nickname"
+              name="nickname"
+              describe="영어, 한글, 숫자, 언더바(_)로 이뤄진 2~20 글자"
+            />
           </div>
 
           <Button type="submit">완료</Button>
