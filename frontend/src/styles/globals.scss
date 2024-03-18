@@ -86,8 +86,10 @@
   --zIndex-hidden: -2;
   --zIndex-background: -1;
   --zIndex-main: 0;
-  --zIndex-overlay: 1;
-  --zIndex-modal: 2;
+  --zIndex-under: 1;
+  --zIndex-above: 2;
+  --zIndex-overlay: 3;
+  --zIndex-modal: 4;
 }
 
 a,
