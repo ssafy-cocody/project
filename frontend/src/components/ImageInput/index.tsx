@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import style from '@/components/ImageInput/ImageInput.module.scss';
+
 import { CameraIcon } from '@/../public/svgs/';
+import style from '@/components/ImageInput/ImageInput.module.scss';
 
 interface ImageInputProps {
   name?: string;

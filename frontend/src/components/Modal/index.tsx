@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
+
+import styles from '@/components/modal/Modal.module.scss';
+import { ModalProps } from '@/components/Modal/type';
 import useOnClickOutside from '@/hooks/useOnClickOutside';
 import usePreventScroll from '@/hooks/usePreventScroll';
-import { ModalProps } from '@/components/Modal/type';
-import styles from '@/components/modal/Modal.module.scss';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const ModalContent = ({ onClose, isOpen, isUnmount, title, subTitle, children }: ModalProps) => {
   const ref = useRef<HTMLDivElement | null>(null);
   const [isModalMounted, setModalMounted] = useState<boolean>(true);
@@ -28,10 +30,7 @@ const ModalContent = ({ onClose, isOpen, isUnmount, title, subTitle, children }:
   return ReactDOM.createPortal(
     <>
       <div className={styles['modal-overlay']} />
-      <div
-        ref={ref}
-        className={`${styles['modal-container']} ${isModalMounted ? styles['isMount'] : styles['isUnmount']}`}
-      >
+      <div ref={ref} className={`${styles['modal-container']} ${isModalMounted ? styles.isMount : styles.isUnmount}`}>
         <h1 className={styles['modal-title-container']}>
           {title && <div className={styles['modal-title']}>{title}</div>}
           {subTitle && <div className={styles['modal-subtitle']}>{subTitle}</div>}

@@ -18,13 +18,12 @@
     "eslint-config-prettier",
     "next/core-web-vitals"
   ],
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "simple-import-sort"],
   "settings": {
     "react": {
       // Tells eslint-plugin-react to automatically detect the version of React to use.
       "version": "detect"
     },
-    "import/extensions": [".js", ".jsx", ".ts", ".tsx"],
     "import/resolver": {
       "node": {
         "paths": ["src"],
@@ -33,7 +32,8 @@
       "typescript": {
         "project": "."
       }
-    }
+    },
+    "import/extensions": [".js", ".mjs", ".jsx", ".ts", ".tsx"]
   },
   "rules": {
     "arrow-body-style": "off",
@@ -50,59 +50,6 @@
     "import/prefer-default-export": "off",
     "import/no-unresolved": "off",
     "no-restricted-exports": ["error", { "restrictDefaultExports": { "defaultFrom": false } }],
-    "import/order": [
-      "error",
-      {
-        "pathGroups": [
-          {
-            "pattern": "@/lib/**",
-            "group": "external"
-          },
-          {
-            "pattern": "{types/*,@/types*,./types}",
-            "group": "type"
-          },
-          {
-            "pattern": "{hooks,@/hooks/**/*,./hooks/**,./use**,../use**,../../use**,../../../use**,,../../hooks/**,./_hooks/**,../../../_hooks/**}",
-            "group": "internal"
-          },
-          {
-            "pattern": "{utils/**/*,./utils,../utils,../../utils,../../../utils}",
-            "group": "type"
-          },
-          {
-            "pattern": "{@/constants/*,./constants}",
-            "group": "type"
-          },
-          {
-            "pattern": "{states/**/*,./states*,./**/states*,../states*,../../states*,../../../states*,,../../../../states*,**/**/**/states*}",
-            "group": "type"
-          },
-          {
-            "pattern": "@/services/**",
-            "group": "type"
-          },
-          {
-            "pattern": "{./helpers,./data,./config,./defaults,../../../defaults}",
-            "group": "type"
-          },
-          {
-            "pattern": "{components,components/_common/**,@/components,@/components/**,svgs,@/assets/**/*,@/app/**,routes/**,public/**}",
-            "group": "index"
-          },
-          {
-            "pattern": "{styles,./*.scss,../*.scss,../*.module.scss}",
-            "group": "index"
-          }
-        ],
-        "groups": [
-          ["external", "builtin"],
-          ["type", "internal", "object"],
-          ["parent", "sibling", "index"]
-        ],
-        "newlines-between": "always"
-      }
-    ],
     "import/no-anonymous-default-export": "off",
     "import/no-extraneous-dependencies": [
       "error",
@@ -117,22 +64,9 @@
         "peerDependencies": true
       }
     ],
-    "import/extensions": [
-      "error",
-      "ignorePackages",
-      {
-        "js": "never",
-        "jsx": "never",
-        "ts": "never",
-        "tsx": "never"
-      }
-    ],
-    "import/parsers": {
-      "@typescript-eslint/parser": [".ts", ".tsx"]
-    },
     "no-param-reassign": ["error", { "props": false }],
     "no-unused-expressions": ["warn"],
-    "no-unused-vars": "error",
+    "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
     "no-shadow": "off",
     "@typescript-eslint/no-shadow": ["error"],
@@ -148,7 +82,10 @@
         "controlComponents": ["input"]
       }
     ],
-    "no-undef": "off"
+    "no-undef": "off",
+    "import/extensions": ["off"],
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error"
   },
   "globals": { "navigation": "readonly", "globalThis": false, "NodeJS": true }
 }
