@@ -1,9 +1,10 @@
 'use client';
 
 import Link from 'next/link';
+
 import { LeftArrow } from '@/../public/svgs';
-import { HeaderProps } from './type';
-import styles from './Header.module.scss';
+import styles from '@/components/Header/Header.module.scss';
+import { HeaderProps } from '@/components/Header/type';
 
 const Header = ({ previousLink, title, RightComponent }: HeaderProps) => {
   return (

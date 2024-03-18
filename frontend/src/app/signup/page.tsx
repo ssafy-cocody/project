@@ -1,7 +1,8 @@
 import Image from 'next/image';
-import styles from '@/containers/signup/Signup.module.scss';
-import TextInput from '@/components/TextInput';
+
 import Button from '@/components/Button';
+import TextInput from '@/components/TextInput';
+import styles from '@/containers/signup/Signup.module.scss';
 
 const Page = () => {
   return (

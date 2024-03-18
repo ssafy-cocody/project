@@ -1,4 +1,5 @@
 import { useState } from 'react';
+
 import ModalContent from '@/components/Modal';
 import { ModalContentProps } from '@/components/Modal/type';
 
