@@ -77,11 +77,11 @@
     }
 
     .over {
-      z-index: var(--zIndex-overlay);
+      z-index: var(--zIndex-above);
     }
 
     .under {
-      z-index: var(--zIndex-main);
+      z-index: var(--zIndex-under);
     }
   }
 
