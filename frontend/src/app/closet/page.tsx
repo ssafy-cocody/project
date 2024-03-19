@@ -131,7 +131,7 @@ const Page = () => {
           </div>
         </div>
         <Link href="/clothes" className={styles['upload-button']}>
-          <PlusIcon />
+          <PlusIcon stroke="#EDEDED" />
         </Link>
       </main>
       <Nav />
