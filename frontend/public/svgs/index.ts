@@ -1,5 +1,6 @@
 import CalendarIcon from './calendarIcon.svg';
 import CameraIcon from './camera.svg';
+import CheckIcon from './checkIcon.svg';
 import ClosetIcon from './closetIcon.svg';
 import HomeIcon from './homeIcon.svg';
 import LeftArrow from './leftArrow.svg';
@@ -12,6 +13,7 @@ import RightArrow from './rightArrow.svg';
 export {
   CalendarIcon,
   CameraIcon,
+  CheckIcon,
   ClosetIcon,
   HomeIcon,
   LeftArrow,

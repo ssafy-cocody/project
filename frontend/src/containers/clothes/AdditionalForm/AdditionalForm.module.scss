@@ -1,0 +1,16 @@
+.form-container {
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    .button-wrapper {
+      position: relative;
+
+      @media (min-height: 770px) {
+        top: 227px;
+      }
+      top: 196px;
+    }
+  }
+}

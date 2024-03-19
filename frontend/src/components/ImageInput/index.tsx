@@ -31,10 +31,10 @@ const ImageInput = ({ name, id }: ImageInputProps) => {
           </div>
         )}
         {!imgUrl && (
-          <>
+          <div className={style.button}>
             <CameraIcon width={40} />
             등록할 이미지를 선택 해주세요.
-          </>
+          </div>
         )}
       </label>
       <input type="file" name={name} accept="image/*" id={id} onChange={handleChange} />
