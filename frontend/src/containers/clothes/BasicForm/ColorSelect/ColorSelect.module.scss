@@ -1,0 +1,19 @@
+.picker-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  .picker {
+    display: flex;
+    gap: 8px;
+    height: 48px;
+  }
+
+  input[type='radio'] {
+    display: none;
+  }
+
+  .desc {
+    font-size: 12px;
+  }
+}
