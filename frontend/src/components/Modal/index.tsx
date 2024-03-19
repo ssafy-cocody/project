@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 
-import styles from '@/components/modal/Modal.module.scss';
+import styles from '@/components/Modal/Modal.module.scss';
 import { ModalProps } from '@/components/Modal/type';
 import useOnClickOutside from '@/hooks/useOnClickOutside';
 import usePreventScroll from '@/hooks/usePreventScroll';
