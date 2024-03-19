@@ -1,0 +1,18 @@
+.tost-container {
+  width: 234px;
+  height: 34px;
+  background-color: var(--color-main);
+  opacity: 0.9;
+  position: absolute;
+  bottom: 30px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .tost-message {
+    color: var(--color-white);
+    font-weight: 700;
+    font-size: 12px;
+  }
+}
