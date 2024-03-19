@@ -1,0 +1,11 @@
+.main-container {
+  padding: 16px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.overflow {
+  overflow-y: scroll;
+}
