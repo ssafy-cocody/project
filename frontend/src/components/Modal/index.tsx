@@ -22,6 +22,7 @@ const ModalContent = ({ onClose, isOpen, isUnmount, title, subTitle, children }:
 
   useEffect(() => {
     setModalMounted(true);
+    // eslint-disable-next-line no-unused-expressions
     () => setModalMounted(false);
   }, []);
 
