@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useState } from 'react';
 
 import { CameraIcon } from '@/../public/svgs/';
@@ -26,7 +27,7 @@ const ImageInput = ({ name, id }: ImageInputProps) => {
       <label htmlFor={id} className={style['image-upload']}>
         {imgUrl && (
           <div className={style.preview}>
-            <img src={imgUrl} alt="" />
+            <Image src={imgUrl} alt="" />
           </div>
         )}
         {!imgUrl && (
