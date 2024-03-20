@@ -1,0 +1,92 @@
+.main-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 8px;
+
+  .date {
+    font-weight: 900;
+    font-size: 24px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .calendar-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    .week-container {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+      margin-bottom: 4px;
+
+      .day-of-week {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        font-size: 12px;
+        font-weight: 400;
+      }
+    }
+  }
+
+  .ootd-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    .week {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+
+      .ootd {
+        width: calc(100% / 7);
+        border: 0.5px solid var(--color-gray);
+        height: 100px;
+        position: relative;
+
+        .day {
+          font-family: RacingSansOne;
+          font-size: 20px;
+          font-weight: 400;
+          position: absolute;
+          top: 2px;
+          left: 2px;
+          z-index: var(--zIndex-above);
+        }
+
+        .sat {
+          color: var(--color-main);
+        }
+
+        .sun {
+          color: var(--color-purple);
+        }
+
+        .image-container {
+          width: 100%;
+          height: 100%;
+
+          .image {
+            object-fit: contain;
+          }
+        }
+      }
+    }
+  }
+}
+
+.info-text {
+  color: var(--color-darkGray);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.button-container {
+  width: 100%;
+}
