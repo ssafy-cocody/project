@@ -25,7 +25,7 @@ const MOCK_CLOTHES = [
   },
 ];
 
-const SearchResult = () => {
+const SearchResult = ({ onClick }: { onClick: () => void }) => {
   const [selected, setSelected] = useState('');
 
   return (
@@ -63,7 +63,7 @@ const SearchResult = () => {
         })}
       </div>
       <div className={style['modal-bottom']}>
-        <Button type="button" disabled={!selected}>
+        <Button type="button" disabled={!selected} onClick={onClick}>
           선택
         </Button>
       </div>

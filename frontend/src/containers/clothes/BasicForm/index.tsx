@@ -20,7 +20,7 @@ const CLOTHES_CATEGORIES = [
 
 const CLOTHES_OPTIONS = CLOTHES_CATEGORIES.map(({ text }) => ({ value: text, text }));
 
-const BasicForm = () => {
+const BasicForm = ({ onClickButton }: { onClickButton: () => void }) => {
   return (
     <>
       <div className={styles.clothes}>
@@ -39,7 +39,7 @@ const BasicForm = () => {
           <TextInput required label="상품명" />
           {/* TODO: 색상은 1개만 선택 가능 */}
           <ColorSelect />
-          <Button>다음</Button>
+          <Button onClick={onClickButton}>다음</Button>
         </form>
       </div>
     </>
