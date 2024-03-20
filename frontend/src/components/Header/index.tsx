@@ -6,7 +6,7 @@ import { LeftArrow } from '@/../public/svgs';
 import styles from '@/components/Header/Header.module.scss';
 import { HeaderProps } from '@/components/Header/type';
 
-const Header = ({ previousLink, title, RightComponent }: HeaderProps) => {
+const Header = ({ previousLink, title, RightComponent, onClickPreviousButton }: HeaderProps) => {
   return (
     <header>
       {previousLink ? (
@@ -15,6 +15,11 @@ const Header = ({ previousLink, title, RightComponent }: HeaderProps) => {
             <LeftArrow />
           </div>
         </Link>
+      ) : null}
+      {onClickPreviousButton ? (
+        <button className={styles['previous-button']} type="button" onClick={onClickPreviousButton}>
+          <LeftArrow />
+        </button>
       ) : null}
       <div className={styles['header-title']}>{title}</div>
       {RightComponent}
