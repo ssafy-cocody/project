@@ -44,6 +44,7 @@ const RecommendTab = () => {
         setWeather('/images/weather/sunny.png');
         break;
     }
+    setSelectedCodyATom(recommendCodies[0]);
   }, []);
 
   return (
