@@ -40,7 +40,12 @@ public class SseTestController {
     @CrossOrigin
     @GetMapping("/sse/{key}")
     public SseEmitter getSse(@PathVariable("key") String key) {
-        return sseService.getInstance(key);
+        try {
+            return sseService.getInstance(key);
+        }
+        catch (Exception e) {
+            return null;
+        }
     }
 
     @CrossOrigin

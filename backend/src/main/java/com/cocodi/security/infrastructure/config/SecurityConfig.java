@@ -44,13 +44,10 @@ public class SecurityConfig {
                 })
                 .authorizeHttpRequests(authorizeRequests -> {
                     authorizeRequests
-                            .requestMatchers("*").permitAll()
-                            .requestMatchers("api/auth").authenticated();
+                            .requestMatchers("/public/**").permitAll();
                 })
                 .oauth2Login(oauth2Login -> {
                     oauth2Login
-                            .authorizationEndpoint(authorizationEndpoint ->
-                                    authorizationEndpoint.baseUri("/oauth2/authorization"))
                             .redirectionEndpoint(redirectionEndpoint ->
                                     redirectionEndpoint.baseUri("/*/oauth2/code/*"))
                             .userInfoEndpoint(userInfoEndpoint ->

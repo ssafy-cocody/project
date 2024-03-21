@@ -75,3 +75,4 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 /cicd/docker-compose-dev-s3.yml
+/backend/src/main/resources/application-prod.yml
