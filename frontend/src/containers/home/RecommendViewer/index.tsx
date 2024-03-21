@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai';
 import Image from 'next/image';
 import { useState } from 'react';
 
@@ -6,8 +7,11 @@ import TextInput from '@/components/TextInput';
 import styles from '@/containers/home/RecommendViewer/Viewer.module.scss';
 import useModal from '@/hooks/useModal';
 
+import { selectedCodyAtom } from '../store';
+import { IRecommendCody } from '../type';
+
 const RecommendViewer = () => {
-  const [codyUrl] = useState<string>('/images/test1.jpg');
+  const cody = useAtomValue<IRecommendCody>(selectedCodyAtom);
   const [title] = useState<string>('New 코디.');
   const [description] = useState<string>(`코코디가 추천하는\n당신의 옷장 속 새로운 코디`);
   const [codyname] = useState<string>('');
@@ -21,7 +25,7 @@ const RecommendViewer = () => {
     <>
       <div className={styles['viewer-container']}>
         <div className={styles['recommend-image']}>
-          <Image src={codyUrl} alt="추천 코디" fill />
+          <Image src={cody.image} alt="추천 코디" fill />
         </div>
         <div className={styles['context-area']}>
           <div className={styles['text-area']}>
@@ -42,7 +46,7 @@ const RecommendViewer = () => {
         <Modal title="코디 이름을 설정해주세요.">
           <div className={styles['modal-container']}>
             <div className={styles['ootd-image']}>
-              <Image src={codyUrl} alt={title} fill />
+              <Image src={cody.image} alt={title} fill />
             </div>
             <div className={styles['input-container']}>
               <TextInput label={codyname} placeholder="코디 이름" />
