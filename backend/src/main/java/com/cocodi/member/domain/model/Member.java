@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -49,18 +48,20 @@ public class Member {
     private  LocalDateTime updatedAt;
 
     @Builder
-    private Member(String email,String nickname, String profile, Authority role, ProviderType providerType) {
+    public Member(String email, LocalDate birth, Gender gender, String nickname, String profile, Authority role, ProviderType providerType, boolean isDeleted, LocalDateTime createdAt) {
         this.email = email;
-        this.role = role;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-//        this.birth = LocalDate.parse(birth, formatter);
-//        this.gender = gender.equals("male");
+        this.birth = birth;
+        this.gender = gender;
         this.nickname = nickname;
         this.profile = profile;
+        this.role = role;
         this.providerType = providerType;
-        this.isDeleted = false;
-        this.createdAt = LocalDateTime.now();
+        this.isDeleted = isDeleted;
+        this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 
+    public void deleteMember() {
+        this.isDeleted = true;
+    }
 }
