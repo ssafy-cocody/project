@@ -40,13 +40,23 @@ public class SseTestController {
     @CrossOrigin
     @GetMapping("/sse/{key}")
     public SseEmitter getSse(@PathVariable("key") String key) {
-        return sseService.getInstance(key);
+        try {
+            return sseService.getInstance(key);
+        }
+        catch (Exception e) {
+            return null;
+        }
     }
 
     @CrossOrigin
     @GetMapping("/test/{key}")
     public ResponseEntity<?> sendTest(@PathVariable("key") String key) {
-        sseService.sendMessage(key, "message", "test");
+        try {
+
+        } catch (Exception e) {
+            sseService.sendMessage(key, "message", "test");
+        }
+
         return ResponseEntity.ok().build();
     }
 
