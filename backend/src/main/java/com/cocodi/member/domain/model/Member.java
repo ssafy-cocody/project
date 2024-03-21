@@ -1,10 +1,15 @@
 package com.cocodi.member.domain.model;
 
+import com.cocodi.member.domain.enums.Authority;
+import com.cocodi.member.domain.enums.ProviderType;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -22,7 +27,7 @@ public class Member {
 
     private String email;
 
-    private Integer age;
+    private LocalDate birth;
 
     private boolean gender;
 
@@ -31,7 +36,10 @@ public class Member {
     private String profile;
 
     @Enumerated(EnumType.STRING)
-    private LoginType loginType;
+    private Authority role;
+
+    @Enumerated(EnumType.STRING)
+    private ProviderType providerType;
 
     private boolean isDeleted;
 
@@ -40,5 +48,21 @@ public class Member {
 
     @Temporal(TemporalType.TIMESTAMP)
     private  LocalDateTime updatedAt;
+
+    @Builder
+    private Member(String email,String nickname, String profile, Authority role, ProviderType providerType) {
+        this.name = "name";
+        this.email = email;
+        this.role = role;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+//        this.birth = LocalDate.parse(birth, formatter);
+//        this.gender = gender.equals("male");
+        this.nickname = nickname;
+        this.profile = profile;
+        this.providerType = providerType;
+        this.isDeleted = false;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
 
 }
