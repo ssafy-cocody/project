@@ -1,6 +1,7 @@
 package com.cocodi.member.domain.model;
 
 import com.cocodi.member.domain.enums.Authority;
+import com.cocodi.member.domain.enums.Gender;
 import com.cocodi.member.domain.enums.ProviderType;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -23,13 +24,11 @@ public class Member {
     @GeneratedValue(strategy = IDENTITY)
     private Long memberId;
 
-    private String name;
-
     private String email;
 
     private LocalDate birth;
 
-    private boolean gender;
+    private Gender gender;
 
     private String nickname;
 
@@ -51,7 +50,6 @@ public class Member {
 
     @Builder
     private Member(String email,String nickname, String profile, Authority role, ProviderType providerType) {
-        this.name = "name";
         this.email = email;
         this.role = role;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
