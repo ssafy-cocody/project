@@ -10,7 +10,7 @@ import Background from '@/components/background';
 import Button from '@/components/Button';
 import ClothesList from '@/components/ClothesList';
 import Header from '@/components/Header';
-import Nav from '@/components/nav';
+import Nav from '@/components/Nav';
 import styles from '@/containers/closet/Closet.module.scss';
 import useModal from '@/hooks/useModal';
 

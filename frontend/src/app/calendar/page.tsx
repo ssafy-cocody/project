@@ -1,6 +1,6 @@
 import Background from '@/components/background';
 import Header from '@/components/Header';
-import Nav from '@/components/nav';
+import Nav from '@/components/Nav';
 import Calendar from '@/containers/calendar/Calendar';
 
 const Page = () => {
