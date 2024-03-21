@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react';
 
-import Background from '@/components/background';
+import Background from '@/components/Background';
 import Header from '@/components/Header';
 import Nav from '@/components/Nav';
 import Calendar from '@/containers/calendar/Calendar';

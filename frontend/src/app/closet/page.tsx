@@ -6,7 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRef, useState } from 'react';
 
-import Background from '@/components/background';
+import Background from '@/components/Background';
 import Button from '@/components/Button';
 import ClothesList from '@/components/ClothesList';
 import Header from '@/components/Header';
