@@ -48,7 +48,7 @@ const RecommendTab = () => {
       <div className={styles['tab-container']}>
         <div className={`${styles.tab} ${styles['selected-tab']}`}>오늘</div>
         <div className={`${styles.tab}`}>내일</div>
-        <div className={`${styles.tab} ${styles['final-tab']}`}>모레</div>
+        <div className={`${styles.tab}`}>모레</div>
       </div>
       <div className={styles['context-container']}>
         <button className={styles['reload-button']} type="button">
@@ -67,13 +67,9 @@ const RecommendTab = () => {
         <div className={styles['cody-area']}>
           {recommendCodies.map((cody, index) => {
             return (
-              <div
-                key={cody}
-                className={`${styles['cody-container']} ${ootdIndex === index ? styles.ootd : ''} ${viewerIndex === index ? styles['view-cody-container'] : ''}`}
-              >
-                <div
-                  className={`${viewerIndex === index ? styles['view-image-container'] : styles['image-container']}`}
-                >
+              <div key={cody} className={`${styles['cody-container']} ${viewerIndex === index ? styles.view : ''}`}>
+                <div className={`${ootdIndex === index ? styles['ootd-overlay'] : ''} `} />
+                <div className={`${styles['cody-image']} `}>
                   <Image src={cody} fill alt="추천 코디" />
                 </div>
               </div>

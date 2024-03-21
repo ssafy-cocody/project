@@ -5,10 +5,10 @@
 import Background from '@/components/background';
 import ClothesList from '@/components/ClothesList';
 import Header from '@/components/Header';
+import SaveButton from '@/components/SaveButton';
 import TostMessage from '@/components/TostMessage';
 import CodyBoard from '@/containers/cody/new/CodyBoard';
 import styles from '@/containers/cody/new/NewCody.module.scss';
-import SaveButton from '@/containers/cody/new/saveButton';
 import useModal from '@/hooks/useModal';
 
 const Page = () => {

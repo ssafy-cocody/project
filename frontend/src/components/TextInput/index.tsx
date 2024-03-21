@@ -13,6 +13,7 @@ const TextInput = ({ label, describe, id, name, required, ...props }: TextInputP
   return (
     <div className={styles.input}>
       <Label label={label} htmlFor={id} required={required} />
+      {/* TODO: 입력필드 폰트 적용 */}
       <input id={id} name={name} required={required} {...props} />
       {describe && <p className={styles.desc}>{describe}</p>}
       {errorMessage && <p className={styles['error-messages']}>난 애러에용</p>}

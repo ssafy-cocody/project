@@ -35,8 +35,8 @@ const MyCodyPreview = () => {
             <></>
           )}
         </div>
-        <div className={`${styles.support} ${styles['first-support']}`} />
-        <div className={`${styles.support} ${styles['second-support']}`} />
+        <div className={`${styles.support} `} />
+        <div className={`${styles.support} `} />
       </div>
       <div className={styles['show-all-button']}>
         <Button>

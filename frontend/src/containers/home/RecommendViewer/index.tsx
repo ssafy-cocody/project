@@ -18,20 +18,24 @@ const RecommendViewer = () => {
   };
 
   return (
-    <div className={styles['viewer-container']}>
-      <Image className={styles['recommend-image']} src={codyUrl} alt="추천 코디" width={150} height={240} />
-      <div className={styles['context-area']}>
-        <div className={styles['text-area']}>
-          <h1 className={styles.title}>{title}</h1>
-          <h3 className={styles['sub-text']}>{description}</h3>
+    <>
+      <div className={styles['viewer-container']}>
+        <div className={styles['recommend-image']}>
+          <Image src={codyUrl} alt="추천 코디" fill />
         </div>
-        <div className={styles['button-area']}>
-          <button className={styles['regist-button']} type="button">
-            <div className={styles['inner-border']}>OOTD로 등록</div>
-          </button>
-          <button className={styles['cody-save-button']} type="button" onClick={handleSaveCody}>
-            내 코디로 저장
-          </button>
+        <div className={styles['context-area']}>
+          <div className={styles['text-area']}>
+            <h1 className={styles.title}>{title}</h1>
+            <h3 className={styles['sub-text']}>{description}</h3>
+          </div>
+          <div className={styles['button-area']}>
+            <button className={styles['regist-button']} type="button">
+              <div>OOTD로 등록</div>
+            </button>
+            <button className={styles['cody-save-button']} type="button" onClick={handleSaveCody}>
+              내 코디로 저장
+            </button>
+          </div>
         </div>
       </div>
       <div id="modal">
@@ -51,7 +55,7 @@ const RecommendViewer = () => {
           </div>
         </Modal>
       </div>
-    </div>
+    </>
   );
 };
 
