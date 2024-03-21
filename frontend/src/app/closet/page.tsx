@@ -4,7 +4,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import Background from '@/components/background';
 import Button from '@/components/Button';
@@ -13,6 +13,7 @@ import Header from '@/components/Header';
 import Nav from '@/components/Nav';
 import styles from '@/containers/closet/Closet.module.scss';
 import useModal from '@/hooks/useModal';
+import useScrollDirection from '@/hooks/useScrollDirection';
 
 import { PlusIcon, RightArrow } from '../../../public/svgs';
 
@@ -22,6 +23,22 @@ interface ICody {
 }
 
 const Page = () => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [isScrolledToTop, setScrolled] = useState<boolean>(false);
+  const [isNavShow, setNavShow] = useState<boolean>(true);
+
+  useScrollDirection(
+    scrollRef,
+    () => {
+      setScrolled(false);
+      setTimeout(() => setNavShow(false), 500);
+    },
+    () => {
+      setNavShow(true);
+      setScrolled(true);
+    },
+  );
+
   const { Modal, openModal } = useModal();
   const [codies] = useState<ICody[]>([
     {
@@ -46,7 +63,7 @@ const Page = () => {
     <>
       <Background $backgroundColor="purple" />
       <Header title="옷장" />
-      <main className={styles['main-container']}>
+      <main ref={scrollRef} className={styles['main-container']}>
         <div className={styles['cody-container']}>
           <div className={styles['cody-title-container']}>
             <h1 className={styles['cody-title']}>나의 코디</h1>
@@ -75,7 +92,7 @@ const Page = () => {
           <PlusIcon stroke="#EDEDED" />
         </Link>
       </main>
-      <Nav />
+      {isNavShow && <Nav className={`${isScrolledToTop ? styles.scrollToTop : styles.scrollToBottom}`} />}
       <div id="modal">
         <Modal title="이 아이템을 삭제하시겠습니까?">
           <div className={styles['modal-container']}>

@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding: 16px;
+  padding: 16px 16px 96px;
   box-sizing: border-box;
   position: relative;
 
@@ -126,4 +126,43 @@
       font-size: 18px;
     }
   }
+}
+
+// scroll animation
+@mixin scrollAnimation($name, $duration: 500ms, $timingFunction: cubic-bezier(0.86, 0, 0.07, 1)) {
+  animation-name: $name;
+  animation-duration: $duration;
+  animation-timing-function: $timingFunction;
+}
+
+@mixin keyframe($name) {
+  @keyframes #{$name} {
+    @content;
+  }
+}
+
+@include keyframe(navDownAnimation) {
+  0% {
+    bottom: 0;
+  }
+  100% {
+    bottom: -100%;
+  }
+}
+
+@include keyframe(navUpAnimation) {
+  0% {
+    bottom: -100%;
+  }
+  100% {
+    bottom: 0;
+  }
+}
+
+.scrollToBottom {
+  @include scrollAnimation(navDownAnimation);
+}
+
+.scrollToTop {
+  @include scrollAnimation(navUpAnimation);
 }
