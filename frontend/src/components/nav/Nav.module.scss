@@ -3,11 +3,12 @@
   justify-content: space-around;
   padding: 20px;
   box-sizing: border-box;
-  position: fixed;
+  position: sticky;
   bottom: 0;
   width: 100%;
   background-color: var(--color-white);
   z-index: var(--zIndex-navigation);
+  max-width: 100%;
 
   .navigation {
     display: flex;
