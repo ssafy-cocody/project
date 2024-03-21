@@ -1,9 +1,12 @@
 package com.cocodi.security.infrastructure.handler;
 
+import com.cocodi.member.domain.enums.Authority;
+import com.cocodi.member.domain.enums.ProviderType;
+import com.cocodi.member.domain.model.Member;
 import com.cocodi.member.domain.repository.MemberRepository;
 import com.cocodi.security.application.dto.GeneratedToken;
-import com.cocodi.security.application.service.JwtTokenProvider;
 import com.cocodi.security.application.dto.RefreshToken;
+import com.cocodi.security.application.service.JwtTokenProvider;
 import com.cocodi.security.domain.repository.RefreshTokenRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -50,43 +53,49 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 .findFirst().orElseThrow(IllegalAccessError::new)   // 존재하지 않을 시 예외
                 .getAuthority();
 
-        // 회원이 존재할 경우
-        if(isExist != null && isExist) {
-            Long memberId = memberRepository.findByEmail(email).orElseThrow(IllegalArgumentException::new).getMemberId();
-            // 회원이 존재하면 jwt 발행 시작
-            GeneratedToken generatedToken = jwtTokenProvider.generateToken(memberId);
+        Long memberId;
 
-            log.info("accessToken = {}", generatedToken.getAccessToken());
-
-            // accessToken 을 쿼리스트링에 담는 url 을 만들어준다.
-            String targetUrl = UriComponentsBuilder.fromUriString("https://j10a307.p.ssafy.io/")
-                    .build()
-                    .encode(StandardCharsets.UTF_8)
-                    .toUriString();
-
-            ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", generatedToken.getRefreshToken())
-                    .maxAge(refreshTokenExpireTime)
-                    .secure(true)
-                    .httpOnly(true)
-                    .path("/")
+        // 회원이 존재
+        if (isExist != null && isExist) {
+            memberId = memberRepository.findByEmail(email).orElseThrow(IllegalArgumentException::new).getMemberId();
+        } else {    // 회원 없음
+            Member member = Member.builder()
+                    .email(email)
+                    .role(Authority.GUEST)
+                    .nickname(oAuth2User.getAttribute("nickname"))
+                    .profile(oAuth2User.getAttribute("profile"))
+                    .providerType(ProviderType.valueOf(provider.toUpperCase()))
                     .build();
-
-            //프론트로 헤더에 accessToken, 쿠키에 refreshToken 을 들고 감
-            response.setHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
-
-            //리프레시 토큰 레디스에 저장 -> 비교목적
-            refreshTokenRepository.save(new RefreshToken(generatedToken.getRefreshToken()));
-
-            getRedirectStrategy().sendRedirect(request, response, targetUrl);
-        } else {
-            String targetUrl = UriComponentsBuilder.fromUriString("https://j10a307.p.ssafy.io/signup")
-                    .queryParam("nickname", (String) oAuth2User.getAttribute("nickname"))
-                    .build()
-                    .encode(StandardCharsets.UTF_8)
-                    .toUriString();
-            // 회원가입 페이지로 리다이렉트 시킨다.
-            getRedirectStrategy().sendRedirect(request, response, targetUrl);
+            memberId = memberRepository.save(member).getMemberId();
         }
+
+        GeneratedToken generatedToken = jwtTokenProvider.generateToken(memberId);
+        log.info("accessToken = {}", generatedToken.getAccessToken());
+        ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", generatedToken.getRefreshToken())
+                .maxAge(refreshTokenExpireTime)
+                .secure(false)
+                .httpOnly(true)
+                .path("/")
+                .build();
+
+        //프론트로 헤더에 accessToken, 쿠키에 refreshToken 을 들고 감
+        response.setHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
+
+        //리프레시 토큰 레디스에 저장 -> 비교목적
+        refreshTokenRepository.save(new RefreshToken(generatedToken.getRefreshToken()));
+
+        String url;
+        if (!role.equals("ROLE_GUEST")) {
+            url = "https://j10a307.p.ssafy.io/";
+        } else {
+            url = "https://j10a307.p.ssafy.io/signup";
+        }
+        String targetUrl = UriComponentsBuilder.fromUriString(url)
+                .build()
+                .encode(StandardCharsets.UTF_8)
+                .toUriString();
+        // 회원가입 페이지로 리다이렉트 시킨다.
+        getRedirectStrategy().sendRedirect(request, response, targetUrl);
 
     }
 
