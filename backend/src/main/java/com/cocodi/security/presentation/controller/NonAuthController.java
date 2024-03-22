@@ -30,7 +30,8 @@ public class NonAuthController {
                         String accessToken = nonAuthService.getAccessToken(cookie.getValue());
                         HttpHeaders headers = new HttpHeaders();
                         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
-                        return ResponseEntity.ok().headers(headers).build();
+                        String nickname = nonAuthService.getNickname(accessToken);
+                        return new ResponseEntity<>(nickname, headers, HttpStatus.OK);
                     } else {
                         break;
                     }

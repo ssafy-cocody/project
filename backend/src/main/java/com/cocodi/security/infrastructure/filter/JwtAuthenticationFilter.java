@@ -64,7 +64,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     Long userId = jwtTokenProvider.getUserId(refreshToken);
                     String newAccessToken = jwtTokenProvider.generateAccessToken(userId);
                     // 응답헤더에 어세스 토큰 추가
-                    jwtTokenProvider.setHeaderAccessToken(response, accessToken);
+                    jwtTokenProvider.setHeaderAccessToken(response, newAccessToken);
                 }
             }
         } else { // AccessToken 의 값이 있고, 유효한 경우에 진행
