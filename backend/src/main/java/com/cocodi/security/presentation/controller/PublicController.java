@@ -40,7 +40,9 @@ public class PublicController {
                     }
                 }
             }
-        } catch (Exception ignore) {
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            log.error(e.getCause().getMessage());
             return new ResponseEntity<>("Bad Request", HttpStatus.UNAUTHORIZED);
         }
         return new ResponseEntity<>("Bad Gateway", HttpStatus.BAD_GATEWAY);
