@@ -25,6 +25,7 @@ public class PublicController {
     public ResponseEntity<String> getAccessToken(HttpServletRequest request) {
 
         try {
+            log.info("access");
             Cookie[] cookies = request.getCookies();
             for (Cookie cookie : cookies) {
                 if ("refreshToken".equals(cookie.getName())) {
