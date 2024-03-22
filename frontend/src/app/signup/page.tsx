@@ -62,7 +62,9 @@ const Page = () => {
 
   // form 유효성 검사
   useEffect(() => {
-    if (!gender || Number.isNaN(age) || age === '' || !nickname) {
+    if (!gender || Number(age) <= 0 || !nickname) {
+      if (!nickname) setErrorMessages((prev) => ({ ...prev, nickname: '' }));
+      if (Number(age) <= 0) setErrorMessages((prev) => ({ ...prev, age: '' }));
       setIsValid(false);
       return;
     }
