@@ -68,13 +68,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
         } else { // AccessToken 의 값이 있고, 유효한 경우에 진행
-            Member findMember = memberRepository.findById(jwtTokenProvider.getUserId(accessToken))
-                    .orElseThrow(IllegalStateException::new);
-            // SecurityContext 에 등록할 User 객체를 만들어준다.
-            Authentication auth = getAuthentication(findMember);
-            SecurityContextHolder.getContext().setAuthentication(auth);
+            createUser(accessToken);
         }
         filterChain.doFilter(request, response);
+    }
+
+    private void createUser(String accessToken) {
+        Member findMember = memberRepository.findById(jwtTokenProvider.getUserId(accessToken))
+                .orElseThrow(IllegalStateException::new);
+        // SecurityContext 에 등록할 User 객체를 만들어준다.
+        Authentication auth = getAuthentication(findMember);
+        SecurityContextHolder.getContext().setAuthentication(auth);
     }
 
     public Authentication getAuthentication(Member member) {

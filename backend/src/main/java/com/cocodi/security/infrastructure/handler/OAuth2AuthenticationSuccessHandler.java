@@ -73,7 +73,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         log.info("accessToken = {}", generatedToken.getAccessToken());
         ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", generatedToken.getRefreshToken())
                 .maxAge(refreshTokenExpireTime)
-                .secure(false)
+                .secure(true)
                 .httpOnly(true)
                 .path("/")
                 .build();
@@ -84,7 +84,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         //리프레시 토큰 레디스에 저장 -> 비교목적
         refreshTokenRepository.save(new RefreshToken(generatedToken.getRefreshToken()));
 
-        String targetUrl = UriComponentsBuilder.fromUriString("https://localhost:3000/kakao/callback")
+        String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/kakao/callback")
                 .build()
                 .encode(StandardCharsets.UTF_8)
                 .toUriString();
