@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/public")
 @RequiredArgsConstructor
-public class NonAuthController {
+public class PublicController {
 
     private final NonAuthService nonAuthService;
     private final JwtTokenProvider jwtTokenProvider;
