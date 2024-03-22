@@ -84,13 +84,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         //리프레시 토큰 레디스에 저장 -> 비교목적
         refreshTokenRepository.save(new RefreshToken(generatedToken.getRefreshToken()));
 
-        String url;
-        if (!role.equals("ROLE_GUEST")) {
-            url = "https://j10a307.p.ssafy.io/";
-        } else {
-            url = "https://j10a307.p.ssafy.io/signup";
-        }
-        String targetUrl = UriComponentsBuilder.fromUriString(url)
+        String targetUrl = UriComponentsBuilder.fromUriString("https://j10a307.p.ssafy.io/kakao/callback")
                 .build()
                 .encode(StandardCharsets.UTF_8)
                 .toUriString();
