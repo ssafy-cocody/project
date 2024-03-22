@@ -1,0 +1,145 @@
+@import './reset.scss';
+
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 100;
+  src:
+    url('/fonts/woff2/Pretendard-Thin.woff2') format('woff2'),
+    url('/fonts/woff2/Pretendard-Thin.woff') format('woff');
+}
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 200;
+  src:
+    url('/fonts/woff2/Pretendard-ExtraLight.woff2') format('woff2'),
+    url('/fonts/woff2/Pretendard-ExtraLight.woff') format('woff');
+}
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 300;
+  src:
+    url('/fonts/woff2/Pretendard-Light.woff2') format('woff2'),
+    url('/fonts/woff2/Pretendard-Light.woff') format('woff');
+}
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 400;
+  src:
+    url('/fonts/woff2/Pretendard-Regular.woff2') format('woff2'),
+    url('/fonts/woff2/Pretendard-Regular.woff') format('woff');
+}
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 500;
+  src:
+    url('/fonts/woff2/Pretendard-Medium.woff2') format('woff2'),
+    url('/fonts/woff2/Pretendard-Medium.woff') format('woff');
+}
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 600;
+  src:
+    url('/fonts/woff2/Pretendard-SemiBold.woff2') format('woff2'),
+    url('/fonts/woff2/Pretendard-SemiBold.woff') format('woff');
+}
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 700;
+  src:
+    url('/fonts/woff2/Pretendard-Bold.woff2') format('woff2'),
+    url('/fonts/woff2/Pretendard-Bold.woff') format('woff');
+}
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 800;
+  src:
+    url('/fonts/woff2/Pretendard-ExtraBold.woff2') format('woff2'),
+    url('/fonts/woff2/Pretendard-ExtraBold.woff') format('woff');
+}
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 900;
+  src:
+    url('/fonts/woff2/Pretendard-Black.woff2') format('woff2'),
+    url('/fonts/woff2/Pretendard-Black.woff') format('woff');
+}
+@font-face {
+  font-family: 'RacingSansOne';
+  font-weight: 400;
+  src: url('/fonts/ttf/RacingSansOne-Regular.ttf') format('truetype');
+}
+
+:root {
+  --font-family: Pretendard;
+  --color-black: #000;
+  --color-darkGray: #909090;
+  --color-gray: #d9d9d9;
+  --color-lightGray: #ededed;
+  --color-main: #6785f7;
+  --color-sub: #bbd4fc;
+  --color-green: #8be132;
+  --color-yellow: #ffff55;
+  --color-purple: #c19cfd;
+  --color-white: #fff;
+  --color-warn: #ff0000;
+  --color-skyBlue: #d7e5fe;
+
+  --zIndex-hidden: -2;
+  --zIndex-background: -1;
+  --zIndex-main: 0;
+  --zIndex-under: 1;
+  --zIndex-above: 2;
+  --zIndex-navigation: 3;
+  --zIndex-overlay: 4;
+  --zIndex-modal: 5;
+}
+
+a,
+a:visited,
+a:link,
+a:hover,
+a:active {
+  color: var(--color-black);
+}
+
+body {
+  max-width: 768px;
+  min-width: 320px;
+  min-height: 640px;
+  width: 100svw;
+  height: 100svh;
+  margin: 0 auto !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: var(--font-family);
+  position: relative;
+}
+
+header {
+  position: relative;
+  min-height: 73px;
+  height: 73px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  box-sizing: border-box;
+  background-color: transparent;
+}
+
+main {
+  flex-basis: 100%;
+  width: 100%;
+  overflow-y: scroll;
+}
+
+nav {
+  position: fixed;
+  bottom: 0;
+  height: 100px;
+  width: 100%;
+  background-color: transparent;
+  z-index: var(--zIndex-navigation);
+}

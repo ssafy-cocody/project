@@ -1,0 +1,35 @@
+.board-container {
+  border: 1px solid var(--color-black);
+  border-radius: 5px;
+  background-color: var(--color-gray);
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  gap: 16px;
+  max-height: calc(calc(100svh - 73px) / 2);
+
+  .board {
+    width: 100%;
+    aspect-ratio: 1;
+    border: 1px solid var(--color-black);
+    background-color: var(--color-white);
+    box-sizing: border-box;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: space-evenly;
+    justify-content: space-evenly;
+    align-items: center;
+
+    .image-container {
+      height: calc(calc(100% - 16px) / 2);
+      aspect-ratio: 1;
+      position: relative;
+
+      .clothes {
+        object-fit: cover;
+      }
+    }
+  }
+}

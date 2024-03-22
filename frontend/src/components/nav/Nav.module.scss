@@ -1,0 +1,20 @@
+.container {
+  display: flex;
+  justify-content: space-around;
+  padding: 0 20px;
+  box-sizing: border-box;
+
+  .navigation {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+
+    .navigation-text {
+      font-size: 12px;
+      font-weight: 500;
+      margin-top: 4px;
+    }
+  }
+}
