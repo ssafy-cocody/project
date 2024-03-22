@@ -44,8 +44,10 @@ public class SecurityConfig {
                 })
                 .authorizeHttpRequests(authorizeRequests -> {
                     authorizeRequests
-                            .requestMatchers("*").permitAll()
-                            .requestMatchers("api/auth").authenticated();
+                            .requestMatchers("/public/**").permitAll()
+                            .requestMatchers("/swagger-ui/**").permitAll()
+                            .requestMatchers("/v3/**").permitAll()
+                            .requestMatchers("/auth/**").authenticated();
                 })
                 .oauth2Login(oauth2Login -> {
                     oauth2Login
