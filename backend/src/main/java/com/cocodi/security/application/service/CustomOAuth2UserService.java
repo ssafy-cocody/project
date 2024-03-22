@@ -69,7 +69,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             memberAttribute.put("exist", false);
             // 회원의 권한(회원이 존재하지 않으므로 기본권한인 ROLE_GUEST 를 넣어준다), 회원속성, 속성이름을 이용해 DefaultOAuth2User 객체를 생성해 반환한다.
             return new DefaultOAuth2User(
-                    Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
+                    Collections.singleton(new SimpleGrantedAuthority("GUEST")),
                     memberAttribute, "email"
             );
         }

@@ -51,12 +51,7 @@ public class SseTestController {
     @CrossOrigin
     @GetMapping("/test/{key}")
     public ResponseEntity<?> sendTest(@PathVariable("key") String key) {
-        try {
-
-        } catch (Exception e) {
-            sseService.sendMessage(key, "message", "test");
-        }
-
+        sseService.sendMessage(key, "message", "test");
         return ResponseEntity.ok().build();
     }
 
