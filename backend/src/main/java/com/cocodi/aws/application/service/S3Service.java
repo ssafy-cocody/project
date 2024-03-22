@@ -1,6 +1,7 @@
 package com.cocodi.aws.application.service;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
@@ -20,11 +21,11 @@ public class S3Service {
     private String bucketName;
 
     private String generateFileName(MultipartFile file) {
-        return UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+        return UUID.randomUUID() + "_" + file.getOriginalFilename();
     }
 
-    private String upload(String folderName, MultipartFile file) {
-        String fileName = folderName + "/" + generateFileName(file);
+    private String upload(String dir, MultipartFile file) {
+        String fileName = dir + "/" + generateFileName(file);
 
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(file.getSize());
@@ -32,6 +33,7 @@ public class S3Service {
 
         try {
             PutObjectRequest request = new PutObjectRequest(bucketName, fileName, file.getInputStream(), metadata);
+            request.withCannedAcl(CannedAccessControlList.PublicRead);
             amazonS3.putObject(request);
         } catch (Exception e) {
             throw new RuntimeException();
@@ -41,5 +43,9 @@ public class S3Service {
 
     public String uploadDefault(MultipartFile file) {
         return upload("cocodi", file);
+    }
+
+    public String uploadAI(MultipartFile file) {
+        return upload("cocodi-ai", file);
     }
 }

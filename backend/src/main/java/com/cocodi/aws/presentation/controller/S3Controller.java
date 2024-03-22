@@ -17,7 +17,7 @@ public class S3Controller {
 
     @PostMapping("/upload")
     public ResponseEntity<String> uploadTest(@RequestParam MultipartFile multipartFile) {
-        String fileUrl = s3Service.uploadDefault(multipartFile);
+        String fileUrl = s3Service.uploadAI(multipartFile);
         return ResponseEntity.ok("File uploaded successfully. URL: " + fileUrl);
     }
 }
