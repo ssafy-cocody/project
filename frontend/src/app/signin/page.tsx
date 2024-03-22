@@ -2,6 +2,8 @@ import Image from 'next/image';
 
 import style from '@/containers/signin/Signin.module.scss';
 
+const KAKAO_SIGNIN_URI = 'https://j10a307.p.ssafy.io/api/oauth2/authorization/kakao/';
+
 const Page = () => {
   return (
     <main className={style.container}>
@@ -57,14 +59,17 @@ const Page = () => {
       </div>
 
       <div className={style['login-container']}>
-        <div className={`${style.kakao} ${style.button}`}>
-          <span className={style.icon} />
-          <span className={style.text}>카카오로 시작하기</span>
-        </div>
+        <a href={KAKAO_SIGNIN_URI}>
+          <div className={`${style.kakao} ${style.button}`}>
+            <span className={style.icon} />
+            <span className={style.text}>카카오로 시작하기</span>
+          </div>
+        </a>
+        {/* mvp 미포함 
         <div className={`${style.instagram} ${style.button}`}>
           <span className={style.icon} />
           <span className={style.text}>인스타로 시작하기</span>
-        </div>
+        </div> */}
         <p className={style.desc}>자주 사용하는 아이디로 간편하게 가입하세요</p>
       </div>
     </main>
