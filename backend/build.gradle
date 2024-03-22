@@ -56,6 +56,11 @@ dependencies {
     // Jackson
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.1'
 
+    //rabbitmq
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+
+    //redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 }
 
 tasks.named('test') {
