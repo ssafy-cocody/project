@@ -23,8 +23,9 @@ public class PublicController {
     private final JwtTokenProvider jwtTokenProvider;
     @GetMapping
     public ResponseEntity<String> getAccessToken(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
+
         try {
+            Cookie[] cookies = request.getCookies();
             for (Cookie cookie : cookies) {
                 if ("refreshToken".equals(cookie.getName())) {
                     String refreshToken = cookie.getValue();
