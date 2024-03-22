@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
+
 @Slf4j
 @RestController
 @RequestMapping("/public")
@@ -26,7 +28,9 @@ public class PublicController {
 
         try {
             log.info("access");
-            Cookie[] cookies = request.getCookies();
+            log.info(String.valueOf(request.getCookies().length));
+            Cookie[] cookies = request.getCookies();;
+            log.info("cookiesError?" + Arrays.toString(cookies));
             for (Cookie cookie : cookies) {
                 if ("refreshToken".equals(cookie.getName())) {
                     String refreshToken = cookie.getValue();
