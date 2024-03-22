@@ -1,22 +1,33 @@
 package com.cocodi.member.presentation.controller;
 
+import com.cocodi.member.application.service.MemberService;
 import com.cocodi.member.presentation.request.MemberUpdateRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/auth/v1/member")
+@RequiredArgsConstructor
 public class AuthMemberController {
+    private final MemberService memberService;
+
 
     /**
      * 회원 정보 수정
      * @param memberUpdateRequest
-     * @return null
+     * @param token
+     * @return
      */
     @PatchMapping
-    public ResponseEntity<?> updateMember(@RequestBody MemberUpdateRequest memberUpdateRequest) {
-        return new ResponseEntity<>(null, HttpStatus.OK);
+    public ResponseEntity<String> updateMember(@RequestBody MemberUpdateRequest memberUpdateRequest, @RequestHeader("Authorization") String token, MultipartFile profile) {
+        if(memberService.updateMember(memberUpdateRequest, token, profile)) {
+            return new ResponseEntity<>("success", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("fail", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
@@ -24,7 +35,8 @@ public class AuthMemberController {
      * @return null
      */
     @DeleteMapping
-    public ResponseEntity<?> deleteMember() {
-        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+    public ResponseEntity<?> deleteMember(@RequestHeader("Authorization") String token) {
+        memberService.deleteMember(token);
+        return new ResponseEntity<>("success", HttpStatus.NO_CONTENT);
     }
 }
