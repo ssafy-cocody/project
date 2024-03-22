@@ -1,4 +1,4 @@
-package com.cocodi.security.infrastructure.config;
+package com.cocodi.common.infrastructure.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;

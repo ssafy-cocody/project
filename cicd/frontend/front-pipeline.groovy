@@ -42,6 +42,7 @@ pipeline {
                     echo "The current directory is: ${currentDir}"
                     dir('frontend') {
                         sh 'mkdir -p ../../front'
+                        sh 'rm -r ../../front/source/'
                         sh 'cp -r ./ ../../front/source/'
                     }
                     dir('../front') {
