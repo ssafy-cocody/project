@@ -6,11 +6,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 
-import Background from '@/components/background';
+import Background from '@/components/Background';
 import Button from '@/components/Button';
 import ClothesList from '@/components/ClothesList';
 import Header from '@/components/Header';
-import Nav from '@/components/nav';
+import Nav from '@/components/Nav';
 import styles from '@/containers/closet/Closet.module.scss';
 import useModal from '@/hooks/useModal';
 
@@ -75,6 +75,7 @@ const Page = () => {
           <PlusIcon stroke="#EDEDED" />
         </Link>
       </main>
+      {/* TODO: ClothesList 스크롤 시 Navigation 숨기기 */}
       <Nav />
       <div id="modal">
         <Modal title="이 아이템을 삭제하시겠습니까?">

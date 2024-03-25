@@ -1,4 +1,4 @@
-import Background from '@/components/background';
+import Background from '@/components/Background';
 import Header from '@/components/Header';
 import SaveButton from '@/components/SaveButton';
 import ProfileCard from '@/containers/mypage/profile/ProfileCard';
