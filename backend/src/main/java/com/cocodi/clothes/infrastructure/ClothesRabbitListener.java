@@ -18,7 +18,7 @@ public class ClothesRabbitListener {
     private final SseService sseService;
     private final ClothesTempRepository clothesTempRepository;
 
-    @RabbitMQDirectListener(name = "extract_img", isolatedQueue = true)
+    @RabbitMQDirectListener(name = "extract_img", isolatedQueue = true, lazy = true)
     public void extractImg(SseObject sseObject) {
         clothesTempRepository.save(new ClothesTemp(sseObject.sseId(), sseObject.data().toString()));
         sseService.sendMessageAndRemove(sseObject.sseId(), "message", sseObject.sseId());
