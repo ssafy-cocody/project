@@ -29,11 +29,12 @@ const fetchUserInfo = async () => {
  * 회원가입
  */
 const fetchCreateMember = async (params: IFetchCreateMember) => {
+  // TODO console 삭제
   console.log('token', getAccessToken());
   const response = await fetch(`${BASE_URL}/auth/v1/member`, {
     method: 'PATCH',
     body: JSON.stringify(params),
-    headers: { Authorization: `Bearer ${getAccessToken()}` },
+    headers: { Authorization: `Bearer ${getAccessToken()}`, 'Content-Type': 'application/json' },
   });
   return response.json();
 };
