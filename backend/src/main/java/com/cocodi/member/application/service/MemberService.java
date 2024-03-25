@@ -24,11 +24,10 @@ public class MemberService {
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberRepository memberRepository;
 
-    public boolean updateMember(MemberUpdateRequest memberUpdateRequest, String token, MultipartFile profile) {
-        Long memberId = jwtTokenProvider.getUserId(token);
+    public boolean updateMember(MemberUpdateRequest memberUpdateRequest, MultipartFile profile, Long memberId) {
         Member findMember = memberRepository.findById(memberId).orElseThrow(() -> new MemberFindException("can not find Member"));
         String profileUrl;
-        if (profile.isEmpty()) {
+        if (profile == null || profile.isEmpty()) {
             profileUrl = findMember.getProfile();
         } else {
             // s3 upload 처리
@@ -37,6 +36,7 @@ public class MemberService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         LocalDate birth = LocalDate.parse(memberUpdateRequest.birth(), formatter);
         Member member = Member.builder()
+                .memberId(memberId)
                 .email(findMember.getEmail())
                 .birth(birth)
                 .gender(Gender.valueOf(memberUpdateRequest.gender()))
