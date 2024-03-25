@@ -6,7 +6,6 @@ import com.cocodi.security.domain.model.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,7 +19,8 @@ public class AuthMemberController {
     /**
      * 회원 정보 수정
      * @param memberUpdateRequest
-     * @param token
+     * @param profile
+     * @param principalDetails
      * @return
      */
     @PatchMapping
