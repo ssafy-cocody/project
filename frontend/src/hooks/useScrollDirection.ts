@@ -1,4 +1,4 @@
-import { RefObject, useEffect } from 'react';
+import { RefObject, useCallback, useEffect, useState } from 'react';
 
 interface Props {
   ref: RefObject<HTMLDivElement>;
@@ -6,30 +6,38 @@ interface Props {
   upFunc: () => void;
 }
 
-const NAVIGATION_HEIGHT = 80;
+const BOTTOM_PADDING = 16;
 
 const useScrollDirection = ({ ref, downFunc, upFunc }: Props) => {
-  useEffect(() => {
-    let scrollY = 0;
+  const [throttle, setThrottle] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
 
-    const handler = () => {
+  const handler = useCallback(() => {
+    if (throttle) return;
+
+    setThrottle(true);
+    setTimeout(() => {
       if (ref.current) {
         const { scrollTop, clientHeight, scrollHeight } = ref.current;
-        // TODO: 끝에 도달했을 때 네비게이션 안나타남
-        if (scrollTop + clientHeight >= scrollHeight - NAVIGATION_HEIGHT || scrollTop <= scrollY) {
+        if (scrollTop + clientHeight >= scrollHeight - BOTTOM_PADDING) {
+          upFunc();
+          console.log('end');
+        } else if (scrollTop <= scrollY) {
           upFunc();
         } else {
           downFunc();
         }
 
-        scrollY = scrollTop;
+        setScrollY(scrollTop);
       }
-    };
+      setThrottle(false);
+    }, 600);
+  }, [scrollY]);
 
+  useEffect(() => {
     ref.current?.addEventListener('scroll', handler);
-
     return () => ref.current?.removeEventListener('scroll', handler);
-  }, []);
+  }, [handler]);
 };
 
 export default useScrollDirection;

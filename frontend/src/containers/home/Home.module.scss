@@ -1,3 +1,5 @@
+@import '@/styles/NavAnimation.module.scss';
+
 .home-header {
   padding-top: 40px;
   width: 100%;
@@ -9,7 +11,7 @@
 
 .home-content {
   width: 100%;
-  padding: 20px 16px 100px;
+  padding: 20px 16px 16px;
   background: linear-gradient(180deg, var(--color-main) 0%, var(--color-sub) 30%, var(--color-white) 100%);
   display: flex;
   flex-direction: column;
@@ -17,43 +19,4 @@
   align-items: center;
   gap: 20px;
   box-sizing: border-box;
-}
-
-// navigation scroll animation
-@mixin navAnimation($name, $duration: 500ms, $timingFunction: cubic-bezier(0.86, 0, 0.07, 1)) {
-  animation-name: $name;
-  animation-duration: $duration;
-  animation-timing-function: $timingFunction;
-}
-
-@mixin keyframe($name) {
-  @keyframes #{$name} {
-    @content;
-  }
-}
-
-@include keyframe(navDownAnimation) {
-  0% {
-    bottom: 0;
-  }
-  100% {
-    bottom: -100%;
-  }
-}
-
-@include keyframe(navUpAnimation) {
-  0% {
-    bottom: -100%;
-  }
-  100% {
-    bottom: 0;
-  }
-}
-
-.scrollToBottom {
-  @include navAnimation(navDownAnimation);
-}
-
-.scrollToTop {
-  @include navAnimation(navUpAnimation);
 }

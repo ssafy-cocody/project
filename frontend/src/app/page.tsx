@@ -39,7 +39,9 @@ const Home = () => {
         <RecommendItems />
         <MyCodyPreview />
       </div>
-      {isNavShow && <Nav className={`${isScrolledToTop ? styles.scrollToTop : styles.scrollToBottom}`} />}
+      <Nav
+        className={`${isNavShow ? styles.visable : styles.hidden} ${isScrolledToTop ? styles.scrollToTop : styles.scrollToBottom}`}
+      />
     </main>
   );
 };
