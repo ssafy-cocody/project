@@ -1,0 +1,20 @@
+.previous-button {
+  border: 1px solid var(--color-black);
+  border-radius: 90%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-white);
+}
+
+.header-title {
+  position: absolute;
+  left: 0;
+  right: 0;
+
+  font-weight: 900;
+  flex: 1;
+  text-align: center;
+}

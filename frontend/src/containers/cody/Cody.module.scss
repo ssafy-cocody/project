@@ -1,0 +1,77 @@
+.main-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 0 16px 30px;
+  box-sizing: border-box;
+
+  .cody-container {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    justify-content: flex-start;
+    width: calc(calc(100% - 16px) / 2);
+
+    .cody-name {
+      font-weight: 400;
+      font-size: 14px;
+      padding-left: 4px;
+    }
+  }
+
+  .new-cody {
+    width: 100%;
+    aspect-ratio: 1;
+    border: 1px dashed var(--color-black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+    background-color: rgba(255, 255, 255, 0.5);
+    box-sizing: border-box;
+  }
+
+  .cody-image-container {
+    width: 100%;
+    aspect-ratio: 1;
+    position: relative;
+
+    .cody-image {
+      border: 1px solid var(--color-black);
+      border-radius: 20px;
+      box-sizing: border-box;
+    }
+  }
+}
+
+.modal-container {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+
+  .selected-clothes {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-button {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+
+    .button-text {
+      font-family: var(--font-family);
+      font-weight: 500;
+      font-size: 18px;
+    }
+  }
+}
