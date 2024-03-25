@@ -71,14 +71,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     // 응답헤더에 어세스 토큰 추가
                     jwtTokenProvider.setHeaderAccessToken(response, newAccessToken);
 //                    SecurityContextHolder.getContext().setAuthentication(new MemberAuthentication(userId));
-                    OAuth2User principalDetails = new PrincipalDetails(jwtTokenProvider.getUserId(accessToken));
+                    OAuth2User principalDetails = new PrincipalDetails(jwtTokenProvider.getUserId(accessToken), null, null);
                     SecurityContextHolder.getContext().setAuthentication(new OAuth2AuthenticationToken(principalDetails, principalDetails.getAuthorities(), "dsf"));
                 }
             }
         } else { // AccessToken 의 값이 있고, 유효한 경우에 진행
             log.info("token 유효");
             log.info(jwtTokenProvider.getUserId(accessToken).toString());
-            OAuth2User principalDetails = new PrincipalDetails(jwtTokenProvider.getUserId(accessToken));
+            OAuth2User principalDetails = new PrincipalDetails(jwtTokenProvider.getUserId(accessToken), null, null);
 //            log.info(principalDetails.ge);
             SecurityContextHolder.getContext().setAuthentication(new OAuth2AuthenticationToken(principalDetails, principalDetails.getAuthorities(), "dsf"));
         }
