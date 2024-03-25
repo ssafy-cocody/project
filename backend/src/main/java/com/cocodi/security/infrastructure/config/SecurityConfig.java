@@ -74,6 +74,9 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.addAllowedOrigin("http://localhost:3000");
+        config.addAllowedOrigin("http://localhost");
+        config.addAllowedOrigin("https://localhost");
+        config.addAllowedOrigin("https://j10a307.p.ssafy.io");
         config.addAllowedHeader("*"); // header
         config.addAllowedMethod("*"); // method
         config.setAllowCredentials(true);
