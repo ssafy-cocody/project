@@ -1,13 +1,27 @@
-import { useState } from 'react';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { useRouter } from 'next/navigation';
 
-import { IUser } from '@/types/user';
+import { setAccessToken } from '@/services';
+import { userAtom } from '@/stores/user';
 
 /**
  * 클라이언트 사이드에서 session 관리
  */
 const useSession = () => {
-  const [session, setSession] = useState<IUser>();
+  const router = useRouter();
+  const [session, setSession] = [useAtomValue(userAtom), useSetAtom(userAtom)];
 
-  return { session, setSession };
+  const getSession = async () => {
+    try {
+      const response = await fetch('/api/auth/cookie');
+      const { accessToken, ...data } = await response.json();
+      setAccessToken(accessToken);
+      setSession(data);
+    } catch (error) {
+      router.push('/signin');
+    }
+  };
+
+  return { session, setSession, getSession };
 };
 export default useSession;
