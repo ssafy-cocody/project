@@ -2,6 +2,7 @@ package com.cocodi.security.presentation.controller;
 
 import com.cocodi.security.application.service.JwtTokenProvider;
 import com.cocodi.security.application.service.NonAuthService;
+import com.cocodi.security.presentation.response.MemberInfo;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ public class PublicController {
     private final NonAuthService nonAuthService;
     private final JwtTokenProvider jwtTokenProvider;
     @GetMapping
-    public ResponseEntity<String> getAccessToken(HttpServletRequest request) {
+    public ResponseEntity<MemberInfo> getAccessToken(HttpServletRequest request) {
         try {
             Cookie[] cookies = request.getCookies();;
             for (Cookie cookie : cookies) {
@@ -32,8 +33,8 @@ public class PublicController {
                         String accessToken = nonAuthService.getAccessToken(refreshToken);
                         HttpHeaders headers = new HttpHeaders();
                         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
-                        String nickname = nonAuthService.getNickname(accessToken);
-                        return new ResponseEntity<>(nickname, headers, HttpStatus.OK);
+                        MemberInfo memberInfo = nonAuthService.getMemberInfo(accessToken);
+                        return new ResponseEntity<>(memberInfo, headers, HttpStatus.OK);
                     } else {
                         break;
                     }
@@ -41,17 +42,17 @@ public class PublicController {
             }
         } catch (Exception e) {
             log.error(e.getMessage());
-            return new ResponseEntity<>("Bad Request", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        return new ResponseEntity<>("Bad Gateway", HttpStatus.BAD_GATEWAY);
+        return new ResponseEntity<>(HttpStatus.BAD_GATEWAY);
     }
 
     @GetMapping("/test")
-    public ResponseEntity<String> getTest() {
+    public ResponseEntity<MemberInfo> getTest() {
         String accessToken =  nonAuthService.getTestAccessToken();
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
-        nonAuthService.getNickname(accessToken);
-        return ResponseEntity.ok().headers(headers).body(accessToken);
+        MemberInfo memberInfo = nonAuthService.getMemberInfo(accessToken);
+        return ResponseEntity.ok().headers(headers).body(memberInfo);
     }
 }
