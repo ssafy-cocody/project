@@ -28,9 +28,20 @@ public class SseService {
     }
 
     public void sendMessageAndRemove(String key, String eventName, String data) {
-        sendMessage(key, eventName, data);
-        sendMessage(key, "remove", "");
-        sseInstanceManager.deleteSseEmitter(key);
+        try {
+            sendMessage(key, eventName, data);
+            sendMessage(key, "remove", "");
+        } catch (Exception e) {
+            log.info("SSE Disconnection");
+        }
+        finally {
+            try  {
+                sseInstanceManager.deleteSseEmitter(key);
+            } catch (Exception e) {
+                log.info("SSE Instance Lose");
+            }
+        }
+
     }
 
     public SseEmitter getInstance(String key) {
