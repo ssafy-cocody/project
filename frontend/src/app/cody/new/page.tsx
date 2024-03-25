@@ -2,7 +2,7 @@
 
 'use client';
 
-import Background from '@/components/background';
+import Background from '@/components/Background';
 import ClothesList from '@/components/ClothesList';
 import Header from '@/components/Header';
 import SaveButton from '@/components/SaveButton';

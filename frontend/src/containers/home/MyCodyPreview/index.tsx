@@ -7,11 +7,11 @@ import styles from '@/containers/home/MyCodyPreview/Preview.module.scss';
 
 const MyCodyPreview = () => {
   const [codies] = useState([
-    '/images/test1.jpg',
-    '/images/test2.jpg',
-    '/images/test3.jpg',
-    '/images/test4.jpg',
-    '/images/test5.jpg',
+    { id: 1, image: '/images/test1.jpg' },
+    { id: 2, image: '/images/test2.jpg' },
+    { id: 3, image: '/images/test3.jpg' },
+    { id: 4, image: '/images/test4.jpg' },
+    { id: 5, image: '/images/test5.jpg' },
   ]);
 
   return (
@@ -19,15 +19,18 @@ const MyCodyPreview = () => {
       <div className={styles.title}>내가 만든 코디</div>
       <div className={styles.showcase}>
         <div className={styles.codies}>
-          {codies.map((url, index) => {
-            return (
-              <div key={url} className={styles['cody-image']}>
-                <Image src={url} alt={`나의 코디 ${index}`} fill />
-              </div>
-            );
-          })}
+          {
+            // TODO: key props warning 없애기
+            codies.map(({ id, image }, index) => {
+              return (
+                <div key={id} className={styles['cody-image']}>
+                  <Image src={image} alt={`나의 코디 ${index}`} fill />
+                </div>
+              );
+            })
+          }
           {codies.length < 8 ? (
-            Array.from({ length: 8 - codies.length }, () => 0).map((value) => {
+            Array.from({ length: 8 - codies.length }, (i: number) => i).map((value) => {
               return <div key={value} className={styles['cody-image']} />;
             })
           ) : (

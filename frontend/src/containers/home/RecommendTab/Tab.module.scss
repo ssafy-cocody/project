@@ -110,7 +110,7 @@
           position: absolute;
           background-color: var(--color-main);
           opacity: 0.5;
-          z-index: var(--zIndex-overlay);
+          z-index: var(--zIndex-above);
           box-shadow: 4px 4px 0 var(--color-black);
         }
 
