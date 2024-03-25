@@ -62,7 +62,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 //                        Collections.singleton(new SimpleGrantedAuthority("ROLE_".concat(String.valueOf(findMember.get().getRole())))),
 //                        memberAttribute, "email"
 //                );
-                return new PrincipalDetails(findMember.get(), oAuth2User.getAttributes());
+                return new PrincipalDetails(findMember.get().getMemberId());
             }
         } else {
 //            // 회원이 존재하지 않을 경우, memberAttribute 의 exist 값을 false 로 넣어준다.
@@ -75,7 +75,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                     .providerType(providerType)
                     .build();
             // 회원의 권한(회원이 존재하지 않으므로 기본권한인 ROLE_GUEST 를 넣어준다), 회원속성, 속성이름을 이용해 DefaultOAuth2User 객체를 생성해 반환한다.
-            return new PrincipalDetails(memberRepository.save(member), oAuth2User.getAttributes());
+            return new PrincipalDetails(memberRepository.save(member).getMemberId());
 //            return new DefaultOAuth2User(
 //                    Collections.singleton(new SimpleGrantedAuthority("GUEST")),
 //                    memberAttribute, "email"
