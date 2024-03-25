@@ -8,12 +8,10 @@ import { HeaderProps } from '@/components/Header/type';
 
 const Header = ({ previousLink, title, RightComponent, onClickPreviousButton }: HeaderProps) => {
   return (
-    <header>
+    <header className={styles.header}>
       {previousLink ? (
-        <Link href={previousLink}>
-          <div className={styles['previous-button']}>
-            <LeftArrow />
-          </div>
+        <Link href={previousLink} className={styles['previous-button']}>
+          <LeftArrow />
         </Link>
       ) : null}
       {onClickPreviousButton ? (
@@ -22,7 +20,7 @@ const Header = ({ previousLink, title, RightComponent, onClickPreviousButton }: 
         </button>
       ) : null}
       <div className={styles['header-title']}>{title}</div>
-      {RightComponent}
+      {RightComponent && <div className={styles['right-button']}>{RightComponent}</div>}
     </header>
   );
 };

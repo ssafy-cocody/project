@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 
-import Background from '@/components/background';
+import Background from '@/components/Background';
 import Header from '@/components/Header';
 import AdditionalForm from '@/containers/clothes/AdditionalForm';
 import BasicForm from '@/containers/clothes/BasicForm';

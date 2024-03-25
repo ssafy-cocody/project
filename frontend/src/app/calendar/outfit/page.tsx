@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { ChangeEvent, useState } from 'react';
 
 import { CheckIcon } from '@/../public/svgs';
-import Background from '@/components/background';
+import Background from '@/components/Background';
 import Button from '@/components/Button';
 import Header from '@/components/Header';
 import styles from '@/containers/calendar/Outfit/Outfit.module.scss';
