@@ -17,6 +17,10 @@ public class NonAuthService {
         return jwtTokenProvider.generateAccessToken(memberId);
     }
 
+    public String getTestAccessToken() {
+        return jwtTokenProvider.generateAccessToken(1L);
+    }
+
     public String getNickname(String token) {
         Long memberId = jwtTokenProvider.getUserId(token);
         return memberRepository.findById(memberId).orElseThrow(() -> new MemberFindException("can not find Member")).getNickname();

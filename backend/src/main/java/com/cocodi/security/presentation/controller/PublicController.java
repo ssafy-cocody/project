@@ -53,4 +53,10 @@ public class PublicController {
         return new ResponseEntity<>("Bad Gateway", HttpStatus.BAD_GATEWAY);
     }
 
+    @GetMapping("/test")
+    public ResponseEntity<String> getTest() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + nonAuthService.getTestAccessToken());
+        return ResponseEntity.ok().headers(headers).build();
+    }
 }
