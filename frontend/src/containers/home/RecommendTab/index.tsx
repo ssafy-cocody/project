@@ -1,16 +1,18 @@
-import { useAtom } from 'jotai';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
 import { ReloadIcon } from '@/../public/svgs';
 import styles from '@/containers/home/RecommendTab/Tab.module.scss';
 import { ITemperatures, Time, TTime } from '@/containers/home/RecommendTab/type';
-import { selectedCodyAtom } from '@/containers/home/store';
 import { IRecommendCody } from '@/containers/home/type';
 
-const RecommendTab = () => {
-  const [selectedTap, setTap] = useState<TTime>(Time.Today);
-  const [selectedCody, setSelectedCodyATom] = useAtom(selectedCodyAtom);
+interface Props {
+  selectedCody: IRecommendCody;
+  setSelectedCody: Dispatch<SetStateAction<IRecommendCody>>;
+}
+
+const RecommendTab = ({ selectedCody, setSelectedCody }: Props) => {
+  const [selectedTap, setSelectedTap] = useState<TTime>(Time.Today);
   // weather: 0 맑음 3 구름많음 4 흐림
   const [temperatures] = useState<ITemperatures>({
     lowestTemperature: 4,
@@ -44,7 +46,7 @@ const RecommendTab = () => {
         setWeather('/images/weather/sunny.png');
         break;
     }
-    setSelectedCodyATom(recommendCodies[0]);
+    setSelectedCody(recommendCodies[0]);
   }, []);
 
   return (
@@ -52,21 +54,21 @@ const RecommendTab = () => {
       <div className={styles['tab-container']}>
         <button
           type="button"
-          onClick={() => setTap(Time.Today)}
+          onClick={() => setSelectedTap(Time.Today)}
           className={`${styles.tab} ${selectedTap === Time.Today ? styles['selected-tab'] : ''}`}
         >
           오늘
         </button>
         <button
           type="button"
-          onClick={() => setTap(Time.Tomorrow)}
+          onClick={() => setSelectedTap(Time.Tomorrow)}
           className={`${styles.tab} ${selectedTap === Time.Tomorrow ? styles['selected-tab'] : ''}`}
         >
           내일
         </button>
         <button
           type="button"
-          onClick={() => setTap(Time.DayAfterTomorrow)}
+          onClick={() => setSelectedTap(Time.DayAfterTomorrow)}
           className={`${styles.tab} ${selectedTap === Time.DayAfterTomorrow ? styles['selected-tab'] : ''}`}
         >
           모레
@@ -93,7 +95,7 @@ const RecommendTab = () => {
               <button
                 type="button"
                 key={id}
-                onClick={() => setSelectedCodyATom(cody)}
+                onClick={() => setSelectedCody(cody)}
                 className={`${styles['cody-container']} ${selectedCody.id === id ? styles.view : ''}`}
               >
                 <div className={`${ootdIndex === index ? styles['ootd-overlay'] : ''} `} />
