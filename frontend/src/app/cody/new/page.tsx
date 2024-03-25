@@ -4,6 +4,7 @@
 
 import Background from '@/components/Background';
 import ClothesList from '@/components/ClothesList';
+import ClothesTap from '@/components/ClothesList/ClothesTab';
 import Header from '@/components/Header';
 import SaveButton from '@/components/SaveButton';
 import TostMessage from '@/components/TostMessage';
@@ -20,6 +21,7 @@ const Page = () => {
       <Header previousLink="/cody" title="내 코디 만들기" RightComponent={<SaveButton />} />
       <main className={styles['main-container']}>
         <CodyBoard handleModal={openModal} />
+        <ClothesTap />
         <ClothesList className={`${styles.overflow}`} />
       </main>
       <TostMessage tostMessage="상의는 하나만 등록할 수 있어요" />
