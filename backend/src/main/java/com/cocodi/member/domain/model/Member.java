@@ -48,7 +48,8 @@ public class Member {
     private  LocalDateTime updatedAt;
 
     @Builder
-    public Member(String email, LocalDate birth, Gender gender, String nickname, String profile, Authority role, ProviderType providerType, boolean isDeleted, LocalDateTime createdAt) {
+    public Member(Long memberId, String email, LocalDate birth, Gender gender, String nickname, String profile, Authority role, ProviderType providerType, boolean isDeleted, LocalDateTime createdAt) {
+        this.memberId = memberId;
         this.email = email;
         this.birth = birth;
         this.gender = gender;
