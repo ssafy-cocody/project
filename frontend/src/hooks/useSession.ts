@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { IUser } from '@/services/auth';
+import { IUser } from '@/types/user';
 
 /**
  * 클라이언트 사이드에서 session 관리

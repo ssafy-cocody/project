@@ -1,21 +1,5 @@
 import { BASE_URL } from '@/services';
-
-enum userRole {
-  GUEST = 'GUEST',
-  USER = 'USER',
-}
-
-type TGender = 'MALE' | 'FEMALE';
-
-interface IUser {
-  nickname?: string;
-  role?: userRole;
-  gender?: TGender;
-  birth?: string; // yyyyMMdd
-  accessToken?: string;
-}
-
-type IFetchUserInfoResponse = IUser;
+import { IFetchCreateMember, IFetchUserInfoResponse } from '@/services/auth/type';
 
 /**
  * 로그인한 사용자 정보 조회
@@ -39,7 +23,6 @@ const fetchUserInfo = async () => {
   return Promise.reject(error);
 };
 
-type IFetchCreateMember = Pick<IUser, 'birth' | 'gender' | 'nickname'>;
 /**
  * 회원가입
  */
@@ -51,5 +34,4 @@ const fetchCreateMember = async (params: IFetchCreateMember) => {
   return response.json();
 };
 
-export { fetchCreateMember, fetchUserInfo, userRole };
-export type { IUser, TGender };
+export { fetchCreateMember, fetchUserInfo };

@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 
 import { setAccessToken } from '@/services';
 import * as auth from '@/services/auth';
-import { userRole } from '@/services/auth';
+import { userRole } from '@/types/user';
 
 const Page = () => {
   const router = useRouter();
