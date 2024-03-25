@@ -44,7 +44,10 @@ public class SecurityConfig {
                 })
                 .authorizeHttpRequests(authorizeRequests -> {
                     authorizeRequests
-                            .requestMatchers("/public/**").permitAll();
+                            .requestMatchers("/public/**").permitAll()
+                            .requestMatchers("/swagger-ui/**").permitAll()
+                            .requestMatchers("/v3/**").permitAll()
+                            .requestMatchers("/auth/**").authenticated();
                 })
                 .oauth2Login(oauth2Login -> {
                     oauth2Login
@@ -68,15 +71,17 @@ public class SecurityConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-
-        configuration.addAllowedOriginPattern("*");
-        configuration.addAllowedHeader("*");
-        configuration.addAllowedMethod("*");
-        configuration.setAllowCredentials(true);
-
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
+        CorsConfiguration config = new CorsConfiguration();
+        config.addAllowedOrigin("http://localhost:3000");
+        config.addAllowedOrigin("http://localhost");
+        config.addAllowedOrigin("https://localhost");
+        config.addAllowedOrigin("https://j10a307.p.ssafy.io");
+        config.addAllowedHeader("*"); // header
+        config.addAllowedMethod("*"); // method
+        config.setAllowCredentials(true);
+        config.addExposedHeader("Authorization");
+        source.registerCorsConfiguration("/**", config);
         return source;
     }
 

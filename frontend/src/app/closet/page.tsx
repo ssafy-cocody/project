@@ -6,11 +6,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 
-import Background from '@/components/background';
+import Background from '@/components/Background';
 import Button from '@/components/Button';
 import ClothesList from '@/components/ClothesList';
+import ClothesTap from '@/components/ClothesList/ClothesTab';
 import Header from '@/components/Header';
-import Nav from '@/components/nav';
+import Nav from '@/components/Nav';
 import styles from '@/containers/closet/Closet.module.scss';
 import useModal from '@/hooks/useModal';
 
@@ -44,9 +45,9 @@ const Page = () => {
 
   return (
     <>
-      <Background $backgroundColor="purple" />
-      <Header title="옷장" />
       <main className={styles['main-container']}>
+        <Background $backgroundColor="purple" />
+        <Header title="옷장" />
         <div className={styles['cody-container']}>
           <div className={styles['cody-title-container']}>
             <h1 className={styles['cody-title']}>나의 코디</h1>
@@ -70,11 +71,17 @@ const Page = () => {
             })}
           </div>
         </div>
-        <ClothesList handleClick={openModal} />
+        <div className={styles['closet-tab-container']}>
+          <ClothesTap />
+        </div>
+        <div className={styles['list-padding']}>
+          <ClothesList handleClick={openModal} />
+        </div>
         <Link href="/clothes" className={styles['upload-button']}>
           <PlusIcon stroke="#EDEDED" />
         </Link>
       </main>
+      {/* TODO: ClothesList 스크롤 시 Navigation 숨기기 */}
       <Nav />
       <div id="modal">
         <Modal title="이 아이템을 삭제하시겠습니까?">

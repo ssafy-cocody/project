@@ -1,21 +1,20 @@
 package com.cocodi.security.application.service;
 
+import com.cocodi.member.domain.enums.Authority;
 import com.cocodi.member.domain.enums.ProviderType;
 import com.cocodi.member.domain.model.Member;
 import com.cocodi.member.domain.repository.MemberRepository;
+import com.cocodi.security.domain.model.PrincipalDetails;
 import com.cocodi.security.infrastructure.exception.OAuthProviderMissMatchException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
@@ -56,22 +55,31 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             if (findMember.get().getProviderType() != providerType) {
                 throw new OAuthProviderMissMatchException(ALREADY_SIGNED_UP_SOCIAL);
             } else {
-                // 회원이 존재할경우, memberAttribute 의 exist 값을 true 로 넣어준다.
-                memberAttribute.put("exist", true);
+//                // 회원이 존재할경우, memberAttribute 의 exist 값을 true 로 넣어준다.
+//                memberAttribute.put("exist", true);
                 // 회원의 권한과, 회원속성, 속성이름을 이용해 DefaultOAuth2User 객체를 생성해 반환한다.
-                return new DefaultOAuth2User(
-                        Collections.singleton(new SimpleGrantedAuthority("ROLE_".concat(String.valueOf(findMember.get().getRole())))),
-                        memberAttribute, "email"
-                );
+//                return new DefaultOAuth2User(
+//                        Collections.singleton(new SimpleGrantedAuthority("ROLE_".concat(String.valueOf(findMember.get().getRole())))),
+//                        memberAttribute, "email"
+//                );
+                return new PrincipalDetails(findMember.get(), oAuth2User.getAttributes());
             }
         } else {
-            // 회원이 존재하지 않을 경우, memberAttribute 의 exist 값을 false 로 넣어준다.
-            memberAttribute.put("exist", false);
+//            // 회원이 존재하지 않을 경우, memberAttribute 의 exist 값을 false 로 넣어준다.
+//            memberAttribute.put("exist", false);
+            Member member = Member.builder()
+                    .email(email)
+                    .role(Authority.GUEST)
+                    .nickname(oAuth2User.getAttribute("nickname"))
+                    .profile(oAuth2User.getAttribute("profile"))
+                    .providerType(providerType)
+                    .build();
             // 회원의 권한(회원이 존재하지 않으므로 기본권한인 ROLE_GUEST 를 넣어준다), 회원속성, 속성이름을 이용해 DefaultOAuth2User 객체를 생성해 반환한다.
-            return new DefaultOAuth2User(
-                    Collections.singleton(new SimpleGrantedAuthority("GUEST")),
-                    memberAttribute, "email"
-            );
+            return new PrincipalDetails(memberRepository.save(member), oAuth2User.getAttributes());
+//            return new DefaultOAuth2User(
+//                    Collections.singleton(new SimpleGrantedAuthority("GUEST")),
+//                    memberAttribute, "email"
+//            );
         }
     }
 
