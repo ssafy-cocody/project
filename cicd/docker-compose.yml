@@ -13,8 +13,7 @@ services:
       - ./docker_volumes/nginx/vhost.d:/etc/nginx/vhost.d:rw
       - /var/run/docker.sock:/tmp/docker.sock:ro
     networks:
-      - nginx-proxy
-      - api
+      - infra
 
   letsencrypt:
     image: jrcs/letsencrypt-nginx-proxy-companion
@@ -30,21 +29,19 @@ services:
       - ./docker_volumes/nginx/html:/usr/share/nginx/html:rw
       - ./docker_volumes/acme.sh:/etc/acme.sh
     networks:
-      - nginx-proxy
+      - infra
 
   host-nginx:
-    image: nginx
+    image: root-nginx
     container_name: host-nginx
     expose:
       - "80"
     environment:
-      - VIRTUAL_HOST=host
-      - LETSENCRYPT_HOST=host
-      - LETSENCRYPT_EMAIL=host
+      - VIRTUAL_HOST=
+      - LETSENCRYPT_HOST=
+      - LETSENCRYPT_EMAIL=
     networks:
-      - nginx-proxy
       - infra
-      - api
 
   jenkins:
     image: jmg97/custom-jenkins:latest
@@ -56,14 +53,13 @@ services:
       - ./docker_volumes/jenkins:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
-      - nginx-proxy
-      - api
+      - infra
 
   mysql:
     image: mysql:latest
     container_name: mysql
     environment:
-      MYSQL_ROOT_PASSWORD: ""
+      MYSQL_ROOT_PASSWORD:
     volumes:
       - ./docker_volumes/mysql:/var/lib/mysql
     ports:
@@ -81,19 +77,14 @@ services:
     image: rabbitmq:3-management
     container_name: rabbitmq
     environment:
-      RABBITMQ_DEFAULT_USER: ""
-      RABBITMQ_DEFAULT_PASS: ""
+      RABBITMQ_DEFAULT_USER:
+      RABBITMQ_DEFAULT_PASS:
     networks:
       - infra
-      - nginx-proxy
 
 
 networks:
-  nginx-proxy:
-    external: true
   infra:
-    external: true
-  api:
     external: true
 
 volumes:

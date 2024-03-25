@@ -1,8 +1,13 @@
 /** @type {import('next').NextConfig} */
 const isProduction = process.env.NODE_ENV === 'production';
-import * as TerserPlugin from 'terser-webpack-plugin';
+
+import TerserPlugin from 'terser-webpack-plugin';
 const nextConfig = {
   webpack: (config) => {
+    config.module.rules.push({
+      test: /\.svg$/,
+      use: ['@svgr/webpack'],
+    });
     // 기존 대비 약 50% bundle file size 감소 효과
     config.optimization = {
       ...config.optimization,
