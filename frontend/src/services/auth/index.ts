@@ -1,4 +1,4 @@
-import { BASE_URL } from '@/services';
+import { BASE_URL, getAccessToken } from '@/services';
 import { IFetchCreateMember, IFetchUserInfoResponse } from '@/services/auth/type';
 
 /**
@@ -13,9 +13,11 @@ const fetchUserInfo = async () => {
   const data: IFetchUserInfoResponse = await response.json();
 
   if (response.ok) {
+    const bearerRegexp = /^Bearer\s+(.*)$/;
     const accessToken = response.headers.get('Authorization');
+    const matches = accessToken!.match(bearerRegexp);
 
-    if (accessToken) return Object.assign(data, { accessToken });
+    if (matches) return Object.assign(data, { accessToken: matches[1] });
   }
 
   // TODO error 처리
@@ -27,9 +29,11 @@ const fetchUserInfo = async () => {
  * 회원가입
  */
 const fetchCreateMember = async (params: IFetchCreateMember) => {
+  console.log('token', getAccessToken());
   const response = await fetch(`${BASE_URL}/auth/v1/member`, {
-    method: 'POST',
+    method: 'PATCH',
     body: JSON.stringify(params),
+    headers: { Authorization: `Bearer ${getAccessToken()}` },
   });
   return response.json();
 };
