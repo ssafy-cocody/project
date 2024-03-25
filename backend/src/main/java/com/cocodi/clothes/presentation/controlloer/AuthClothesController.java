@@ -1,20 +1,30 @@
 package com.cocodi.clothes.presentation.controlloer;
 
+import com.cocodi.clothes.application.service.ClothesService;
 import com.cocodi.clothes.domain.model.Category;
 import com.cocodi.clothes.presentation.request.ClothesCreateRequest;
 import com.cocodi.clothes.presentation.response.ClothesResponse;
+import com.cocodi.sse.application.service.SseService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/auth/v1/clothes")
+@RequiredArgsConstructor
 public class AuthClothesController {
 
+    private final ClothesService clothesService;
+    private final SseService sseService;
 
     /**
      * 옷장에 저장된 전체 옷 조회
@@ -51,10 +61,12 @@ public class AuthClothesController {
      * @return
      */
     @PostMapping("/image")
-    public ResponseEntity<?> searchClothesByImage() {
+    public SseEmitter searchClothesByImage(MultipartFile multipartFile) {
         // Redis에 이미지 임시저장 Expired Time 30m
         // TODO : 의류 검색 결과 Server Sent Event 처리
-        return new ResponseEntity<>(null, HttpStatus.OK);
+        String sseKey = sseService.createInstance();
+        clothesService.imageConvert(multipartFile, sseKey);
+        return sseService.getInstance(sseKey);
     }
 
     /**
@@ -69,4 +81,10 @@ public class AuthClothesController {
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
+    @GetMapping("/temp/{uuid}")
+    public ResponseEntity<byte[]> getTempImg(@PathVariable String uuid) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_PNG);
+        return ResponseEntity.ok().headers(headers).body(clothesService.getTempImg(uuid));
+    }
 }
