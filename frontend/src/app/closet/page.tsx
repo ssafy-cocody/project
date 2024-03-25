@@ -27,17 +27,17 @@ const Page = () => {
   const [isScrolledToTop, setScrolled] = useState<boolean>(false);
   const [isNavShow, setNavShow] = useState<boolean>(true);
 
-  useScrollDirection(
-    scrollRef,
-    () => {
+  useScrollDirection({
+    ref: scrollRef,
+    downFunc: () => {
       setScrolled(false);
       setTimeout(() => setNavShow(false), 500);
     },
-    () => {
+    upFunc: () => {
       setNavShow(true);
       setScrolled(true);
     },
-  );
+  });
 
   const { Modal, openModal } = useModal();
   const [codies] = useState<ICody[]>([

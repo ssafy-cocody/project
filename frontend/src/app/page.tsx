@@ -13,20 +13,20 @@ import useScrollDirection from '@/hooks/useScrollDirection';
 
 const Home = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [isScrolledToTop, setScrolled] = useState<boolean>(false);
-  const [isNavShow, setNavShow] = useState<boolean>(true);
+  const [isScrolledToTop, setIsScrolledToTop] = useState(false);
+  const [isNavShow, setIsNavShow] = useState(true);
 
-  useScrollDirection(
-    scrollRef,
-    () => {
-      setScrolled(false);
-      setTimeout(() => setNavShow(false), 500);
+  useScrollDirection({
+    ref: scrollRef,
+    downFunc: () => {
+      setIsScrolledToTop(false);
+      setTimeout(() => setIsNavShow(false), 500);
     },
-    () => {
-      setNavShow(true);
-      setScrolled(true);
+    upFunc: () => {
+      setIsNavShow(true);
+      setIsScrolledToTop(true);
     },
-  );
+  });
 
   return (
     <main ref={scrollRef}>
