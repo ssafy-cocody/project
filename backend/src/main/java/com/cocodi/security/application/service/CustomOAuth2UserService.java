@@ -8,6 +8,7 @@ import com.cocodi.security.domain.model.PrincipalDetails;
 import com.cocodi.security.infrastructure.exception.OAuthProviderMissMatchException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
@@ -15,8 +16,10 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -62,7 +65,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 //                        Collections.singleton(new SimpleGrantedAuthority("ROLE_".concat(String.valueOf(findMember.get().getRole())))),
 //                        memberAttribute, "email"
 //                );
-                return new PrincipalDetails(findMember.get().getMemberId());
+                Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_".concat(String.valueOf(findMember.get().getRole()))));
+                return new PrincipalDetails(findMember.get().getMemberId(), authorities, memberAttribute);
             }
         } else {
 //            // 회원이 존재하지 않을 경우, memberAttribute 의 exist 값을 false 로 넣어준다.
@@ -75,7 +79,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                     .providerType(providerType)
                     .build();
             // 회원의 권한(회원이 존재하지 않으므로 기본권한인 ROLE_GUEST 를 넣어준다), 회원속성, 속성이름을 이용해 DefaultOAuth2User 객체를 생성해 반환한다.
-            return new PrincipalDetails(memberRepository.save(member).getMemberId());
+            Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_GUEST"));
+            return new PrincipalDetails(memberRepository.save(member).getMemberId(), authorities, memberAttribute);
 //            return new DefaultOAuth2User(
 //                    Collections.singleton(new SimpleGrantedAuthority("GUEST")),
 //                    memberAttribute, "email"
