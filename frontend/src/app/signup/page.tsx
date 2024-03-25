@@ -6,55 +6,58 @@ import { FormEvent, useEffect, useState } from 'react';
 import Button from '@/components/Button';
 import TextInput from '@/components/TextInput';
 import styles from '@/containers/signup/Signup.module.scss';
+import { IUser } from '@/types/user';
 
 const genderOptions = [
   {
     name: 'gender',
-    value: 'male',
+    value: 'MALE',
     text: '남자',
     img: '/images/signup/male.png',
     selectImg: '/images/signup/male-select.png',
   },
   {
     name: 'gender',
-    value: 'female',
+    value: 'FEMALE',
     text: '여자',
     img: '/images/signup/female.png',
     selectImg: '/images/signup/female-select.png',
   },
 ];
 
-const ageRegexp = /[0-9]{1,3}$/;
+// TODO 올바른 연,월,일 입력
+const birthRegexp = /^[1-9][0-9]{7}$/;
 const nicknameRegexp = /[a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ_]{2,20}$/;
 
 const Page = () => {
   const [isValid, setIsValid] = useState(false);
-  const [user, setUser] = useState({
-    gender: 'male',
-    age: '',
+  const [user, setUser] = useState<IUser>({
+    gender: 'MALE',
+    birth: '',
     nickname: '',
   });
   const [errorMessages, setErrorMessages] = useState({
-    age: '',
+    birth: '',
     nickname: '',
   });
 
-  const { gender, age, nickname } = user;
+  const { gender, birth, nickname } = user;
 
   const handleChangeInput = ({ key, value }: { key: string; value: string | number }) => {
     setUser((prev) => ({ ...prev, [key]: value }));
   };
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    let ageErrorMessage = ageRegexp.test(age) ? '' : '숫자 1~3자리를 입력해주세요.';
-    if (age.toString().length > 3) ageErrorMessage = '숫자 1~3자리를 입력해주세요.';
+    if (!birth || !nickname) return;
+
+    const birthErrorMessage = birthRegexp.test(birth) ? '' : '8자리로 입력해주세요.';
     const nicknameErrorMessage = nicknameRegexp.test(nickname)
       ? ''
       : '영어, 한글, 숫자, 언더바(_)로 이뤄진 2~20 글자로 입력해주세요.';
-    setErrorMessages({ age: ageErrorMessage, nickname: nicknameErrorMessage });
+    setErrorMessages({ birth: birthErrorMessage, nickname: nicknameErrorMessage });
 
-    if (ageErrorMessage || nicknameErrorMessage) return;
+    if (birthErrorMessage || nicknameErrorMessage) return;
 
     // TODO 회원가입
     console.log(user);
@@ -62,15 +65,15 @@ const Page = () => {
 
   // form 유효성 검사
   useEffect(() => {
-    if (!gender || Number(age) <= 0 || !nickname) {
+    if (!gender || Number(birth) <= 0 || !nickname) {
       if (!nickname) setErrorMessages((prev) => ({ ...prev, nickname: '' }));
-      if (Number(age) <= 0) setErrorMessages((prev) => ({ ...prev, age: '' }));
+      if (Number(birth) <= 0) setErrorMessages((prev) => ({ ...prev, age: '' }));
       setIsValid(false);
       return;
     }
 
     setIsValid(true);
-  }, [gender, age, nickname]);
+  }, [gender, birth, nickname]);
 
   return (
     <main className={styles.container}>
@@ -113,22 +116,22 @@ const Page = () => {
           <div className={styles['input-container']}>
             <TextInput
               label="나이"
-              id="age"
-              name="age"
-              placeholder="20"
-              value={age}
-              errorMessage={errorMessages.age}
+              id="birth"
+              name="birth"
+              placeholder="19990203"
+              value={birth}
+              errorMessage={errorMessages.birth}
               onChange={(e) => {
                 const { value } = e.target;
                 // eslint-disable-next-line no-underscore-dangle
                 const _age = Number(value);
                 if (value.length === 0) {
-                  handleChangeInput({ key: 'age', value: '' });
+                  handleChangeInput({ key: 'birth', value: '' });
                   return;
                 }
                 if (Number.isNaN(_age)) return;
 
-                handleChangeInput({ key: 'age', value: Number(value) });
+                handleChangeInput({ key: 'birth', value: Number(value) });
               }}
             />
             <TextInput
