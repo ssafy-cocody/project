@@ -2,6 +2,6 @@ import { IUser } from '@/types/user';
 
 type IFetchUserInfoResponse = IUser;
 
-type IFetchCreateMember = Pick<IUser, 'birth' | 'gender' | 'nickname'>;
+type IFetchCreateMemberRequest = Pick<IUser, 'birth' | 'gender' | 'nickname'>;
 
-export type { IFetchCreateMember, IFetchUserInfoResponse };
+export type { IFetchCreateMemberRequest, IFetchUserInfoResponse };
