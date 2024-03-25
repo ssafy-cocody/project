@@ -2,7 +2,6 @@ import { atom } from 'jotai';
 
 import { IUser } from '@/types/user';
 
-const initUser = {};
-const userAtom = atom<IUser>(initUser);
+const userAtom = atom<IUser | undefined>(undefined);
 
-export { initUser, userAtom };
+export { userAtom };
