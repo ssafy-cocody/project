@@ -1,20 +1,24 @@
 import { BASE_URL } from '@/services';
 
-interface IUser {
-  nickname?: string;
-  role?: 'guest' | 'user';
-  gender?: 'MALE' | 'FEMALE';
-  birth?: string; // yyyyMMdd
+enum userRole {
+  GUEST = 'GUEST',
+  USER = 'USER',
 }
 
-interface IFetchUserInfoResponse {
-  data?: IUser;
-  errors?: Array<{ message: string }>;
+type TGender = 'MALE' | 'FEMALE';
+
+interface IUser {
+  nickname?: string;
+  role?: userRole;
+  gender?: TGender;
+  birth?: string; // yyyyMMdd
+  accessToken?: string;
 }
+
+type IFetchUserInfoResponse = IUser;
 
 /**
  * 로그인한 사용자 정보 조회
- * cookie refresh token으로 조회
  */
 const fetchUserInfo = async () => {
   const endpoint = process.env.NEXT_PUBLIC_API_PUBLIC_ENDPOINT;
@@ -22,15 +26,16 @@ const fetchUserInfo = async () => {
   const response = await fetch(`${BASE_URL}/${endpoint}`, {
     credentials: 'include',
   });
-  const { data, errors }: IFetchUserInfoResponse = await response.json();
+  const data: IFetchUserInfoResponse = await response.json();
 
   if (response.ok) {
-    const accesstoken = data?.accesstoken;
+    const accessToken = response.headers.get('Authorization');
 
-    if (accesstoken) return data;
+    if (accessToken) return Object.assign(data, { accessToken });
   }
 
-  const error = new Error(errors?.map((e) => e.message).join('\n') ?? 'unknown');
+  // TODO error 처리
+  const error = new Error('error');
   return Promise.reject(error);
 };
 
@@ -46,5 +51,5 @@ const fetchCreateMember = async (params: IFetchCreateMember) => {
   return response.json();
 };
 
-export { fetchCreateMember, fetchUserInfo };
-export type { IUser };
+export { fetchCreateMember, fetchUserInfo, userRole };
+export type { IUser, TGender };

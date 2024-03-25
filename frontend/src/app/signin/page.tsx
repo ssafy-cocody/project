@@ -2,7 +2,7 @@ import Image from 'next/image';
 
 import style from '@/containers/signin/Signin.module.scss';
 
-const KAKAO_SIGNIN_URI = process.env.NEXT_PUBLIC_KAKAO_SIGNIN_URI;
+const KAKAO_SIGNIN_URI = process.env.NEXT_PUBLIC_KAKAO_SIGNIN_URL;
 
 const Page = () => {
   return (
