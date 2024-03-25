@@ -15,7 +15,9 @@ interface IFetchUserInfoResponse {
  * cookie refresh token으로 조회
  */
 const fetchUserInfo = async () => {
-  const response = await fetch(`${BASE_URL}/public`, {
+  const endpoint = process.env.NEXT_PUBLIC_API_PUBLIC_ENDPOINT;
+
+  const response = await fetch(`${BASE_URL}/${endpoint}`, {
     credentials: 'include',
   });
   const { data, errors }: IFetchUserInfoResponse = await response.json();

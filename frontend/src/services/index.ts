@@ -1,4 +1,4 @@
-const BASE_URL = 'https://j10a307.p.ssafy.io/api';
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 let accessToken = '';
 
