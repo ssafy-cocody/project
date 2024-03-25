@@ -48,8 +48,10 @@ public class PublicController {
 
     @GetMapping("/test")
     public ResponseEntity<String> getTest() {
+        String accessToken =  nonAuthService.getTestAccessToken();
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + nonAuthService.getTestAccessToken());
-        return ResponseEntity.ok().headers(headers).build();
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
+        nonAuthService.getNickname(accessToken);
+        return ResponseEntity.ok().headers(headers).body(accessToken);
     }
 }
