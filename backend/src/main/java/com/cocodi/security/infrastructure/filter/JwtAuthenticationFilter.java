@@ -64,17 +64,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     Long userId = jwtTokenProvider.getUserId(refreshToken);
                     String newAccessToken = jwtTokenProvider.generateAccessToken(userId);
                     // 응답헤더에 어세스 토큰 추가
-                    jwtTokenProvider.setHeaderAccessToken(response, accessToken);
+                    jwtTokenProvider.setHeaderAccessToken(response, newAccessToken);
                 }
             }
         } else { // AccessToken 의 값이 있고, 유효한 경우에 진행
-            Member findMember = memberRepository.findById(jwtTokenProvider.getUserId(accessToken))
-                    .orElseThrow(IllegalStateException::new);
-            // SecurityContext 에 등록할 User 객체를 만들어준다.
-            Authentication auth = getAuthentication(findMember);
-            SecurityContextHolder.getContext().setAuthentication(auth);
+            createUser(accessToken);
         }
         filterChain.doFilter(request, response);
+    }
+
+    private void createUser(String accessToken) {
+        Member findMember = memberRepository.findById(jwtTokenProvider.getUserId(accessToken))
+                .orElseThrow(IllegalStateException::new);
+        // SecurityContext 에 등록할 User 객체를 만들어준다.
+        Authentication auth = getAuthentication(findMember);
+        SecurityContextHolder.getContext().setAuthentication(auth);
     }
 
     public Authentication getAuthentication(Member member) {
