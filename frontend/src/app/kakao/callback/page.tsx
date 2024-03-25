@@ -5,20 +5,19 @@ import { useEffect } from 'react';
 
 import { setAccessToken } from '@/services';
 import * as auth from '@/services/auth';
-
-enum userRole {
-  GUEST = 'guest',
-}
+import { userRole } from '@/types/user';
 
 const Page = () => {
   const router = useRouter();
 
-  const login = async () => {
+  const signin = async () => {
     try {
       const data = await auth.fetchUserInfo();
-      const role = 'guest';
+      const role = data.role!;
+      const accessToken = data.accessToken!;
 
-      setAccessToken(data.accesstoken);
+      setAccessToken(accessToken);
+
       if (role === userRole.GUEST) {
         router.push('/signup');
         return;
@@ -33,7 +32,7 @@ const Page = () => {
   };
 
   useEffect(() => {
-    login();
+    signin();
   }, []);
 
   return <>로그인 중입니다...</>;
