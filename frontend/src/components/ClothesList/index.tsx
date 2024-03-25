@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 
 import styles from '@/components/ClothesList/ClothesList.module.scss';
 
@@ -16,7 +16,6 @@ interface Props {
 }
 
 const ClothesList = ({ handleClick, className }: Props) => {
-  const tabs = useRef(['전체', '상의', '하의', '원피스', '아우터', '신발']);
   const [clothes] = useState<IClothes[]>([
     { clothesId: 0, image: '/images/test1.jpg' },
     { clothesId: 2, image: '/images/test2.jpg' },
@@ -43,22 +42,9 @@ const ClothesList = ({ handleClick, className }: Props) => {
     { clothesId: 1111, image: '/images/test3.jpg' },
     { clothesId: 1112, image: '/images/test4.jpg' },
   ]);
-  const [selectedCategory] = useState<string>('전체');
 
   return (
     <div className={`${styles['list-container']} ${className}`}>
-      <div className={styles['tab-container']}>
-        {tabs.current.map((category) => {
-          return (
-            <div
-              key={category}
-              className={`${styles.tab} ${selectedCategory === category ? styles['selected-category'] : ''}`}
-            >
-              {category}
-            </div>
-          );
-        })}
-      </div>
       <div className={styles['closet-container']}>
         <div className={styles['clothes-container']}>
           {clothes.map(({ clothesId, image }: IClothes) => {
