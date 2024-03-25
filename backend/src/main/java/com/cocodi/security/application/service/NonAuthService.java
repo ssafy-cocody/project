@@ -1,7 +1,9 @@
 package com.cocodi.security.application.service;
 
+import com.cocodi.member.domain.model.Member;
 import com.cocodi.member.domain.repository.MemberRepository;
 import com.cocodi.member.infrastructure.exception.MemberFindException;
+import com.cocodi.security.presentation.response.MemberInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,9 +23,10 @@ public class NonAuthService {
         return jwtTokenProvider.generateAccessToken(1L);
     }
 
-    public String getNickname(String token) {
+    public MemberInfo getMemberInfo(String token) {
         Long memberId = jwtTokenProvider.getUserId(token);
-        return memberRepository.findById(memberId).orElseThrow(() -> new MemberFindException("can not find Member")).getNickname();
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new MemberFindException("can not find Member"));
+        return new MemberInfo(member.getNickname(), member.getRole());
     }
 
 }

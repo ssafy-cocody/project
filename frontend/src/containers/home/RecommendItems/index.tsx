@@ -52,8 +52,8 @@ const RecommendItems = () => {
       buyUrl: 'https://google.com',
     },
   ]);
-  const [currentItem] = useState(0);
-  const [isToggled] = useState<boolean>(false);
+  const [currentItem, setCurrentItem] = useState(0);
+  const [isToggled, toggle] = useState<boolean>(false);
   const { Modal, openModal } = useModal();
 
   const handleBuyItem = () => {
@@ -64,30 +64,42 @@ const RecommendItems = () => {
     <>
       <div className={styles['recommend-items-container']}>
         <h1 className={styles.title}>코코디가 추천하는 아이템</h1>
-        <button type="button" className={styles['next-button']}>
+        <button
+          type="button"
+          onClick={() => setCurrentItem((currentItem + 1) % recommendItems.length)}
+          className={styles['next-button']}
+        >
           <RightArrow />
         </button>
         <div className={styles['items-info']}>
-          <div className={`${styles.info} ${styles.item} ${isToggled ? styles.under : styles.over}`}>
+          <button
+            type="button"
+            onClick={() => toggle(false)}
+            className={`${styles.info} ${styles.item} ${isToggled ? styles.under : styles.over}`}
+          >
             <div className={styles['item-image']}>
               <Image src={recommendItems[currentItem].itemUrl} alt="추천 상품 이미지" fill />
             </div>
             <div className={styles['brand-name']}>{recommendItems[currentItem].brandName}</div>
             <div className={styles['item-name']}>{recommendItems[currentItem].itemName}</div>
             <div className={styles.price}>{recommendItems[currentItem].price.toLocaleString()}원</div>
-          </div>
-          <div className={`${styles.info} ${styles.cody} ${isToggled ? styles.over : styles.under}`}>
+          </button>
+          <button
+            type="button"
+            onClick={() => toggle(true)}
+            className={`${styles.info} ${styles.cody} ${isToggled ? styles.over : styles.under}`}
+          >
             <div className={styles['cody-image']}>
               <Image src={recommendItems[currentItem].codyUrl} alt="추천 상품 코디 이미지" fill />
             </div>
-          </div>
+          </button>
         </div>
         <div className={styles['buy-button']}>
-          <Button onClick={handleBuyItem}>
-            <Link href={recommendItems[currentItem].buyUrl} target="_blank">
+          <Link href={recommendItems[currentItem].buyUrl} target="_blank">
+            <Button onClick={handleBuyItem}>
               <span className={styles['button-text']}>아이템 사러 가기</span>
-            </Link>
-          </Button>
+            </Button>
+          </Link>
         </div>
       </div>
       <div id="modal">

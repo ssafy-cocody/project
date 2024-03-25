@@ -7,11 +7,11 @@ import { CalendarIcon, ClosetIcon, HomeIcon, MypageIcon } from '@/../public/svgs
 
 import styles from './Nav.module.scss';
 
-const Nav = () => {
+const Nav = ({ className }: { className?: string }) => {
   const path = usePathname();
 
   return (
-    <nav className={styles.container}>
+    <nav className={`${styles.container} ${className}`}>
       <Link href="/" className={styles.navigation}>
         <HomeIcon fill={path === '/' ? 'var(--color-main)' : 'black'} />
         <span
