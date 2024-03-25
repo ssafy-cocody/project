@@ -23,12 +23,11 @@ public class PublicController {
     private final JwtTokenProvider jwtTokenProvider;
     @GetMapping
     public ResponseEntity<String> getAccessToken(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
         try {
+            Cookie[] cookies = request.getCookies();;
             for (Cookie cookie : cookies) {
                 if ("refreshToken".equals(cookie.getName())) {
                     String refreshToken = cookie.getValue();
-                    log.info("refreshToken={}" ,refreshToken);
                     if(jwtTokenProvider.validateToken(refreshToken)) {
                         String accessToken = nonAuthService.getAccessToken(refreshToken);
                         HttpHeaders headers = new HttpHeaders();
@@ -47,4 +46,12 @@ public class PublicController {
         return new ResponseEntity<>("Bad Gateway", HttpStatus.BAD_GATEWAY);
     }
 
+    @GetMapping("/test")
+    public ResponseEntity<String> getTest() {
+        String accessToken =  nonAuthService.getTestAccessToken();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
+        nonAuthService.getNickname(accessToken);
+        return ResponseEntity.ok().headers(headers).body(accessToken);
+    }
 }

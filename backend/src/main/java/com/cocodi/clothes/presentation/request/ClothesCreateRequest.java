@@ -2,6 +2,7 @@ package com.cocodi.clothes.presentation.request;
 
 import com.cocodi.clothes.domain.model.Category;
 import com.cocodi.clothes.domain.model.Color;
+import org.springframework.web.multipart.MultipartFile;
 
 public record ClothesCreateRequest(
         Long clothesId,
@@ -18,5 +19,6 @@ public record ClothesCreateRequest(
 
         Integer price,
 
-        String link) {
+        String link,
+        MultipartFile multipartFile) {
 }
