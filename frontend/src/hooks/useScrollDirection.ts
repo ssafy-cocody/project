@@ -21,7 +21,6 @@ const useScrollDirection = ({ ref, downFunc, upFunc }: Props) => {
         const { scrollTop, clientHeight, scrollHeight } = ref.current;
         if (scrollTop + clientHeight >= scrollHeight - BOTTOM_PADDING) {
           upFunc();
-          console.log('end');
         } else if (scrollTop <= scrollY) {
           upFunc();
         } else {
