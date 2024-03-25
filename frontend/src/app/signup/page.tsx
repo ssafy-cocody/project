@@ -1,11 +1,13 @@
 'use client';
 
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { FormEvent, useEffect, useState } from 'react';
 
 import Button from '@/components/Button';
 import TextInput from '@/components/TextInput';
 import styles from '@/containers/signup/Signup.module.scss';
+import { fetchCreateMember } from '@/services/auth';
 import { IUser } from '@/types/user';
 
 const genderOptions = [
@@ -30,6 +32,7 @@ const birthRegexp = /^[1-9][0-9]{7}$/;
 const nicknameRegexp = /[a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ_]{2,20}$/;
 
 const Page = () => {
+  const router = useRouter();
   const [isValid, setIsValid] = useState(false);
   const [user, setUser] = useState<IUser>({
     gender: 'MALE',
@@ -59,8 +62,14 @@ const Page = () => {
 
     if (birthErrorMessage || nicknameErrorMessage) return;
 
-    // TODO 회원가입
-    console.log(user);
+    try {
+      // TODO 회원가입
+      const res = await fetchCreateMember(user);
+      console.log(res);
+      router.push('/');
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   // form 유효성 검사
@@ -131,7 +140,7 @@ const Page = () => {
                 }
                 if (Number.isNaN(_age)) return;
 
-                handleChangeInput({ key: 'birth', value: Number(value) });
+                handleChangeInput({ key: 'birth', value });
               }}
             />
             <TextInput
