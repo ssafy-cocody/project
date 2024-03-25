@@ -1,8 +1,10 @@
 import { BASE_URL } from '@/services';
 
 interface IUser {
-  accesstoken: string;
-  role?: 'guest' | '';
+  nickname?: string;
+  role?: 'guest' | 'user';
+  gender?: 'MALE' | 'FEMALE';
+  birth?: string; // yyyyMMdd
 }
 
 interface IFetchUserInfoResponse {
@@ -32,12 +34,17 @@ const fetchUserInfo = async () => {
   return Promise.reject(error);
 };
 
+type IFetchCreateMember = Pick<IUser, 'birth' | 'gender' | 'nickname'>;
 /**
  * 회원가입
- * PETCH /auth/v1/member
- * MALE | FEMALE
- * "19980925" 8자리
  */
+const fetchCreateMember = async (params: IFetchCreateMember) => {
+  const response = await fetch(`${BASE_URL}/auth/v1/member`, {
+    method: 'POST',
+    body: JSON.stringify(params),
+  });
+  return response.json();
+};
 
-export { fetchUserInfo };
+export { fetchCreateMember, fetchUserInfo };
 export type { IUser };
