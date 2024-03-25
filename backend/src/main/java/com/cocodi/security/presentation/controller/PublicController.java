@@ -25,7 +25,6 @@ public class PublicController {
     private final JwtTokenProvider jwtTokenProvider;
     @GetMapping
     public ResponseEntity<String> getAccessToken(HttpServletRequest request) {
-
         try {
             log.info("access");
             log.info(String.valueOf(request.getCookies().length));
