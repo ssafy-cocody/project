@@ -1,25 +1,33 @@
 package com.cocodi.codi.presentation.controller;
 
 
+import com.cocodi.codi.application.service.OotdService;
 import com.cocodi.codi.presentation.request.OotdCodyRequest;
 import com.cocodi.codi.presentation.request.OotdImageRequest;
 import com.cocodi.codi.presentation.response.OotdResponse;
+import com.cocodi.security.domain.model.PrincipalDetails;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/auth/v1/ootd")
+@RequiredArgsConstructor
 public class AuthOotdController {
+
+    private final OotdService ootdService;
 
     /**
      * 저장된 Ootd 조회 (한 달)
      * @return
      */
     @GetMapping
-    public ResponseEntity<List<OotdResponse>> findOotd(@RequestParam int year, @RequestParam int month) {
+    public ResponseEntity<List<OotdResponse>> findOotd(@RequestParam int year, @RequestParam int month, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        ootdService.findOotd(year, month, principalDetails.getMemberId());
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 

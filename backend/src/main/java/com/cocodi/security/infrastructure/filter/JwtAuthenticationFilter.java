@@ -3,6 +3,7 @@ package com.cocodi.security.infrastructure.filter;
 import com.cocodi.member.domain.model.Member;
 import com.cocodi.member.domain.repository.MemberRepository;
 import com.cocodi.security.application.service.JwtTokenProvider;
+import com.cocodi.security.domain.model.PrincipalDetails;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -14,6 +15,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -31,9 +34,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        log.info("JwtAuthenticationFilter 시작");
         // request Header 에서 AccessToken 을 가져온다.
         String accessToken = request.getHeader("Authorization");
-
+        log.info("accessToken = {}", accessToken);
         String refreshToken = "";
         //쿠키 가져오기
         Cookie[] cookies = request.getCookies();
@@ -52,8 +56,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-
+        log.info("token validation check start");
         if (!jwtTokenProvider.validateToken(accessToken)) {
+            log.info("token 유효하지 않음");
             if (!refreshToken.isEmpty()) {
                 // 리프레시 토큰 만료시간 검증
                 boolean validateRefreshToken = jwtTokenProvider.validateToken(refreshToken);
@@ -65,10 +70,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     String newAccessToken = jwtTokenProvider.generateAccessToken(userId);
                     // 응답헤더에 어세스 토큰 추가
                     jwtTokenProvider.setHeaderAccessToken(response, newAccessToken);
+//                    SecurityContextHolder.getContext().setAuthentication(new MemberAuthentication(userId));
+                    OAuth2User principalDetails = new PrincipalDetails(jwtTokenProvider.getUserId(accessToken), null, null);
+                    SecurityContextHolder.getContext().setAuthentication(new OAuth2AuthenticationToken(principalDetails, principalDetails.getAuthorities(), "dsf"));
                 }
             }
         } else { // AccessToken 의 값이 있고, 유효한 경우에 진행
-            createUser(accessToken);
+            log.info("token 유효");
+            log.info(jwtTokenProvider.getUserId(accessToken).toString());
+            OAuth2User principalDetails = new PrincipalDetails(jwtTokenProvider.getUserId(accessToken), null, null);
+//            log.info(principalDetails.ge);
+            SecurityContextHolder.getContext().setAuthentication(new OAuth2AuthenticationToken(principalDetails, principalDetails.getAuthorities(), "dsf"));
         }
         filterChain.doFilter(request, response);
     }
