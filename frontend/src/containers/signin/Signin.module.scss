@@ -109,42 +109,36 @@ $animation-time: 12s;
 }
 
 .login-container {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  align-items: center;
-
-  border: 1px solid;
   padding: 0 16px;
-
-  text-align: center;
 
   .button {
     display: flex;
+    justify-content: center;
     gap: 4px;
     align-items: center;
     align-self: center;
     justify-content: center;
 
+    margin: 0 auto;
     width: 100%;
     max-width: 358px;
     height: 48px;
     border-radius: 8px;
 
     color: var(--color-black);
-  }
 
-  .icon {
-    width: 26px;
-    height: 26px;
+    .icon {
+      width: 26px;
+      height: 26px;
 
-    background: no-repeat center;
-    background-size: cover;
-  }
+      background: no-repeat center;
+      background-size: cover;
+    }
 
-  .text {
-    font-size: 18px;
-    font-weight: 800;
+    .text {
+      font-size: 18px;
+      font-weight: 800;
+    }
   }
 
   .kakao {
@@ -166,6 +160,8 @@ $animation-time: 12s;
   }
 
   .desc {
+    margin-top: 12px;
+    text-align: center;
     font-size: 12px;
     font-weight: 300;
   }
