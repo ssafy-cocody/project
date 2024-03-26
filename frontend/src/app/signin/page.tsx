@@ -12,10 +12,7 @@ const slideImages = [
   '/images/test5.jpg',
 ];
 
-const slides: string[] = [];
-for (let i = 0; i < 2; i += 1) {
-  slideImages.forEach((src) => slides.push(src));
-}
+const slides: string[] = Array.from({ length: 2 }, () => slideImages).flat();
 
 const Page = () => {
   return (

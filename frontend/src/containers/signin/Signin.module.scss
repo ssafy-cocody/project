@@ -2,7 +2,7 @@ $item-width: 150px;
 $item-gap: 16px;
 $item-count: 5;
 $slider-width: calc($item-width * $item-count + $item-gap * ($item-count - 1));
-$animation-time: 4s;
+$animation-time: 12s;
 
 @keyframes leftToRight {
   0% {
