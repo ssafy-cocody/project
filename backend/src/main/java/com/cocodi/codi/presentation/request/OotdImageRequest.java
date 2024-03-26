@@ -1,12 +1,12 @@
 package com.cocodi.codi.presentation.request;
 
+import java.time.LocalDate;
+
 public record OotdImageRequest(
-
-        String image,
-
         Long topId,
         Long bottomId,
         Long outerId,
-        Long shoesId
+        Long shoesId,
+        LocalDate date
 ) {
 }
