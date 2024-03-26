@@ -2,14 +2,14 @@ $item-width: 150px;
 $item-gap: 16px;
 $item-count: 5;
 $slider-width: calc($item-width * $item-count + $item-gap * ($item-count - 1));
-$animation-time: 12s;
+$animation-time: 4s;
 
 @keyframes leftToRight {
   0% {
     transform: translateX(-$slider-width);
   }
   100% {
-    transform: translateX(-$item-gap);
+    transform: translateX($item-gap);
   }
 }
 
