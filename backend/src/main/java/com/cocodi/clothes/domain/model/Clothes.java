@@ -1,9 +1,7 @@
 package com.cocodi.clothes.domain.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import com.cocodi.member.domain.model.Member;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -42,4 +40,6 @@ public class Clothes {
 
     private String image;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member member;
 }

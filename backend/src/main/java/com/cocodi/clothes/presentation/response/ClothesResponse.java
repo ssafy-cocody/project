@@ -2,7 +2,9 @@ package com.cocodi.clothes.presentation.response;
 
 import com.cocodi.clothes.domain.model.Category;
 import com.cocodi.clothes.domain.model.Color;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public record ClothesResponse(
         Long clothesId,
 
