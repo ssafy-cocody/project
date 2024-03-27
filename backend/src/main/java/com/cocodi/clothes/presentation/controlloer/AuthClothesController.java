@@ -65,7 +65,7 @@ public class AuthClothesController {
      * 사용자가 옷 검색을 위해 이미지 업로드
      * @return
      */
-    @PostMapping("/image")
+    @GetMapping("/image")
     public SseEmitter searchClothesByImage(MultipartFile multipartFile) {
         // Redis에 이미지 임시저장 Expired Time 30m
         // TODO : 의류 검색 결과 Server Sent Event 처리
