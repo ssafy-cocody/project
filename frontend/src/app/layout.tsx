@@ -2,6 +2,8 @@ import '@/styles/globals.scss';
 
 import type { Metadata, Viewport } from 'next';
 
+import Provider from '@/utils/Provider';
+
 export const metadata: Metadata = {
   title: 'Co.Cody',
   description: 'Your AI Stylist',
@@ -19,7 +21,9 @@ const RootLayout = ({
 }>) => {
   return (
     <html lang="ko">
-      <body>{children}</body>
+      <body>
+        <Provider>{children}</Provider>
+      </body>
     </html>
   );
 };
