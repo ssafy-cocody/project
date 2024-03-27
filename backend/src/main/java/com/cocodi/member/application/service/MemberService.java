@@ -33,14 +33,14 @@ public class MemberService {
             // s3 upload 처리
             profileUrl = "s3 url";
         }
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy");
         LocalDate birth = LocalDate.parse(memberUpdateRequest.birth(), formatter);
         Member member = Member.builder()
                 .memberId(memberId)
                 .email(findMember.getEmail())
                 .birth(birth)
                 .gender(Gender.valueOf(memberUpdateRequest.gender()))
-                .nickname(findMember.getNickname())
+                .nickname(memberUpdateRequest.nickname())
                 .profile(profileUrl)
                 .role(Authority.USER)
                 .providerType(findMember.getProviderType())
