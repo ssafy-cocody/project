@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import { useState } from 'react';
 
 import { CameraIcon } from '@/../public/svgs/';
@@ -9,9 +8,10 @@ import style from '@/components/ImageInput/ImageInput.module.scss';
 interface ImageInputProps {
   name?: string;
   id?: string;
+  onChange?: (file: File) => void;
 }
 
-const ImageInput = ({ name, id }: ImageInputProps) => {
+const ImageInput = ({ name, id, onChange }: ImageInputProps) => {
   const [imgUrl, setImgUrl] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -19,6 +19,10 @@ const ImageInput = ({ name, id }: ImageInputProps) => {
       const file = e.target.files[0];
       URL.revokeObjectURL(imgUrl);
       setImgUrl(URL.createObjectURL(file));
+
+      if (onChange) {
+        onChange(file);
+      }
     }
   };
 
@@ -27,7 +31,7 @@ const ImageInput = ({ name, id }: ImageInputProps) => {
       <label htmlFor={id} className={style['image-upload']}>
         {imgUrl && (
           <div className={style.preview}>
-            <Image src={imgUrl} alt="" />
+            <img src={imgUrl} alt="" />
           </div>
         )}
         {!imgUrl && (
