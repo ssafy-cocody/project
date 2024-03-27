@@ -2,6 +2,7 @@ package com.cocodi.codi.domain.model;
 
 import com.cocodi.member.domain.model.Member;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -25,4 +26,11 @@ public class MyCody {
 
     @ManyToOne(fetch = LAZY)
     private Member member;
+
+    @Builder
+    private MyCody(String name, Cody cody, Member member) {
+        this.name = name;
+        this.cody = cody;
+        this.member = member;
+    }
 }
