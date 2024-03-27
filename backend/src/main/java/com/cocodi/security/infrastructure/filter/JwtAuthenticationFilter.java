@@ -60,14 +60,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (!jwtTokenProvider.validateToken(accessToken)) {
             log.info("token 유효하지 않음");
             if (!refreshToken.isEmpty()) {
+                log.info("refreshToken 검증");
                 // 리프레시 토큰 만료시간 검증
                 boolean validateRefreshToken = jwtTokenProvider.validateToken(refreshToken);
                 // 리프레시 토큰 저장소 존재유무 확인
                 boolean isRefreshToken = jwtTokenProvider.existsRefreshToken(refreshToken);
                 if (validateRefreshToken && isRefreshToken) {
+                    log.info("refreshToken 으로 accessToken 발급");
                     // 리프레시 토큰으로 userId 정보 가져오기
                     Long userId = jwtTokenProvider.getUserId(refreshToken);
                     String newAccessToken = jwtTokenProvider.generateAccessToken(userId);
+                    log.info("accessToken = {}", accessToken);
                     // 응답헤더에 어세스 토큰 추가
                     jwtTokenProvider.setHeaderAccessToken(response, newAccessToken);
 //                    SecurityContextHolder.getContext().setAuthentication(new MemberAuthentication(userId));
