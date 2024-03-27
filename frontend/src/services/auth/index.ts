@@ -9,6 +9,7 @@ const fetchUserInfo = async () => {
 
   const response = await fetch(`${BASE_URL}/${endpoint}`, {
     credentials: 'include',
+    cache: 'no-store',
   });
   const data: IFetchUserInfoResponse = await response.json();
 
