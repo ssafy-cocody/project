@@ -1,61 +1,52 @@
+/* eslint-disable no-unused-expressions */
 import Image from 'next/image';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 
 import styles from '@/components/ClothesList/ClothesList.module.scss';
-
-interface IClothes {
-  // eslint-disable-next-line react/no-unused-prop-types
-  clothesId: Number;
-  // eslint-disable-next-line react/no-unused-prop-types
-  image: string;
-}
+import { ISelectedClothes } from '@/containers/cody/new/type';
+import { Category, IClothes } from '@/types/clothes';
 
 interface Props {
-  handleClick?: () => void;
+  handleModal?: () => void;
   className?: string;
+  selectedClothes?: ISelectedClothes;
+  setSelectedClothes?: Dispatch<SetStateAction<ISelectedClothes>>;
 }
 
-const ClothesList = ({ handleClick, className }: Props) => {
+const ClothesList = ({ handleModal, className, selectedClothes, setSelectedClothes }: Props) => {
   const [clothes] = useState<IClothes[]>([
-    { clothesId: 0, image: '/images/test1.jpg' },
-    { clothesId: 2, image: '/images/test2.jpg' },
-    { clothesId: 3, image: '/images/test3.jpg' },
-    { clothesId: 4, image: '/images/test4.jpg' },
-    { clothesId: 5, image: '/images/test1.jpg' },
-    { clothesId: 6, image: '/images/test2.jpg' },
-    { clothesId: 7, image: '/images/test3.jpg' },
-    { clothesId: 8, image: '/images/test4.jpg' },
-    { clothesId: 9, image: '/images/test1.jpg' },
-    { clothesId: 10, image: '/images/test2.jpg' },
-    { clothesId: 11, image: '/images/test3.jpg' },
-    { clothesId: 12, image: '/images/test4.jpg' },
-    { clothesId: 110, image: '/images/test1.jpg' },
-    { clothesId: 112, image: '/images/test2.jpg' },
-    { clothesId: 113, image: '/images/test3.jpg' },
-    { clothesId: 114, image: '/images/test4.jpg' },
-    { clothesId: 115, image: '/images/test1.jpg' },
-    { clothesId: 116, image: '/images/test2.jpg' },
-    { clothesId: 117, image: '/images/test3.jpg' },
-    { clothesId: 118, image: '/images/test4.jpg' },
-    { clothesId: 119, image: '/images/test1.jpg' },
-    { clothesId: 1110, image: '/images/test2.jpg' },
-    { clothesId: 1111, image: '/images/test3.jpg' },
-    { clothesId: 1112, image: '/images/test4.jpg' },
+    { clothesId: 0, category: Category.TOP, clothesImage: '/images/clothes/top.png' },
+    { clothesId: 1, category: Category.TOP, clothesImage: '/images/clothes/top.png' },
+    { clothesId: 2, category: Category.TOP, clothesImage: '/images/clothes/top.png' },
+    { clothesId: 3, category: Category.OUTER, clothesImage: '/images/clothes/cardigan.png' },
+    { clothesId: 4, category: Category.OUTER, clothesImage: '/images/clothes/cardigan.png' },
+    { clothesId: 5, category: Category.OUTER, clothesImage: '/images/clothes/cardigan.png' },
+    { clothesId: 6, category: Category.BOTTOM, clothesImage: '/images/clothes/pants.png' },
+    { clothesId: 7, category: Category.BOTTOM, clothesImage: '/images/clothes/pants.png' },
+    { clothesId: 8, category: Category.BOTTOM, clothesImage: '/images/clothes/pants.png' },
+    { clothesId: 9, category: Category.BOTTOM, clothesImage: '/images/clothes/pants.png' },
+    { clothesId: 10, category: Category.SHOES, clothesImage: '/images/clothes/shoes.png' },
   ]);
 
   return (
     <div className={`${styles['list-container']} ${className}`}>
       <div className={styles['closet-container']}>
         <div className={styles['clothes-container']}>
-          {clothes.map(({ clothesId, image }: IClothes) => {
+          {clothes.map((item: IClothes) => {
+            const { clothesId, category, clothesImage } = item;
             return (
               <button
                 type="button"
                 className={styles['clothes-image-container']}
                 key={clothesId.toString()}
-                onClick={handleClick}
+                onClick={() => {
+                  handleModal ? handleModal() : '';
+                  selectedClothes && setSelectedClothes
+                    ? setSelectedClothes({ ...selectedClothes, [category]: item })
+                    : '';
+                }}
               >
-                <Image src={image} alt={clothesId.toString()} fill className={styles.clothes} />
+                <Image src={clothesImage!} alt={clothesId.toString()} fill className={styles.clothes} />
               </button>
             );
           })}
