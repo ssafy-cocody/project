@@ -1,3 +1,5 @@
+$headerTapHeight: 135px;
+
 .board-container {
   border: 1px solid var(--color-black);
   border-radius: 5px;
@@ -8,7 +10,7 @@
   flex-direction: column;
   padding: 16px;
   gap: 16px;
-  max-height: calc(calc(100svh - 135px) / 2);
+  max-height: calc(calc(100svh - $headerTapHeight) / 2);
 
   .board {
     width: 100%;
@@ -17,88 +19,19 @@
     background-color: var(--color-white);
     box-sizing: border-box;
     display: flex;
-    //   flex-direction: column;
     flex-wrap: wrap;
-    //   align-content: center;
-    //   justify-content: center;
-    padding: 4px;
-    gap: 4px;
+    align-content: space-evenly;
+    justify-content: space-evenly;
+    align-items: center;
 
     .image-container {
-      //     height: calc(calc(100% - 16px) / 2);
-      // aspect-ratio: 1;
+      height: calc(calc(100% - 16px) / 2);
+      aspect-ratio: 1;
       position: relative;
-      padding: 0;
 
       .clothes {
-        object-fit: contain;
+        object-fit: cover;
       }
-    }
-  }
-
-  // 하나만 선택된 경우
-  // .board {
-  //   justify-content: center;
-  //   align-items: center;
-
-  //   .image-container {
-  //     height: 100%;
-  //   }
-  // }
-
-  // 가로로 두개 선택된 경우
-  // .board {
-  //   flex-direction: column;
-  //   height: 100%;
-  //   align-items: center;
-
-  //   .image-container {
-  //     height: calc(calc(100% - 4px) / 2);
-  //   }
-  // }
-
-  // 세로로 두 개 선택된 경우
-  // .board {
-  //   align-items: center;
-
-  //   .image-container {
-  //     width: calc(calc(100% - 4px) / 2);
-  //   }
-  // }
-
-  // 상의, 아우터 + 하의/신발
-  // .board {
-  //   flex-wrap: wrap;
-  //   justify-content: flex-start;
-  //   align-content: center;
-
-  //   .image-container {
-  //     width: calc(calc(100% - 4px) / 2);
-  //     height: calc(calc(100% - 4px) / 2);
-  //   }
-  // }
-
-  // 상의/아우터 + 하의, 신발
-  // .board {
-  //   flex-wrap: wrap;
-  //   flex-direction: column;
-  //   justify-content: center;
-
-  //   .image-container {
-  //     width: calc(calc(100% - 4px) / 2);
-  //     height: calc(calc(100% - 4px) / 2);
-  //   }
-  // }
-
-  // 모든 카테고리가 있을 때
-  .board {
-    flex-wrap: wrap;
-    justify-content: center;
-    align-content: center;
-
-    .image-container {
-      width: calc(calc(100% - 4px) / 2);
-      height: calc(calc(100% - 4px) / 2);
     }
   }
 }
