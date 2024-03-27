@@ -98,4 +98,10 @@ public class AuthClothesController {
                 .map(clothes -> objectMapper.convertValue(clothes, ClothesResponse.class)).toList();
         return ResponseEntity.ok(clothesResponseList);
     }
+
+    @PostMapping("/temp/save/{uuid}")
+    public ResponseEntity<ClothesResponse> createTempInfo(@PathVariable String uuid, @ModelAttribute ClothesCreateRequest clothesCreateRequest) {
+        clothesService.createClothesTemp(uuid, clothesCreateRequest);
+        return null;
+    }
 }
