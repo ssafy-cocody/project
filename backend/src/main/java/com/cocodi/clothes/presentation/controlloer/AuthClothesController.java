@@ -2,9 +2,11 @@ package com.cocodi.clothes.presentation.controlloer;
 
 import com.cocodi.clothes.application.service.ClothesService;
 import com.cocodi.clothes.domain.model.Category;
+import com.cocodi.clothes.domain.model.Clothes;
 import com.cocodi.clothes.presentation.request.ClothesCreateRequest;
 import com.cocodi.clothes.presentation.response.ClothesResponse;
 import com.cocodi.sse.application.service.SseService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +27,7 @@ public class AuthClothesController {
 
     private final ClothesService clothesService;
     private final SseService sseService;
+    private final ObjectMapper objectMapper;
 
     /**
      * 옷장에 저장된 전체 옷 조회
@@ -81,10 +84,18 @@ public class AuthClothesController {
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
-    @GetMapping("/temp/{uuid}")
+    @GetMapping("/temp/img/{uuid}")
     public ResponseEntity<byte[]> getTempImg(@PathVariable String uuid) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.IMAGE_PNG);
         return ResponseEntity.ok().headers(headers).body(clothesService.getTempImg(uuid));
+    }
+
+    @GetMapping("/temp/info/{uuid}")
+    public ResponseEntity<List<ClothesResponse>> getTempInfo(@PathVariable String uuid) {
+        List<Clothes> clothesList = clothesService.findClothesTempList(uuid);
+        List<ClothesResponse> clothesResponseList = clothesList.stream()
+                .map(clothes -> objectMapper.convertValue(clothes, ClothesResponse.class)).toList();
+        return ResponseEntity.ok(clothesResponseList);
     }
 }
