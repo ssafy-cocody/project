@@ -46,7 +46,8 @@ public class ClothesService {
         try {
             SseObject sseObject = new SseObject(sseKey, Base64.encodeAsString(multipartFile.getBytes()));
             rabbitMQUtil.convertAndSend("extract_img", "order_direct_exchange", "img_extract_ai", sseObject);
-        } catch (Exception ignore) {
+        } catch (Exception e) {
+            log.info(e.getMessage());
         }
     }
 
