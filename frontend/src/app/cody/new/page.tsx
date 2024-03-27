@@ -15,7 +15,9 @@ import CodyBoard from '@/containers/cody/new/CodyBoard';
 import styles from '@/containers/cody/new/NewCody.module.scss';
 import { ISelectedClothes } from '@/containers/cody/new/type';
 import useModal from '@/hooks/useModal';
-import { IClothes } from '@/types/clothes';
+import { Category, IClothes, TCategory } from '@/types/clothes';
+
+const categoryOrder: (keyof TCategory)[] = [Category.TOP, Category.OUTER, Category.BOTTOM, Category.SHOES];
 
 const Page = () => {
   const { Modal, openModal, closeModal } = useModal();
@@ -29,11 +31,19 @@ const Page = () => {
   };
 
   const handleSelectedClothes = (newlyClickedClothes: IClothes) => {
-    const { category } = newlyClickedClothes || {};
+    const { category } = newlyClickedClothes;
     if (Object.keys(selectedClothes).filter((key) => key === category).length) {
       handleTostMessage(category);
     } else {
-      setSelectedClothes({ ...selectedClothes, [category]: newlyClickedClothes });
+      const newSelectedClothes = { ...selectedClothes, [category]: newlyClickedClothes };
+      setSelectedClothes(
+        categoryOrder.reduce((sortedClothes: ISelectedClothes, key) => {
+          if (newSelectedClothes[key]) {
+            sortedClothes[key] = newSelectedClothes[key];
+          }
+          return sortedClothes;
+        }, {}),
+      );
     }
   };
 
