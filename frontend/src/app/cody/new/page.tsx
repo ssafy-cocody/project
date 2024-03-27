@@ -2,7 +2,7 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import Background from '@/components/Background';
 import Button from '@/components/Button';
@@ -18,23 +18,9 @@ import useModal from '@/hooks/useModal';
 import { IClothes } from '@/types/clothes';
 
 const Page = () => {
-  const { Modal, openModal } = useModal();
+  const { Modal, openModal, closeModal } = useModal();
   const [selectedClothes, setSelectedClothes] = useState<ISelectedClothes>({});
   const [deleteClothes, setDeleteClothes] = useState<IClothes>();
-
-  useEffect(() => {
-    if (deleteClothes) {
-      // console.log(selectedClothes['상의']);
-      console.log(deleteClothes.category);
-      console.log(selectedClothes[deleteClothes.category]);
-    }
-
-    console.log(
-      Object.keys(selectedClothes).reduce((remainClothes, category) => {
-        return { ...remainClothes, category };
-      }, {}),
-    );
-  }, [selectedClothes]);
 
   return (
     <>
@@ -53,8 +39,32 @@ const Page = () => {
       <div id="modal">
         <Modal title="보드에서 삭제하시겠습니까?">
           <div className={styles['modal-button']}>
-            <Button onClick={() => {}}>네</Button>
-            <Button variant="white">아니오</Button>
+            <Button
+              onClick={() => {
+                const { category } = deleteClothes || {};
+                setSelectedClothes(
+                  Object.keys(selectedClothes).reduce((result: ISelectedClothes, key: string) => {
+                    if (key !== category) {
+                      result[key] = selectedClothes[key];
+                    }
+                    return result;
+                  }, {}),
+                );
+                setDeleteClothes(undefined);
+                closeModal();
+              }}
+            >
+              네
+            </Button>
+            <Button
+              onClick={() => {
+                setDeleteClothes(undefined);
+                closeModal();
+              }}
+              variant="white"
+            >
+              아니오
+            </Button>
           </div>
         </Modal>
       </div>
