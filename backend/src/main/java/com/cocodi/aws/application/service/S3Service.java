@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.UUID;
 
 @Service
@@ -20,32 +23,50 @@ public class S3Service {
     @Value("${spring.cloud.aws.s3.bucket}")
     private String bucketName;
 
-    private String generateFileName(MultipartFile file) {
-        return UUID.randomUUID() + "_" + file.getOriginalFilename();
+    private String generateFileName(String fileName) {
+        return UUID.randomUUID() + "_" + fileName;
     }
 
-    private String upload(String dir, MultipartFile file) {
-        String fileName = dir + "/" + generateFileName(file);
+    private String upload(String dir, ObjectMetadata metadata, String fileName, InputStream inputStream) {
+        String fileDir = dir + "/" + generateFileName(fileName);
+        PutObjectRequest request = new PutObjectRequest(bucketName, fileDir, inputStream, metadata);
 
-        ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentLength(file.getSize());
-        metadata.setContentType(file.getContentType());
-
-        try {
-            PutObjectRequest request = new PutObjectRequest(bucketName, fileName, file.getInputStream(), metadata);
-            request.withCannedAcl(CannedAccessControlList.PublicRead);
-            amazonS3.putObject(request);
-        } catch (Exception e) {
-            throw new RuntimeException();
-        }
+        request.withCannedAcl(CannedAccessControlList.PublicRead);
+        amazonS3.putObject(request);
         return amazonS3.getUrl(bucketName, fileName).toString();
     }
 
+    private String uploadMultipartFile(String dir, MultipartFile file) {
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentLength(file.getSize());
+        metadata.setContentType(file.getContentType());
+        try {
+            return upload(dir, metadata, file.getName(), file.getInputStream());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private String uploadBytePngFile(String dir, byte[] file, String fileName) {
+        InputStream inputStream = new ByteArrayInputStream(file);
+
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentType("image/png");
+        metadata.setContentLength(file.length);
+
+        return upload(dir, metadata, fileName, inputStream);
+    }
+
     public String uploadDefault(MultipartFile file) {
-        return upload("cocodi", file);
+        return uploadMultipartFile("cocodi", file);
     }
 
     public String uploadAI(MultipartFile file) {
-        return upload("cocodi-ai", file);
+        return uploadMultipartFile("cocodi-ai", file);
     }
+
+    public String uploadAI(String uuid, byte[] file) {
+        return uploadBytePngFile("cocodi-ai", file, uuid);
+    }
+
 }

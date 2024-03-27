@@ -25,10 +25,8 @@ public class ClothesService {
     private final RabbitMQUtil rabbitMQUtil;
     private final ClothesTempRepository clothesTempRepository;
 
-    @Transactional
-    public Clothes createClothes(ClothesCreateRequest clothesCreateRequest) {
-        String url = s3Service.uploadAI(clothesCreateRequest.multipartFile());
-        Clothes clothes = Clothes.builder()
+    private Clothes mappingClothesRequest(ClothesCreateRequest clothesCreateRequest, String url) {
+        return Clothes.builder()
                 .name(clothesCreateRequest.name())
                 .clothesId(clothesCreateRequest.clothesId())
                 .price(clothesCreateRequest.price())
@@ -39,8 +37,23 @@ public class ClothesService {
                 .category(clothesCreateRequest.category())
                 .productNo(clothesCreateRequest.productNo())
                 .build();
+    }
+
+    @Transactional
+    public Clothes createClothes(ClothesCreateRequest clothesCreateRequest) {
+        String url = s3Service.uploadAI(clothesCreateRequest.multipartFile());
+        Clothes clothes = mappingClothesRequest(clothesCreateRequest, url);
         return clothesRepository.save(clothes);
     }
+
+    @Transactional
+    public Clothes createClothesTemp(String uuid, ClothesCreateRequest createRequest) {
+        ClothesTemp clothesTemp = clothesTempRepository.findById(uuid).orElseThrow();
+        String url = s3Service.uploadAI(uuid, Base64.decode(clothesTemp.getImg()));
+        Clothes clothes = mappingClothesRequest(createRequest, url);
+        return clothesRepository.save(clothes);
+    }
+
 
     public void imageConvert(MultipartFile multipartFile, String sseKey) {
         try {
@@ -62,7 +75,6 @@ public class ClothesService {
 
     public List<Clothes> findClothesTempList(String uuid) {
         ClothesTemp clothesTemp = clothesTempRepository.findById(uuid).orElseThrow();
-
-        return findClothesListIn((List<Long>) clothesTemp.getList());
+        return findClothesListIn(clothesTemp.getList());
     }
 }
