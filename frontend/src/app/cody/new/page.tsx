@@ -27,7 +27,11 @@ const Page = () => {
       <Background $backgroundColor="purple" />
       <Header previousLink="/cody" title="내 코디 만들기" RightComponent={<SaveButton />} />
       <main className={styles['main-container']}>
-        <CodyBoard handleModal={openModal} selectedClothes={selectedClothes} setDeleteClothes={setDeleteClothes} />
+        <CodyBoard
+          onClickDeleteClothes={openModal}
+          selectedClothes={selectedClothes}
+          setDeleteClothes={setDeleteClothes}
+        />
         <ClothesTap />
         <ClothesList
           className={`${styles.overflow}`}
