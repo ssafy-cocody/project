@@ -1,31 +1,40 @@
 'use client';
 
 import Image from 'next/image';
+import { Dispatch, SetStateAction } from 'react';
 
 import TextInputWithUnderLine from '@/components/TextInputWithUnderLine';
 import styles from '@/containers/cody/new/CodyBoard/Board.module.scss';
+import { ISelectedClothes } from '@/containers/cody/new/type';
+import { IClothes } from '@/types/clothes';
 
 interface Props {
-  handleModal: () => void;
+  onClickDeleteClothes: () => void;
+  selectedClothes: ISelectedClothes;
+  setDeleteClothes: Dispatch<SetStateAction<IClothes | undefined>>;
 }
 
-const CodyBoard = ({ handleModal }: Props) => {
+const CodyBoard = ({ onClickDeleteClothes, selectedClothes, setDeleteClothes }: Props) => {
+  const handleDeleteClothes = (category: string) => {
+    onClickDeleteClothes();
+    setDeleteClothes(selectedClothes[category]);
+  };
   return (
     <div className={styles['board-container']}>
       <TextInputWithUnderLine label="새로운 코디명" />
       <div className={styles.board}>
-        <button type="button" onClick={handleModal} className={`${styles.top} ${styles['image-container']}`}>
-          <Image src="/images/clothes/top.png" alt="" fill className={styles.clothes} />
-        </button>
-        <button type="button" onClick={handleModal} className={`${styles.outer} ${styles['image-container']}`}>
-          <Image src="/images/clothes/cardigan.png" alt="" fill className={styles.clothes} />
-        </button>
-        <button type="button" onClick={handleModal} className={`${styles.bottom} ${styles['image-container']}`}>
-          <Image src="/images/clothes/pants.png" alt="" fill className={styles.clothes} />
-        </button>
-        <button type="button" onClick={handleModal} className={`${styles.shoes} ${styles['image-container']}`}>
-          <Image src="/images/clothes/shoes.png" alt="" fill className={styles.clothes} />
-        </button>
+        {Object.keys(selectedClothes).map((category) => {
+          return (
+            <button
+              key={category}
+              type="button"
+              onClick={() => handleDeleteClothes(category)}
+              className={styles['image-container']}
+            >
+              <Image src={selectedClothes[category]?.clothesImage!} alt="" fill className={styles.clothes} />
+            </button>
+          );
+        })}
       </div>
     </div>
   );

@@ -11,10 +11,10 @@ import Background from '@/components/Background';
 import Button from '@/components/Button';
 import Header from '@/components/Header';
 import styles from '@/containers/calendar/Outfit/Outfit.module.scss';
-import { Category, CategoryKo, IClothes, RClothesByCategory, TCategory } from '@/containers/calendar/Outfit/type';
+import { Category, IClothes, TCategory } from '@/types/clothes';
 
 const Page = () => {
-  const [clothesByCategory] = useState<RClothesByCategory>({
+  const [clothesByCategory] = useState<Record<string, IClothes[]>>({
     [Category.TOP]: [
       { image: '/images/test1.jpg', id: 1 },
       { image: '/images/test2.jpg', id: 2 },
@@ -32,7 +32,7 @@ const Page = () => {
     ],
   });
   const [categories] = useState<TCategory[]>([Category.TOP, Category.BOTTOM, Category.SHOES]);
-  const [selected, setSelected] = useState<number[]>(Array.from({ length: Object.keys(Category).length }, () => 0));
+  const [selected, setSelected] = useState<Record<TCategory, IClothes>[]>(Object.keys(Category).map(category => category: {}));
 
   const handleClickItem = (e: ChangeEvent<HTMLInputElement>) => {
     const newSelected: number[] = [...selected];
@@ -52,7 +52,7 @@ const Page = () => {
           {categories.map((category) => {
             return (
               <div key={category} className={styles['clothes-by-category']}>
-                <div className={styles.category}>{CategoryKo[category]}</div>
+                <div className={styles.category}>{category}</div>
                 <div className={styles.clothes}>
                   {clothesByCategory[category].map(({ image, id }: IClothes, index) => {
                     return (
