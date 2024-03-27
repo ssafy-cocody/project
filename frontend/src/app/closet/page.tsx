@@ -6,16 +6,15 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 
+import { PlusIcon, RightArrow } from '@/../public/svgs';
 import Background from '@/components/Background';
 import Button from '@/components/Button';
 import ClothesList from '@/components/ClothesList';
-import ClothesTap from '@/components/ClothesList/ClothesTab';
+import ClothesTap from '@/components/ClothesTab';
 import Header from '@/components/Header';
 import Nav from '@/components/Nav';
 import styles from '@/containers/closet/Closet.module.scss';
 import useModal from '@/hooks/useModal';
-
-import { PlusIcon, RightArrow } from '../../../public/svgs';
 
 interface ICody {
   codyUrl: string;
@@ -75,7 +74,7 @@ const Page = () => {
           <ClothesTap />
         </div>
         <div className={styles['list-padding']}>
-          <ClothesList handleClick={openModal} />
+          <ClothesList handleModal={openModal} />
         </div>
         <Link href="/clothes" className={styles['upload-button']}>
           <PlusIcon stroke="#EDEDED" />
