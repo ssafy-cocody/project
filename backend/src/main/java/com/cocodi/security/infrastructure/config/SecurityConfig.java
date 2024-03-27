@@ -44,7 +44,8 @@ public class SecurityConfig {
                         .requestMatchers("/public/**").permitAll()
                         .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/v3/**").permitAll()
-                        .requestMatchers("/auth/**").authenticated())
+                        .requestMatchers("/auth/**").authenticated()
+                        .anyRequest().permitAll())
                 .oauth2Login(oauth2Login -> oauth2Login
                         .redirectionEndpoint(redirectionEndpoint ->
                                 redirectionEndpoint.baseUri("/*/oauth2/code/*"))
