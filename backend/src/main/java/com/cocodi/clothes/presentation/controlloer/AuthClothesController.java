@@ -61,18 +61,6 @@ public class AuthClothesController {
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
     }
 
-    /**
-     * 사용자가 옷 검색을 위해 이미지 업로드
-     * @return
-     */
-    @PostMapping("/image")
-    public SseEmitter searchClothesByImage(MultipartFile multipartFile) {
-        // Redis에 이미지 임시저장 Expired Time 30m
-        // TODO : 의류 검색 결과 Server Sent Event 처리
-        String sseKey = sseService.createInstance();
-        clothesService.imageConvert(multipartFile, sseKey);
-        return sseService.getInstance(sseKey);
-    }
 
     /**
      * 품번으로 검색
