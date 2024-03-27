@@ -7,6 +7,7 @@ public record OotdImageRequest(
         Long bottomId,
         Long outerId,
         Long shoesId,
+        Long onepieceId,
         LocalDate date
 ) {
 }

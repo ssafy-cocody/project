@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface CodyRepository extends JpaRepository<Cody, Long> {
 
-    Optional<Cody> findByTopAndBottomAndOuterAndShoes(Clothes top, Clothes bottom, Clothes outer, Clothes shoes);
+    Optional<Cody> findByTopAndBottomAndOuterAndOnepieceAndShoes(Clothes top, Clothes bottom, Clothes outer, Clothes onepiece, Clothes shoes);
 }

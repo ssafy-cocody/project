@@ -56,33 +56,41 @@ public class OotdService {
     }
 
     public void createOotdByImage(OotdImageRequest ootdCreateRequest, String ootdImage, Long memberId) {
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new MemberFindException("can not find Member"));
-        Clothes top = clothesRepository.findById(ootdCreateRequest.topId()).orElse(null);
-        Clothes bottom = clothesRepository.findById(ootdCreateRequest.bottomId()).orElse(null);
-        Clothes outer = clothesRepository.findById(ootdCreateRequest.outerId()).orElse(null);
-        Clothes shoes = clothesRepository.findById(ootdCreateRequest.shoesId()).orElse(null);
-        Optional<Cody> findCody = codyRepository.findByTopAndBottomAndOuterAndShoes(top, bottom, outer, shoes);
-        Cody cody;
-        if(findCody.isEmpty()) {
-            cody = Cody.builder()
-                    .top(top)
-                    .bottom(bottom)
-                    .outer(outer)
-                    .shoes(shoes)
-                    .build();
-            codyRepository.save(cody);
-        } else {
-            cody = findCody.get();
-        }
-        Optional<Ootd> findOotd = ootdRepository.findByDate(ootdCreateRequest.date());
-        Long ootdId = findOotd.map(Ootd::getOotdId).orElse(null);
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberFindException("Cannot find Member"));
+
+        Cody cody = getCodyFromRequest(ootdCreateRequest);
+
         Ootd ootd = Ootd.builder()
-                .ootdId(ootdId)
                 .date(ootdCreateRequest.date())
                 .snapShot(ootdImage)
                 .cody(cody)
                 .member(member)
                 .build();
+
         ootdRepository.save(ootd);
+    }
+
+    private Cody getCodyFromRequest(OotdImageRequest ootdCreateRequest) {
+        return codyRepository.findByTopAndBottomAndOuterAndOnepieceAndShoes(
+                getClothesOrNull(ootdCreateRequest.topId()),
+                getClothesOrNull(ootdCreateRequest.bottomId()),
+                getClothesOrNull(ootdCreateRequest.outerId()),
+                getClothesOrNull(ootdCreateRequest.onepieceId()),
+                getClothesOrNull(ootdCreateRequest.shoesId())
+        ).orElseGet(() -> {
+            Cody cody = Cody.builder()
+                    .top(getClothesOrNull(ootdCreateRequest.topId()))
+                    .bottom(getClothesOrNull(ootdCreateRequest.bottomId()))
+                    .outer(getClothesOrNull(ootdCreateRequest.outerId()))
+                    .onepiece(getClothesOrNull(ootdCreateRequest.onepieceId()))
+                    .shoes(getClothesOrNull(ootdCreateRequest.shoesId()))
+                    .build();
+            return codyRepository.save(cody);
+        });
+    }
+
+    private Clothes getClothesOrNull(Long clothesId) {
+        return clothesId != null ? clothesRepository.findById(clothesId).orElse(null) : null;
     }
 }
