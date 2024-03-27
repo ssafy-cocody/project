@@ -19,13 +19,13 @@ const ClothesList = ({ handleModal, className, selectedClothes, setSelectedCloth
     { clothesId: 1, category: Category.TOP, clothesImage: '/images/clothes/top.png' },
     { clothesId: 2, category: Category.TOP, clothesImage: '/images/clothes/top.png' },
     { clothesId: 3, category: Category.OUTER, clothesImage: '/images/clothes/cardigan.png' },
-    { clothesId: 3, category: Category.OUTER, clothesImage: '/images/clothes/cardigan.png' },
-    { clothesId: 3, category: Category.OUTER, clothesImage: '/images/clothes/cardigan.png' },
-    { clothesId: 3, category: Category.BOTTOM, clothesImage: '/images/clothes/pants.png' },
-    { clothesId: 3, category: Category.BOTTOM, clothesImage: '/images/clothes/pants.png' },
-    { clothesId: 3, category: Category.BOTTOM, clothesImage: '/images/clothes/pants.png' },
-    { clothesId: 3, category: Category.BOTTOM, clothesImage: '/images/clothes/pants.png' },
-    { clothesId: 3, category: Category.SHOES, clothesImage: '/images/clothes/shoes.png' },
+    { clothesId: 4, category: Category.OUTER, clothesImage: '/images/clothes/cardigan.png' },
+    { clothesId: 5, category: Category.OUTER, clothesImage: '/images/clothes/cardigan.png' },
+    { clothesId: 6, category: Category.BOTTOM, clothesImage: '/images/clothes/pants.png' },
+    { clothesId: 7, category: Category.BOTTOM, clothesImage: '/images/clothes/pants.png' },
+    { clothesId: 8, category: Category.BOTTOM, clothesImage: '/images/clothes/pants.png' },
+    { clothesId: 9, category: Category.BOTTOM, clothesImage: '/images/clothes/pants.png' },
+    { clothesId: 10, category: Category.SHOES, clothesImage: '/images/clothes/shoes.png' },
   ]);
 
   return (
