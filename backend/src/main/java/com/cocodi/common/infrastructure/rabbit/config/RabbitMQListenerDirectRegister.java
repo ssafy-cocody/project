@@ -61,9 +61,9 @@ public class RabbitMQListenerDirectRegister {
         }
 
         DirectExchange exchange = new DirectExchange(exchangeName);
-
-        rabbitAdmin.declareQueue(queue);
         rabbitAdmin.declareExchange(exchange);
+        rabbitAdmin.declareQueue(queue);
+
 
         Binding binding = BindingBuilder.bind(queue).to(exchange).with(routingKey);
         rabbitAdmin.declareBinding(binding);
