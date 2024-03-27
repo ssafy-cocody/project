@@ -1,4 +1,4 @@
-package com.cocodi.clothes.infrastructure;
+package com.cocodi.clothes.infrastructure.mq;
 
 import com.cocodi.clothes.domain.model.ClothesTemp;
 import com.cocodi.clothes.domain.repository.ClothesTempRepository;
@@ -10,6 +10,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
+import java.util.List;
+
+import static com.cocodi.common.infrastructure.config.ConvertUtils.getLongs;
+
 @Component
 @Slf4j
 @RequiredArgsConstructor
@@ -20,7 +25,15 @@ public class ClothesRabbitListener {
 
     @RabbitMQDirectListener(name = "extract_img", isolatedQueue = true, lazy = true)
     public void extractImg(SseObject sseObject) {
-        clothesTempRepository.save(new ClothesTemp(sseObject.sseId(), sseObject.data().toString()));
-        sseService.sendMessageAndRemove(sseObject.sseId(), "message", sseObject.sseId());
+        HashMap<?, ?> hashMap = (HashMap<?, ?>) sseObject.data();
+        Object listObj = hashMap.get("list");
+
+        if (listObj instanceof List<?>) {
+            List<Long> longList = getLongs((List<?>) listObj);
+            clothesTempRepository.save(new ClothesTemp(sseObject.sseId(), hashMap.get("img").toString(), longList));
+            sseService.sendMessageAndRemove(sseObject.sseId(), "message", sseObject.sseId());
+        }
     }
+
+
 }
