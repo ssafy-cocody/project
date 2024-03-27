@@ -4,6 +4,16 @@ import style from '@/containers/signin/Signin.module.scss';
 
 const KAKAO_SIGNIN_URI = process.env.NEXT_PUBLIC_KAKAO_SIGNIN_URL;
 
+const slideImages = [
+  '/images/test1.jpg',
+  '/images/test2.jpg',
+  '/images/test3.jpg',
+  '/images/test4.jpg',
+  '/images/test5.jpg',
+];
+
+const slides: string[] = Array.from({ length: 2 }, () => slideImages).flat();
+
 const Page = () => {
   return (
     <main className={style.container}>
@@ -17,44 +27,20 @@ const Page = () => {
 
       <div className={style['clothes-slider']}>
         <div className={style.row}>
-          <div className={style.item}>
-            <Image fill src="/images/test1.jpg" alt="test" />
-          </div>
-          <div className={style.item}>
-            <Image fill src="/images/test2.jpg" alt="test" />
-          </div>
-          <div className={style.item}>
-            <Image fill src="/images/test3.jpg" alt="test" />
-          </div>
-          <div className={style.item}>
-            <Image fill src="/images/test4.jpg" alt="test" />
-          </div>
-          <div className={style.item}>
-            <Image fill src="/images/test5.jpg" alt="test" />
-          </div>
-          <div className={style.item}>
-            <Image fill src="/images/test1.jpg" alt="test" />
-          </div>
+          {slides.map((src, idx) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <div key={`row1-${idx}-${src}`} className={style.item}>
+              <Image fill src={src} alt="test" />
+            </div>
+          ))}
         </div>
         <div className={style.row}>
-          <div className={style.item}>
-            <Image fill src="/images/test1.jpg" alt="test" />
-          </div>
-          <div className={style.item}>
-            <Image fill src="/images/test2.jpg" alt="test" />
-          </div>
-          <div className={style.item}>
-            <Image fill src="/images/test3.jpg" alt="test" />
-          </div>
-          <div className={style.item}>
-            <Image fill src="/images/test4.jpg" alt="test" />
-          </div>
-          <div className={style.item}>
-            <Image fill src="/images/test5.jpg" alt="test" />
-          </div>
-          <div className={style.item}>
-            <Image fill src="/images/test1.jpg" alt="test" />
-          </div>
+          {slides.reverse().map((src, idx) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <div key={`row2-${idx}-${src}`} className={style.item}>
+              <Image fill src={src} alt="test" />
+            </div>
+          ))}
         </div>
       </div>
 
