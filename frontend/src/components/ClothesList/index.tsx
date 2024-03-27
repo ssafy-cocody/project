@@ -1,19 +1,17 @@
 /* eslint-disable no-unused-expressions */
 import Image from 'next/image';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { useState } from 'react';
 
 import styles from '@/components/ClothesList/ClothesList.module.scss';
-import { ISelectedClothes } from '@/containers/cody/new/type';
 import { Category, IClothes } from '@/types/clothes';
 
 interface Props {
   handleModal?: () => void;
   className?: string;
-  selectedClothes?: ISelectedClothes;
-  setSelectedClothes?: Dispatch<SetStateAction<ISelectedClothes>>;
+  onSelectClothes: (newlyClickedClothes: IClothes) => void;
 }
 
-const ClothesList = ({ handleModal, className, selectedClothes, setSelectedClothes }: Props) => {
+const ClothesList = ({ handleModal, className, onSelectClothes }: Props) => {
   const [clothes] = useState<IClothes[]>([
     { clothesId: 0, category: Category.TOP, clothesImage: '/images/clothes/top.png' },
     { clothesId: 1, category: Category.TOP, clothesImage: '/images/clothes/top.png' },
@@ -33,7 +31,7 @@ const ClothesList = ({ handleModal, className, selectedClothes, setSelectedCloth
       <div className={styles['closet-container']}>
         <div className={styles['clothes-container']}>
           {clothes.map((item: IClothes) => {
-            const { clothesId, category, clothesImage } = item;
+            const { clothesId, clothesImage } = item;
             return (
               <button
                 type="button"
@@ -41,9 +39,7 @@ const ClothesList = ({ handleModal, className, selectedClothes, setSelectedCloth
                 key={clothesId.toString()}
                 onClick={() => {
                   handleModal ? handleModal() : '';
-                  selectedClothes && setSelectedClothes
-                    ? setSelectedClothes({ ...selectedClothes, [category]: item })
-                    : '';
+                  onSelectClothes ? onSelectClothes(item) : '';
                 }}
               >
                 <Image src={clothesImage!} alt={clothesId.toString()} fill className={styles.clothes} />
