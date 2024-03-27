@@ -21,6 +21,21 @@ const Page = () => {
   const { Modal, openModal, closeModal } = useModal();
   const [selectedClothes, setSelectedClothes] = useState<ISelectedClothes>({});
   const [deleteClothes, setDeleteClothes] = useState<IClothes>();
+  const [duplicatedCategory, setDuplicatedCategory] = useState<string | null>(null);
+
+  const handleTostMessage = (category: string) => {
+    setDuplicatedCategory(category);
+    setTimeout(() => setDuplicatedCategory(null), 1000);
+  };
+
+  const handleSelectedClothes = (newlyClickedClothes: IClothes) => {
+    const { category } = newlyClickedClothes || {};
+    if (Object.keys(selectedClothes).filter((key) => key === category).length) {
+      handleTostMessage(category);
+    } else {
+      setSelectedClothes({ ...selectedClothes, [category]: newlyClickedClothes });
+    }
+  };
 
   return (
     <>
@@ -33,13 +48,9 @@ const Page = () => {
           setDeleteClothes={setDeleteClothes}
         />
         <ClothesTap />
-        <ClothesList
-          className={`${styles.overflow}`}
-          selectedClothes={selectedClothes}
-          setSelectedClothes={setSelectedClothes}
-        />
+        <ClothesList className={`${styles.overflow}`} onSelectClothes={handleSelectedClothes} />
       </main>
-      <TostMessage tostMessage="상의는 하나만 등록할 수 있어요" />
+      {duplicatedCategory && <TostMessage tostMessage={`${duplicatedCategory}는 하나만 등록할 수 있어요`} />}
       <div id="modal">
         <Modal title="보드에서 삭제하시겠습니까?">
           <div className={styles['modal-button']}>
