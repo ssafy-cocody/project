@@ -1,3 +1,5 @@
+$headerTapHeight: 135px;
+
 .board-container {
   border: 1px solid var(--color-black);
   border-radius: 5px;
@@ -8,7 +10,7 @@
   flex-direction: column;
   padding: 16px;
   gap: 16px;
-  max-height: calc(calc(100svh - 73px) / 2);
+  max-height: calc(calc(100svh - $headerTapHeight) / 2);
 
   .board {
     width: 100%;
