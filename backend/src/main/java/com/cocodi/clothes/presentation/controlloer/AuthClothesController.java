@@ -8,6 +8,7 @@ import com.cocodi.clothes.presentation.response.ClothesResponse;
 import com.cocodi.sse.application.service.SseService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -23,6 +24,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/auth/v1/clothes")
 @RequiredArgsConstructor
+@Slf4j
 public class AuthClothesController {
 
     private final ClothesService clothesService;
@@ -67,6 +69,7 @@ public class AuthClothesController {
     public SseEmitter searchClothesByImage(MultipartFile multipartFile) {
         // Redis에 이미지 임시저장 Expired Time 30m
         // TODO : 의류 검색 결과 Server Sent Event 처리
+        log.info("TEST START");
         String sseKey = sseService.createInstance();
         clothesService.imageConvert(multipartFile, sseKey);
         return sseService.getInstance(sseKey);
