@@ -2,6 +2,7 @@ package com.cocodi.codi.domain.model;
 
 import com.cocodi.clothes.domain.model.Clothes;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -34,4 +35,14 @@ public class Cody {
 
     @ManyToOne(fetch = LAZY)
     private Clothes shoes;
+
+    @Builder
+    private Cody(String image, Clothes top, Clothes bottom, Clothes outer, Clothes onepiece, Clothes shoes) {
+        this.image = image;
+        this.top = top;
+        this.bottom = bottom;
+        this.outer = outer;
+        this.onepiece = onepiece;
+        this.shoes = shoes;
+    }
 }

@@ -1,5 +1,5 @@
 import { BASE_URL, getAccessToken } from '@/services';
-import { IFetchCreateMember, IFetchUserInfoResponse } from '@/services/auth/type';
+import { IFetchCreateMemberRequest, IFetchUserInfoResponse } from '@/services/auth/type';
 
 /**
  * 로그인한 사용자 정보 조회
@@ -28,9 +28,7 @@ const fetchUserInfo = async () => {
 /**
  * 회원가입
  */
-const fetchCreateMember = async (params: IFetchCreateMember) => {
-  // TODO console 삭제
-  console.log('token', getAccessToken());
+const fetchCreateMember = async (params: IFetchCreateMemberRequest) => {
   const response = await fetch(`${BASE_URL}/auth/v1/member`, {
     method: 'PATCH',
     body: JSON.stringify(params),
