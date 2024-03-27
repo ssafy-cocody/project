@@ -1,0 +1,3 @@
+- [x] 이미지 body binary 만들기
+- [x] request, response interface 만들기
+- [ ] 사진 검색 api 연동
