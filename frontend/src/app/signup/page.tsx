@@ -27,8 +27,7 @@ const genderOptions = [
   },
 ];
 
-// TODO 올바른 연,월,일 입력
-const birthRegexp = /^[1-9][0-9]{7}$/;
+const birthRegexp = /^[1-9][0-9]{3}$/;
 const nicknameRegexp = /[a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ_]{2,20}$/;
 
 const Page = () => {
@@ -54,7 +53,7 @@ const Page = () => {
 
     if (!birth || !nickname) return;
 
-    const birthErrorMessage = birthRegexp.test(birth) ? '' : '8자리로 입력해주세요.';
+    const birthErrorMessage = birthRegexp.test(birth) ? '' : '4자리로 입력해주세요.';
     const nicknameErrorMessage = nicknameRegexp.test(nickname)
       ? ''
       : '영어, 한글, 숫자, 언더바(_)로 이뤄진 2~20 글자로 입력해주세요.';
@@ -63,12 +62,10 @@ const Page = () => {
     if (birthErrorMessage || nicknameErrorMessage) return;
 
     try {
-      // TODO 회원가입
-      const res = await fetchCreateMember(user);
-      console.log(res);
+      await fetchCreateMember(user);
       router.push('/');
     } catch (error) {
-      console.log(error);
+      window.alert('문제가 발생했습니다. 다시 시도해주세요.');
     }
   };
 
@@ -124,10 +121,10 @@ const Page = () => {
 
           <div className={styles['input-container']}>
             <TextInput
-              label="나이"
+              label="태어난 연도"
               id="birth"
               name="birth"
-              placeholder="19990203"
+              placeholder="1995"
               value={birth}
               errorMessage={errorMessages.birth}
               onChange={(e) => {
