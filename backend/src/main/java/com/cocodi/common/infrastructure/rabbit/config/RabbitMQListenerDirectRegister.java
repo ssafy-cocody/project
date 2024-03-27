@@ -1,9 +1,9 @@
 package com.cocodi.common.infrastructure.rabbit.config;
 
-import com.cocodi.common.infrastructure.rabbit.util.RabbitMQStore;
-import com.cocodi.common.infrastructure.rabbit.util.RabbitMQUtil;
 import com.cocodi.common.infrastructure.rabbit.annotation.RabbitMQDirectListener;
 import com.cocodi.common.infrastructure.rabbit.annotation.RabbitMQListenerEnable;
+import com.cocodi.common.infrastructure.rabbit.util.RabbitMQStore;
+import com.cocodi.common.infrastructure.rabbit.util.RabbitMQUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -37,12 +37,13 @@ public class RabbitMQListenerDirectRegister {
     private final Map<String, SimpleMessageListenerContainer> listenerContainers = new HashMap<>();
     private final RabbitMQStore rabbitMQStore;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
 
     private void ensureQueueAndExchange(RabbitMQListenerEnable domain, RabbitMQDirectListener workflow) {
         String exchangeName = domain.domainName();
         String routingKey = rabbitMQUtil.getServerNamingRouteStrategy(workflow.name(), workflow.isolatedQueue());
         String queueName = rabbitMQUtil.getServerNamingQueueStrategy(workflow.name(), workflow.isolatedQueue());
+
         rabbitMQStore.create(exchangeName, routingKey, workflow.name());
 
         if (rabbitAdmin.getQueueProperties(queueName) != null &&
@@ -51,7 +52,14 @@ public class RabbitMQListenerDirectRegister {
             return;
         }
 
-        Queue queue = new Queue(queueName, true);
+        Queue queue;
+
+        if (workflow.lazy()) {
+            queue = createLazyQueue(queueName, workflow);
+        } else {
+            queue = createQueue(queueName, workflow);
+        }
+
         DirectExchange exchange = new DirectExchange(exchangeName);
 
         rabbitAdmin.declareQueue(queue);
@@ -59,6 +67,16 @@ public class RabbitMQListenerDirectRegister {
 
         Binding binding = BindingBuilder.bind(queue).to(exchange).with(routingKey);
         rabbitAdmin.declareBinding(binding);
+    }
+
+    private Queue createQueue(String queueName, RabbitMQDirectListener workflow) {
+        return new Queue(queueName, workflow.durable());
+    }
+
+    private Queue createLazyQueue(String queueName, RabbitMQDirectListener workflow) {
+        Map<String, Object> args = new HashMap<>();
+        args.put("x-queue-mode", "lazy");
+        return new Queue(queueName, workflow.durable(), false, false, args);
     }
 
     private void registerDirectListener(Object bean, Method method, RabbitMQDirectListener workflow) {
