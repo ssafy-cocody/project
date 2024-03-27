@@ -33,7 +33,7 @@ public class S3Service {
 
         request.withCannedAcl(CannedAccessControlList.PublicRead);
         amazonS3.putObject(request);
-        return amazonS3.getUrl(bucketName, fileName).toString();
+        return amazonS3.getUrl(bucketName, fileDir).toString();
     }
 
     private String uploadMultipartFile(String dir, MultipartFile file) {
@@ -41,7 +41,7 @@ public class S3Service {
         metadata.setContentLength(file.getSize());
         metadata.setContentType(file.getContentType());
         try {
-            return upload(dir, metadata, file.getName(), file.getInputStream());
+            return upload(dir, metadata, file.getOriginalFilename(), file.getInputStream());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
