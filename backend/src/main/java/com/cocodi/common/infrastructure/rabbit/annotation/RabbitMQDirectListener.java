@@ -10,4 +10,6 @@ import java.lang.annotation.Target;
 public @interface RabbitMQDirectListener {
     String name();
     boolean isolatedQueue() default false;
+    boolean lazy() default false;
+    boolean durable() default true;
 }

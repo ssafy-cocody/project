@@ -25,12 +25,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: var(--zIndex-above);
   }
 
   .items-info {
     width: 100%;
     aspect-ratio: 1;
     position: relative;
+    z-index: var(--zIndex-under);
 
     .info {
       width: calc(100% / 3 * 2);
