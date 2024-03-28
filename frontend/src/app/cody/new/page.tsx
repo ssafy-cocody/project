@@ -13,9 +13,8 @@ import SaveButton from '@/components/SaveButton';
 import TostMessage from '@/components/TostMessage';
 import CodyBoard from '@/containers/cody/new/CodyBoard';
 import styles from '@/containers/cody/new/NewCody.module.scss';
-import { ISelectedClothes } from '@/containers/cody/new/type';
 import useModal from '@/hooks/useModal';
-import { Category, IClothes, TCategory } from '@/types/clothes';
+import { Category, IClothes, ISelectedClothes, TCategory } from '@/types/clothes';
 
 const categoryOrder: (keyof TCategory)[] = [Category.TOP, Category.OUTER, Category.BOTTOM, Category.SHOES];
 
@@ -33,9 +32,9 @@ const Page = () => {
   const handleSelectedClothes = (newlyClickedClothes: IClothes) => {
     const { category } = newlyClickedClothes;
     if (Object.keys(selectedClothes).filter((key) => key === category).length) {
-      handleTostMessage(category);
+      handleTostMessage(category!);
     } else {
-      const newSelectedClothes = { ...selectedClothes, [category]: newlyClickedClothes };
+      const newSelectedClothes = { ...selectedClothes, [category!]: newlyClickedClothes };
       setSelectedClothes(
         categoryOrder.reduce((sortedClothes: ISelectedClothes, key) => {
           if (newSelectedClothes[key]) {
