@@ -17,7 +17,7 @@ interface Props {
 
 const CodyBoard = ({ onClickDeleteClothes, selectedClothes, setDeleteClothes }: Props) => {
   const [classNameBySelectedCount, setClassNameBySelectedCount] = useState<string>();
-  const [codyName, setCodyName] = useState<string>();
+  const [codyName, setCodyName] = useState<string>('');
 
   const handleDeleteClothes = (category: string) => {
     onClickDeleteClothes();
