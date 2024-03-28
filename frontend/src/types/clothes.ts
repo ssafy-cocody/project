@@ -39,7 +39,7 @@ const Category: TCategory = {
 
 interface IClothes {
   clothesId: number;
-  category: string;
+  category?: string;
   name?: string;
   color?: string;
   brand?: string;
@@ -49,5 +49,13 @@ interface IClothes {
   clothesImage?: string;
 }
 
+type ISelectedClothes = {
+  [index: string]: IClothes | undefined;
+  [Category.TOP]?: IClothes;
+  [Category.OUTER]?: IClothes;
+  [Category.BOTTOM]?: IClothes;
+  [Category.SHOES]?: IClothes;
+};
+
 export { Category, DONE, Step };
-export type { IClothes, TCategory };
+export type { IClothes, ISelectedClothes, TCategory };
