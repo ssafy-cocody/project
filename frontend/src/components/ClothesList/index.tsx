@@ -8,7 +8,7 @@ import { Category, IClothes } from '@/types/clothes';
 interface Props {
   handleModal?: () => void;
   className?: string;
-  onSelectClothes: (newlyClickedClothes: IClothes) => void;
+  onSelectClothes?: (newlyClickedClothes: IClothes) => void;
 }
 
 const ClothesList = ({ handleModal, className, onSelectClothes }: Props) => {
