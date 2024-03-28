@@ -12,7 +12,6 @@ import {
 const fetchPostClothesImage = async ({
   formData,
 }: IFetchPostClothesImageRequest): Promise<IFetchPostClothesImageResponse> => {
-  // FIXME 엔드포인트 수정
   const response = await fetch(`${BASE_URL}/public/v1/clothes/image`, {
     method: 'POST',
     body: formData,
@@ -28,7 +27,7 @@ const fetchPostClothesImage = async ({
   let uuid = '';
   let isDone = false;
 
-  // FIXME 반복문 개선, eslint
+  // FIXME 반복문 개선
   while (!isDone) {
     // eslint-disable-next-line no-await-in-loop
     const { value, done } = await reader.read();
@@ -36,14 +35,16 @@ const fetchPostClothesImage = async ({
     if (done) break;
 
     const res = value?.split('\n'); // value 리턴타입: "event: message|remove \n data: '' "
-    const eventType = res[0].match(/[^event: ].+/)[0];
+    const eventTypeMatchResult = res[0].match(/[^event: ].+/);
+    const eventType = eventTypeMatchResult ? eventTypeMatchResult[0] : '';
     if (eventType === 'remove') {
       // eslint-disable-next-line no-await-in-loop
       await reader.closed;
-      break; // TODO stream 읽기 종료
+      break;
     }
 
-    const data = res[1].match(/[^data: ].+/)[0];
+    const dataMatchResult = res[1].match(/[^data: ].+/);
+    const data = dataMatchResult ? dataMatchResult[0] : '';
     uuid = data;
   }
 

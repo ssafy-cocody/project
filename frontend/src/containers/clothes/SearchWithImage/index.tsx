@@ -20,7 +20,7 @@ const SearchWithImage = ({ onClickButton }: { onClickButton: () => void }) => {
   const [isFormValid, setIsFormValid] = useState(false);
 
   const clothesSearchItemQuery = useQuery({
-    queryKey: [''], // 캐싱할 필요가 없음
+    queryKey: [{ clothesUuid }], // TODO uuid는 30분만 유효
     queryFn: () => fetchGetClothesInfo({ uuid: clothesUuid }),
     enabled: !!clothesUuid,
   });
