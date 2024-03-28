@@ -9,7 +9,7 @@ const fetchUserInfo = async () => {
 
   const response = await fetch(`${BASE_URL}/${endpoint}`, {
     credentials: 'include',
-    cache: 'no-store',
+    cache: 'no-store', // TODO access token이 유효한 시간동안만 캐싱해도 좋을 것 같음
   });
   const data: IFetchUserInfoResponse = await response.json();
 
