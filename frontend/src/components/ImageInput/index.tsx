@@ -41,7 +41,7 @@ const ImageInput = ({ name, id, onChange }: ImageInputProps) => {
           </div>
         )}
       </label>
-      <input type="file" name={name} accept="image/*" id={id} onChange={handleChange} />
+      <input type="file" name={name} accept=".png, .jpg, .jpeg" id={id} onChange={handleChange} />
     </div>
   );
 };
