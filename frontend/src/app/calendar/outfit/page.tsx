@@ -11,32 +11,32 @@ import Background from '@/components/Background';
 import Button from '@/components/Button';
 import Header from '@/components/Header';
 import styles from '@/containers/calendar/Outfit/Outfit.module.scss';
-import { Category, IClothes, TCategory } from '@/types/clothes';
+import { Category, IClothes, ISelectedClothes } from '@/types/clothes';
 
 const Page = () => {
   const [clothesByCategory] = useState<Record<string, IClothes[]>>({
     [Category.TOP]: [
-      { image: '/images/test1.jpg', id: 1 },
-      { image: '/images/test2.jpg', id: 2 },
-      { image: '/images/test3.jpg', id: 3 },
+      { clothesImage: '/images/test1.jpg', clothesId: 1, category: Category.TOP },
+      { clothesImage: '/images/test2.jpg', clothesId: 2, category: Category.TOP },
+      { clothesImage: '/images/test3.jpg', clothesId: 3, category: Category.TOP },
     ],
     [Category.BOTTOM]: [
-      { image: '/images/test2.jpg', id: 4 },
-      { image: '/images/test4.jpg', id: 5 },
-      { image: '/images/test3.jpg', id: 6 },
+      { clothesImage: '/images/test2.jpg', clothesId: 4, category: Category.BOTTOM },
+      { clothesImage: '/images/test4.jpg', clothesId: 5, category: Category.BOTTOM },
+      { clothesImage: '/images/test3.jpg', clothesId: 6, category: Category.BOTTOM },
     ],
     [Category.SHOES]: [
-      { image: '/images/test2.jpg', id: 8 },
-      { image: '/images/test4.jpg', id: 9 },
-      { image: '/images/test3.jpg', id: 10 },
+      { clothesImage: '/images/test2.jpg', clothesId: 8, category: Category.SHOES },
+      { clothesImage: '/images/test4.jpg', clothesId: 9, category: Category.SHOES },
+      { clothesImage: '/images/test3.jpg', clothesId: 10, category: Category.SHOES },
     ],
   });
-  const [categories] = useState<TCategory[]>([Category.TOP, Category.BOTTOM, Category.SHOES]);
-  const [selected, setSelected] = useState<Record<TCategory, IClothes>[]>(Object.keys(Category).map(category => category: {}));
+  const [categories] = useState<string[]>([Category.TOP, Category.BOTTOM, Category.SHOES]);
+  const [selected, setSelected] = useState<ISelectedClothes>({});
 
   const handleClickItem = (e: ChangeEvent<HTMLInputElement>) => {
-    const newSelected: number[] = [...selected];
-    newSelected[Number(e.target.value)] = Number(e.target.id);
+    const newSelected: ISelectedClothes = { ...selected };
+    newSelected[e.target.value] = { clothesId: Number(e.target.id) };
     setSelected(newSelected);
   };
 
@@ -54,26 +54,31 @@ const Page = () => {
               <div key={category} className={styles['clothes-by-category']}>
                 <div className={styles.category}>{category}</div>
                 <div className={styles.clothes}>
-                  {clothesByCategory[category].map(({ image, id }: IClothes, index) => {
+                  {clothesByCategory[category].map(({ clothesImage, clothesId }: IClothes, index) => {
                     return (
-                      <div className={styles['clothes-image-container']} key={id}>
-                        <label htmlFor={id.toString()}>
-                          <Image src={image} alt={`${category}${index + 1}`} fill className={styles['clothes-image']} />
-                          <div
-                            className={`${styles['checked-icon-overlay']} ${selected[category] === id ? styles.visible : ''}`}
+                      <div className={styles['clothes-image-container']} key={clothesId}>
+                        <label htmlFor={clothesId.toString()}>
+                          <Image
+                            src={clothesImage!}
+                            alt={`${category}${index + 1}`}
+                            fill
+                            className={styles['clothes-image']}
                           />
                           <div
-                            className={`${styles['checked-icon']} ${selected[category] === id ? styles.visible : ''}`}
+                            className={`${styles['checked-icon-overlay']} ${selected[category]?.clothesId === clothesId ? styles.visible : ''}`}
+                          />
+                          <div
+                            className={`${styles['checked-icon']} ${selected[category]?.clothesId === clothesId ? styles.visible : ''}`}
                           >
                             <CheckIcon />
                           </div>
                         </label>
                         <input
                           type="radio"
-                          id={id.toString()}
+                          id={clothesId.toString()}
                           value={category.toString()}
                           radioGroup={category.toString()}
-                          onChange={(e) => handleClickItem(e)}
+                          onChange={handleClickItem}
                         />
                       </div>
                     );
