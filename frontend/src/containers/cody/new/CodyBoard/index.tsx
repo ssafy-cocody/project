@@ -57,7 +57,7 @@ const CodyBoard = ({ onClickDeleteClothes, selectedClothes, setDeleteClothes }: 
 
   return (
     <div className={styles['board-container']}>
-      <TextInputWithUnderLine label="새로운 코디명" onChange={(e) => handleCodyNameChange(e)} value={codyName} />
+      <TextInputWithUnderLine label="새로운 코디명" onChange={handleCodyNameChange} value={codyName} />
       <div className={`${styles.board} ${classNameBySelectedCount ? styles[classNameBySelectedCount] : ''}`}>
         {Object.keys(selectedClothes).map((category) => {
           return (
