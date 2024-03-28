@@ -1,5 +1,22 @@
+import { IClothes } from '@/types/clothes';
+
 interface IFetchPostClothesImageRequest {
   formData: FormData;
 }
 
-export type { IFetchPostClothesImageRequest };
+interface IFetchPostClothesImageResponse {
+  uuid: string;
+}
+
+interface IFetchGetClothesInfoRequest {
+  uuid: string;
+}
+
+type IFetchGetClothesInfoResponse = IClothes[];
+
+export type {
+  IFetchGetClothesInfoRequest,
+  IFetchGetClothesInfoResponse,
+  IFetchPostClothesImageRequest,
+  IFetchPostClothesImageResponse,
+};

@@ -1,10 +1,18 @@
 import { BASE_URL, getAccessToken } from '@/services/';
-import { IFetchPostClothesImageRequest } from '@/services/clothes/type';
+import {
+  IFetchGetClothesInfoRequest,
+  IFetchGetClothesInfoResponse,
+  IFetchPostClothesImageRequest,
+  IFetchPostClothesImageResponse,
+} from '@/services/clothes/type';
 
 /**
  * 옷 이미지 등록
  */
-const fetchPostClothesImage = async ({ formData }: IFetchPostClothesImageRequest) => {
+const fetchPostClothesImage = async ({
+  formData,
+}: IFetchPostClothesImageRequest): Promise<IFetchPostClothesImageResponse> => {
+  // FIXME 엔드포인트 수정
   const response = await fetch(`${BASE_URL}/public/v1/clothes/image`, {
     method: 'POST',
     body: formData,
@@ -17,7 +25,7 @@ const fetchPostClothesImage = async ({ formData }: IFetchPostClothesImageRequest
 
   const reader = response.body.pipeThrough(new TextDecoderStream()).getReader();
 
-  let clothesId = '';
+  let uuid = '';
   let isDone = false;
 
   // FIXME 반복문 개선, eslint
@@ -36,11 +44,24 @@ const fetchPostClothesImage = async ({ formData }: IFetchPostClothesImageRequest
     }
 
     const data = res[1].match(/[^data: ].+/)[0];
-    clothesId = data;
+    uuid = data;
   }
 
-  if (clothesId) return clothesId;
-  return new Error('upload error');
+  if (uuid) return { uuid };
+  return Promise.reject(new Error('upload error'));
 };
 
-export { fetchPostClothesImage };
+/**
+ * UUID로 유사한 옷 검색
+ */
+const fetchGetClothesInfo = async ({ uuid }: IFetchGetClothesInfoRequest): Promise<IFetchGetClothesInfoResponse> => {
+  const response = await fetch(`${BASE_URL}/auth/v1/clothes/temp/info/${uuid}`, {
+    headers: {
+      Authorization: `Bearer ${getAccessToken()}`,
+    },
+  });
+
+  return response.json();
+};
+
+export { fetchGetClothesInfo, fetchPostClothesImage };
