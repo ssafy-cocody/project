@@ -1,6 +1,5 @@
 package com.cocodi.clothes.domain.model;
 
-import com.cocodi.member.domain.model.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,6 +39,5 @@ public class Clothes {
 
     private String image;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Member member;
+    private Long memberId;
 }
