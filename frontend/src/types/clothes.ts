@@ -88,7 +88,8 @@ interface IClothes {
   productNo?: string;
   price?: number;
   link?: string;
-  clothesImage?: string;
+  clothesImage?: string; // TODO image로 통일, clothesImage삭제 필요
+  image?: string;
 }
 
 export { Category, DONE, Step };
