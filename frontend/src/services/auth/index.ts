@@ -1,4 +1,3 @@
-import { BASE_URL, getAccessToken } from '@/services';
 import { IFetchCreateMemberRequest, IFetchUserInfoResponse } from '@/services/auth/type';
 
 /**
@@ -7,7 +6,7 @@ import { IFetchCreateMemberRequest, IFetchUserInfoResponse } from '@/services/au
 const fetchUserInfo = async () => {
   const endpoint = process.env.NEXT_PUBLIC_API_PUBLIC_ENDPOINT;
 
-  const response = await fetch(`${BASE_URL}/${endpoint}`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/${endpoint}`, {
     credentials: 'include',
   });
   const data: IFetchUserInfoResponse = await response.json();
@@ -29,10 +28,12 @@ const fetchUserInfo = async () => {
  * 회원가입
  */
 const fetchCreateMember = async (params: IFetchCreateMemberRequest) => {
-  const response = await fetch(`${BASE_URL}/auth/v1/member`, {
+  const { accessToken } = await fetchUserInfo();
+
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/v1/member`, {
     method: 'PATCH',
     body: JSON.stringify(params),
-    headers: { Authorization: `Bearer ${getAccessToken()}`, 'Content-Type': 'application/json' },
+    headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
   });
   return response.json();
 };
