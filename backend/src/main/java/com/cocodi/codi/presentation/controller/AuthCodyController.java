@@ -1,8 +1,10 @@
 package com.cocodi.codi.presentation.controller;
 
 import com.cocodi.codi.application.service.CodyService;
+import com.cocodi.codi.presentation.request.ClothesRequest;
 import com.cocodi.codi.presentation.request.CodyCreateRequest;
 import com.cocodi.codi.presentation.response.CodyResponse;
+import com.cocodi.codi.presentation.response.RecommendCodyResponse;
 import com.cocodi.security.domain.model.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +15,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -64,7 +70,7 @@ public class AuthCodyController {
     @DeleteMapping("/{codyId}")
     public ResponseEntity<?> deleteMyCody(@PathVariable Long codyId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         codyService.deleteMyCody(codyId, principalDetails.getMemberId());
-        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>("success", HttpStatus.NO_CONTENT);
     }
 
     /**
@@ -72,9 +78,25 @@ public class AuthCodyController {
      * @return
      */
     @GetMapping("/recommend/cody")
-    public ResponseEntity<?> getRecommendCodyList(String date) {
+    public ResponseEntity<?> getRecommendCodyList(@RequestParam LocalDate date, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         // 추천 코디 갯수가 여러개(3~6개)
-        return new ResponseEntity<>(null, HttpStatus.OK);
+        // todo 파이썬에 사용자 옷장 정보 넘기기(clothesId)
+        // todo 옷 Id 리스트 받기
+        List<ClothesRequest> recommendCodyIds = new ArrayList<>();
+        recommendCodyIds.add(new ClothesRequest(34L, 35L, 36L, 37L, null));
+        recommendCodyIds.add(new ClothesRequest(35L, 36L, 37L, 38L, null));
+        recommendCodyIds.add(new ClothesRequest(36L, 37L, 38L, 39L, null));
+        recommendCodyIds.add(new ClothesRequest(37L, 38L, 39L, 40L, null));
+        // todo 코디 이미지 받기
+        List<String> codyImages = new ArrayList<>();
+        codyImages.add("image1");
+        codyImages.add("image2");
+        codyImages.add("image3");
+        codyImages.add("image4");
+
+        List<RecommendCodyResponse> recommendCodyResponses
+                = codyService.getRecommendCodyList(recommendCodyIds, codyImages, date, principalDetails.getMemberId());
+        return new ResponseEntity<>(recommendCodyResponses, HttpStatus.OK);
     }
 
     /**

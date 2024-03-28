@@ -42,7 +42,7 @@ public class OotdService {
                 .orElseThrow(() -> new RuntimeException("Cody not found"));
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberFindException("can not find Member"));
-        Optional<Ootd> findOotd = ootdRepository.findByDate(ootdCreateRequest.date());
+        Optional<Ootd> findOotd = ootdRepository.findByMemberAndDate(member, ootdCreateRequest.date());
         Long ootdId = findOotd.map(Ootd::getOotdId).orElse(null);
         Ootd ootd = Ootd.builder()
                 .ootdId(ootdId)
@@ -57,7 +57,7 @@ public class OotdService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberFindException("Cannot find Member"));
 
-        Cody cody = codyService.getCodyFromRequest(ootdCreateRequest.clothesRequest());
+        Cody cody = codyService.getCodyFromRequest(ootdCreateRequest.clothesRequest(), null);
 
         Ootd ootd = Ootd.builder()
                 .date(ootdCreateRequest.date())
