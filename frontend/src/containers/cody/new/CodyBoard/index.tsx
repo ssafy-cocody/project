@@ -1,12 +1,13 @@
 'use client';
 
 import Image from 'next/image';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from 'react';
 
 import TextInputWithUnderLine from '@/components/TextInputWithUnderLine';
 import styles from '@/containers/cody/new/CodyBoard/Board.module.scss';
 import { ISelectedClothes } from '@/containers/cody/new/type';
 import { Category, IClothes } from '@/types/clothes';
+import { getValidCodyName } from '@/utils/getValidCodyName';
 
 interface Props {
   onClickDeleteClothes: () => void;
@@ -16,9 +17,15 @@ interface Props {
 
 const CodyBoard = ({ onClickDeleteClothes, selectedClothes, setDeleteClothes }: Props) => {
   const [classNameBySelectedCount, setClassNameBySelectedCount] = useState<string>();
+  const [codyName, setCodyName] = useState<string>('');
+
   const handleDeleteClothes = (category: string) => {
     onClickDeleteClothes();
     setDeleteClothes(selectedClothes[category]);
+  };
+
+  const handleCodyNameChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setCodyName(getValidCodyName(e.target.value));
   };
 
   useEffect(() => {
@@ -50,7 +57,7 @@ const CodyBoard = ({ onClickDeleteClothes, selectedClothes, setDeleteClothes }: 
 
   return (
     <div className={styles['board-container']}>
-      <TextInputWithUnderLine label="새로운 코디명" />
+      <TextInputWithUnderLine label="새로운 코디명" onChange={handleCodyNameChange} value={codyName} />
       <div className={`${styles.board} ${classNameBySelectedCount ? styles[classNameBySelectedCount] : ''}`}>
         {Object.keys(selectedClothes).map((category) => {
           return (
