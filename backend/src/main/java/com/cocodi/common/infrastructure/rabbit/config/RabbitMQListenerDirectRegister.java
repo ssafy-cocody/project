@@ -45,6 +45,8 @@ public class RabbitMQListenerDirectRegister {
         String queueName = rabbitMQUtil.getServerNamingQueueStrategy(workflow.name(), workflow.isolatedQueue());
 
         rabbitMQStore.create(exchangeName, routingKey, workflow.name());
+        DirectExchange exchange = new DirectExchange(exchangeName);
+        rabbitAdmin.declareExchange(exchange);
 
         if (rabbitAdmin.getQueueProperties(queueName) != null &&
                 !Objects.requireNonNull(rabbitAdmin.getQueueProperties(queueName)).isEmpty()) {
@@ -59,11 +61,8 @@ public class RabbitMQListenerDirectRegister {
         } else {
             queue = createQueue(queueName, workflow);
         }
-
-        DirectExchange exchange = new DirectExchange(exchangeName);
-
         rabbitAdmin.declareQueue(queue);
-        rabbitAdmin.declareExchange(exchange);
+
 
         Binding binding = BindingBuilder.bind(queue).to(exchange).with(routingKey);
         rabbitAdmin.declareBinding(binding);

@@ -1,8 +1,7 @@
 import { useState } from 'react';
 
-import styles from '@/components/ClothesList/ClothesTab/ClothesTab.module.scss';
-
-import { Category } from '../type';
+import styles from '@/components/ClothesTab/ClothesTab.module.scss';
+import { Category } from '@/types/clothes';
 
 const ClothesTap = () => {
   const [selectedCategory] = useState<string>(Category.ALL);

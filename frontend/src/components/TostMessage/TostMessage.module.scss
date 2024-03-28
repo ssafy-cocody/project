@@ -1,14 +1,39 @@
+$tostOpacity: 0.9;
+
+@mixin tostAnimation($name, $delay: 500ms, $duration: 1000ms, $timingFunction: ease-in-out) {
+  animation-name: $name;
+  animation-delay: $delay;
+  animation-duration: $duration;
+  animation-timing-function: $timingFunction;
+}
+
+@mixin keyframe($name) {
+  @keyframes #{$name} {
+    @content;
+  }
+}
+
+@include keyframe(tostDisappearAnimation) {
+  0% {
+    opacity: $tostOpacity;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 .tost-container {
   width: 234px;
   height: 34px;
   background-color: var(--color-main);
-  opacity: 0.9;
+  opacity: $tostOpacity;
   position: absolute;
   bottom: 30px;
   border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
+  @include tostAnimation(tostDisappearAnimation);
 
   .tost-message {
     color: var(--color-white);
