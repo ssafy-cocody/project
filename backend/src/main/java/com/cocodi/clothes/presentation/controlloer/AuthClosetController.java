@@ -52,7 +52,7 @@ public class AuthClosetController {
      * @return
      */
     @GetMapping
-    public ResponseEntity<Slice<ClothesResponse>> findClothes(Pageable pageable, @RequestParam("category") Category category, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public ResponseEntity<Slice<ClothesResponse>> findClothes(Pageable pageable, @RequestParam(value = "category", required = false)  Category category, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         List<ClothesResponse> clothesList = closetService.findClothesBy_MemberAndCategory(principalDetails.getMemberId(), category, pageable)
                 .stream().map(this::convertToResponse).toList();
 
