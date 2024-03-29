@@ -10,18 +10,15 @@ import { LeftArrow, RightArrow } from '@/../public/svgs';
 import Button from '@/components/Button';
 import ImageInput from '@/components/ImageInput';
 import styles from '@/containers/calendar/Calendar/Calendar.module.scss';
+import { ICalendar } from '@/containers/calendar/Calendar/type';
 import useModal from '@/hooks/useModal';
-
-interface ICalendar {
-  date: number;
-  dayOfWeek: number;
-  image?: string;
-}
+import { fetchGetCalendar } from '@/services/clothes';
 
 const Calendar = () => {
-  const [year, setYear] = useState<number>(0);
-  const [month, setMonth] = useState<number>(0);
+  const [year] = useState<number>(new Date().getFullYear());
+  const [month] = useState<number>(new Date().getMonth() + 1);
   const [ootds, setOOTD] = useState<ICalendar[][]>([]);
+  const [data, setData] = useState<ICalendar[]>();
   const { Modal, openModal } = useModal();
 
   // currentDate가 몇 주차인지 구하는 함수
@@ -34,32 +31,42 @@ const Calendar = () => {
     [year, month],
   );
 
+  const fetchCalendarData = async () => {
+    setData(await fetchGetCalendar({ year: year.toString(), month: paddingMonth(month) }));
+  };
+
   useEffect(() => {
     if (year && month) {
       const lastDay = new Date(year, month, 0).getDate();
       const dayOfWeekOfDay1 = getDayOfWeek(1);
       const week = getWeek(lastDay, dayOfWeekOfDay1);
-      const ootd = Array.from({ length: week }, () =>
-        Array.from({ length: 7 }, () => {
-          return { date: 0, dayOfWeek: 0, image: '' };
+      const ootd = Array.from({ length: week }, (_, j) =>
+        Array.from({ length: 7 }, (__, i) => {
+          return { ootdId: -(j * 7 + i), day: 0, image: '' };
         }),
       );
       for (let i = 1; i <= lastDay; i++) {
-        ootd[getWeek(i, dayOfWeekOfDay1) - 1][getDayOfWeek(i)] = {
-          date: i,
-          dayOfWeek: getDayOfWeek(i),
-          image: '/images/test1.jpg',
-        };
+        const itemOfDayi = data?.filter((item) => item.day === i) || [];
+        if (itemOfDayi.length) {
+          ootd[getWeek(i, dayOfWeekOfDay1) - 1][getDayOfWeek(i)] = itemOfDayi[0];
+        } else {
+          ootd[getWeek(i, dayOfWeekOfDay1) - 1][getDayOfWeek(i)] = {
+            ootdId: i,
+            day: i,
+            image: '',
+          };
+        }
       }
       setOOTD(ootd);
     }
-  }, [getDayOfWeek, month, year]);
+  }, [getDayOfWeek, month, year, data]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    const date = new Date();
-    setYear(date.getFullYear());
-    setMonth(date.getMonth() + 1);
-  }, []);
+    if (year && month) {
+      fetchCalendarData();
+    }
+  }, [year, month]);
 
   return (
     <div className={styles['main-container']}>
@@ -81,17 +88,17 @@ const Calendar = () => {
         <div className={styles['ootd-container']}>
           {ootds.map((week: ICalendar[], index) => {
             return (
-              <div className={styles.week} key={week[index].dayOfWeek}>
-                {week.map(({ date, dayOfWeek, image }: ICalendar) => {
+              <div className={styles.week} key={week[index].ootdId}>
+                {week.map(({ ootdId, day, image }: ICalendar) => {
                   return (
-                    <button type="button" onClick={openModal} className={styles.ootd} key={`${date}${dayOfWeek}`}>
-                      {!!date && (
+                    <button type="button" onClick={openModal} className={styles.ootd} key={ootdId}>
+                      {!!day && (
                         <>
                           <div
                             // eslint-disable-next-line no-nested-ternary
-                            className={`${styles.day} ${dayOfWeek === 6 ? styles.sat : dayOfWeek === 0 ? styles.sun : ''}`}
+                            className={`${styles.day} ${getDayOfWeek(day) === 6 ? styles.sat : getDayOfWeek(day) === 0 ? styles.sun : ''}`}
                           >
-                            {date}
+                            {day}
                           </div>
                           {image && (
                             <div className={styles['image-container']}>
