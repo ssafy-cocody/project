@@ -19,19 +19,16 @@ const MyCodyPreview = () => {
       <div className={styles.title}>내가 만든 코디</div>
       <div className={styles.showcase}>
         <div className={styles.codies}>
-          {
-            // TODO: key props warning 없애기
-            codies.map(({ id, image }, index) => {
-              return (
-                <div key={id} className={styles['cody-image']}>
-                  <Image src={image} alt={`나의 코디 ${index}`} fill />
-                </div>
-              );
-            })
-          }
+          {codies.map(({ id, image }, index) => {
+            return (
+              <div key={id} className={styles['cody-image']}>
+                <Image src={image} alt={`나의 코디 ${index}`} fill />
+              </div>
+            );
+          })}
           {codies.length < 8 ? (
-            Array.from({ length: 8 - codies.length }, (i: number) => i).map((value) => {
-              return <div key={value} className={styles['cody-image']} />;
+            Array.from({ length: 8 - codies.length }, (_, i: number) => i).map((value) => {
+              return <div key={-value} className={styles['cody-image']} />;
             })
           ) : (
             // eslint-disable-next-line react/jsx-no-useless-fragment
