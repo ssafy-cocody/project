@@ -24,6 +24,7 @@ const SelectInput = ({ label, options, value: initValue = '', onChange, ...props
     <>
       {label && <Label label={label} />}
       <select className={styles.select} value={selectedValue} {...props} onChange={handleChange}>
+        <option value="">카테고리를 선택하세요.</option>
         {options?.length &&
           options.map(({ value, text }) => {
             return (

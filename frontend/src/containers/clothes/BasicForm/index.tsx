@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { useState } from 'react';
 
 import Button from '@/components/Button';
 import SelectInput from '@/components/SelectInput';
@@ -27,6 +28,20 @@ const BasicForm = ({
   onClickButton: () => void;
   onChange: ({ key, value }: { key: string; value: string }) => void;
 }) => {
+  const [formInput, setFormInput] = useState({ category: '', name: '', color: '' });
+  const [isValid, setIsValid] = useState(false);
+
+  const handleFormChange = ({ key, value }: { key: string; value: string }) => {
+    const newValue = {
+      ...formInput,
+      [key]: value,
+    };
+    setFormInput(newValue);
+    handleChange({ key, value });
+
+    setIsValid(!Object.values(newValue).some((v) => v === ''));
+  };
+
   return (
     <>
       <div className={styles.clothes}>
@@ -39,13 +54,20 @@ const BasicForm = ({
             required
             label="카테고리"
             options={CLOTHES_OPTIONS}
-            value="상의"
-            onChange={(e) => handleChange({ key: 'category', value: e.target.value })}
+            value={formInput.category}
+            onChange={(e) => handleFormChange({ key: 'category', value: e.target.value })}
           />
-          <TextInput required label="상품명" onChange={(e) => handleChange({ key: 'name', value: e.target.value })} />
+          <TextInput
+            required
+            label="상품명"
+            value={formInput.name}
+            onChange={(e) => handleFormChange({ key: 'name', value: e.target.value })}
+          />
           {/* TODO: 색상은 1개만 선택 가능 */}
-          <ColorSelect onChange={(color) => handleChange({ key: 'color', value: color })} />
-          <Button onClick={onClickButton}>다음</Button>
+          <ColorSelect onChange={(color) => handleFormChange({ key: 'color', value: color })} />
+          <Button onClick={onClickButton} disabled={!isValid}>
+            다음
+          </Button>
         </form>
       </div>
     </>
