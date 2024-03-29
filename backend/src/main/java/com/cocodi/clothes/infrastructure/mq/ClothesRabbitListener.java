@@ -34,6 +34,4 @@ public class ClothesRabbitListener {
             sseService.sendMessageAndRemove(sseObject.sseId(), "message", sseObject.sseId());
         }
     }
-
-
 }

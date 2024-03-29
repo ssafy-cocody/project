@@ -43,8 +43,6 @@ public class PublicClothesController {
      */
     @PostMapping("/image")
     public SseEmitter searchClothesByImage(MultipartFile multipartFile) {
-        // Redis에 이미지 임시저장 Expired Time 30m
-        // TODO : 의류 검색 결과 Server Sent Event 처리
         String sseKey = sseService.createInstance();
         clothesService.imageConvert(multipartFile, sseKey);
         return sseService.getInstance(sseKey);

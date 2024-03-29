@@ -7,7 +7,7 @@ import { FormEvent, useEffect, useState } from 'react';
 import Button from '@/components/Button';
 import TextInput from '@/components/TextInput';
 import styles from '@/containers/signup/Signup.module.scss';
-import { fetchCreateMember } from '@/services/auth';
+import { fetchCreateMember } from '@/services/signup';
 import { IUser } from '@/types/user';
 
 const genderOptions = [

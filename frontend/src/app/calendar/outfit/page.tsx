@@ -16,19 +16,19 @@ import { Category, IClothes, ISelectedClothes } from '@/types/clothes';
 const Page = () => {
   const [clothesByCategory] = useState<Record<string, IClothes[]>>({
     [Category.TOP]: [
-      { clothesImage: '/images/test1.jpg', clothesId: 1, category: Category.TOP },
-      { clothesImage: '/images/test2.jpg', clothesId: 2, category: Category.TOP },
-      { clothesImage: '/images/test3.jpg', clothesId: 3, category: Category.TOP },
+      { image: '/images/test1.jpg', clothesId: 1, category: Category.TOP },
+      { image: '/images/test2.jpg', clothesId: 2, category: Category.TOP },
+      { image: '/images/test3.jpg', clothesId: 3, category: Category.TOP },
     ],
     [Category.BOTTOM]: [
-      { clothesImage: '/images/test2.jpg', clothesId: 4, category: Category.BOTTOM },
-      { clothesImage: '/images/test4.jpg', clothesId: 5, category: Category.BOTTOM },
-      { clothesImage: '/images/test3.jpg', clothesId: 6, category: Category.BOTTOM },
+      { image: '/images/test2.jpg', clothesId: 4, category: Category.BOTTOM },
+      { image: '/images/test4.jpg', clothesId: 5, category: Category.BOTTOM },
+      { image: '/images/test3.jpg', clothesId: 6, category: Category.BOTTOM },
     ],
     [Category.SHOES]: [
-      { clothesImage: '/images/test2.jpg', clothesId: 8, category: Category.SHOES },
-      { clothesImage: '/images/test4.jpg', clothesId: 9, category: Category.SHOES },
-      { clothesImage: '/images/test3.jpg', clothesId: 10, category: Category.SHOES },
+      { image: '/images/test2.jpg', clothesId: 8, category: Category.SHOES },
+      { image: '/images/test4.jpg', clothesId: 9, category: Category.SHOES },
+      { image: '/images/test3.jpg', clothesId: 10, category: Category.SHOES },
     ],
   });
   const [categories] = useState<string[]>([Category.TOP, Category.BOTTOM, Category.SHOES]);
@@ -54,12 +54,12 @@ const Page = () => {
               <div key={category} className={styles['clothes-by-category']}>
                 <div className={styles.category}>{category}</div>
                 <div className={styles.clothes}>
-                  {clothesByCategory[category].map(({ clothesImage, clothesId }: IClothes, index) => {
+                  {clothesByCategory[category].map(({ image, clothesId }: IClothes, index) => {
                     return (
                       <div className={styles['clothes-image-container']} key={clothesId}>
                         <label htmlFor={clothesId.toString()}>
                           <Image
-                            src={clothesImage!}
+                            src={image!}
                             alt={`${category}${index + 1}`}
                             fill
                             className={styles['clothes-image']}

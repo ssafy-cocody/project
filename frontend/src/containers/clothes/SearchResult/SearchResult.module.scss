@@ -49,6 +49,13 @@
     background: var(--color-white);
   }
 
+  label {
+    display: flex;
+    flex-direction: column;
+
+    height: 100%;
+  }
+
   .info {
     margin-bottom: 4px;
 
@@ -58,6 +65,12 @@
       font-weight: 900;
       font-size: 14px;
       color: var(--color-black);
+
+      /* 2줄까지만 보여줌 */
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
     .brand {
@@ -69,6 +82,7 @@
 
   .preview {
     margin: 0 auto;
+    height: 100%;
 
     img {
       width: 100%;

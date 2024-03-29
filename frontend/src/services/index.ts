@@ -1,4 +1,4 @@
-import { fetchUserInfo } from './auth';
+import { fetchUserInfo } from '@/services/auth';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -56,5 +56,10 @@ export const api = {
   put: <T, U>(path: string, bodyObject?: U): Promise<T> => {
     const body = JSON.stringify(bodyObject);
     return request<T>(path, { method: HTTPMethods.PUT, body });
+  },
+
+  patch: <T>(path: string, bodyObject: T): Promise<T> => {
+    const body = JSON.stringify(bodyObject);
+    return request<T>(path, { method: HTTPMethods.PATCH, body });
   },
 };
