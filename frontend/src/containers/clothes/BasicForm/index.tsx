@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import { useState } from 'react';
 
 import Button from '@/components/Button';
@@ -9,6 +8,15 @@ import TextInput from '@/components/TextInput';
 import styles from '@/containers/clothes/BasicForm/BasicForm.module.scss';
 import ColorSelect from '@/containers/clothes/BasicForm/ColorSelect';
 import { ClothesCategory } from '@/types/clothes';
+
+interface BasicFormProps {
+  onClickButton: () => void;
+  onChange: ({ key, value }: { key: string; value: string }) => void;
+  category?: string;
+  name?: string;
+  color?: string;
+  image?: string;
+}
 
 const CLOTHES_OPTIONS = [
   {
@@ -21,14 +29,12 @@ const CLOTHES_OPTIONS = [
   { text: '신발', value: ClothesCategory.SHOES },
 ];
 
-const BasicForm = ({
-  onClickButton,
-  onChange: handleChange,
-}: {
-  onClickButton: () => void;
-  onChange: ({ key, value }: { key: string; value: string }) => void;
-}) => {
-  const [formInput, setFormInput] = useState({ category: '', name: '', color: '' });
+const BasicForm = ({ onClickButton, onChange: handleChange, image, ...initValue }: BasicFormProps) => {
+  const [formInput, setFormInput] = useState({
+    category: initValue.category,
+    name: initValue.name,
+    color: initValue.color,
+  });
   const [isValid, setIsValid] = useState(false);
 
   const handleFormChange = ({ key, value }: { key: string; value: string }) => {
@@ -45,7 +51,7 @@ const BasicForm = ({
   return (
     <>
       <div className={styles.clothes}>
-        <Image src="/images/test1.jpg" fill alt="" />
+        <img src={image} alt="" />
       </div>
 
       <div className={styles['form-container']}>
