@@ -1,4 +1,4 @@
-import { IClothes } from '@/types/clothes';
+import { IClothes, INewClothes } from '@/types/clothes';
 
 interface IFetchPostClothesImageRequest {
   formData: FormData;
@@ -15,7 +15,7 @@ interface IFetchGetClothesInfoRequest {
 type IFetchGetClothesInfoResponse = IClothes[];
 
 interface IFetchPostSaveClothesRequest {
-  clothes: IClothes;
+  clothes: INewClothes;
   uuid: string;
 }
 

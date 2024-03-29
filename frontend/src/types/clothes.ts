@@ -107,5 +107,8 @@ type ISelectedClothes = {
   [Category.SHOES]?: IClothes;
 };
 
+// 옷 등록 인풋 타입
+type INewClothes = Pick<IClothes, 'category' | 'name' | 'color' | 'brand' | 'productNo' | 'price' | 'link'>;
+
 export { Category, ClothesCategory, DONE, Step };
-export type { IClothes, ISelectedClothes, TCategory };
+export type { IClothes, INewClothes, ISelectedClothes, TCategory };
