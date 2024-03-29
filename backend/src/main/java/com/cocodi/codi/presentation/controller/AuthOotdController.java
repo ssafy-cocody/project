@@ -1,18 +1,20 @@
 package com.cocodi.codi.presentation.controller;
 
 
+import com.cocodi.clothes.application.service.ClosetService;
 import com.cocodi.codi.application.service.OotdService;
 import com.cocodi.codi.presentation.request.OotdCodyRequest;
 import com.cocodi.codi.presentation.request.OotdImageRequest;
-import com.cocodi.codi.presentation.response.ImageSearchResponse;
 import com.cocodi.codi.presentation.response.OotdResponse;
 import com.cocodi.security.domain.model.PrincipalDetails;
+import com.cocodi.sse.application.service.SseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
 
@@ -22,6 +24,8 @@ import java.util.List;
 public class AuthOotdController {
 
     private final OotdService ootdService;
+    private final ClosetService closetService;
+    private final SseService sseService;
 
     /**
      * 저장된 Ootd 조회 (한 달)
@@ -38,12 +42,14 @@ public class AuthOotdController {
      * @return
      */
     @GetMapping("/image")
-    public ResponseEntity<ImageSearchResponse> uploadOotdImage(MultipartFile ootdImage) {
-        // todo 파이썬한테 이미지 전달
-        // todo 상의, 하의, 신발, 아우터 정보 반환 받기
+    public SseEmitter uploadOotdImage(MultipartFile ootdImage, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        Long memberId = principalDetails.getMemberId();
+        // 파이썬한테 이미지 전달
+        String sseKey = sseService.createInstance();
+        List<Long> memberCloset = closetService.findClothesListByMember(memberId);
+        ootdService.codyClothesSearch(sseKey, ootdImage, memberCloset);
         // 프론트에 전달
-        ImageSearchResponse imageSearchResponse = new ImageSearchResponse(null, null, null, null);
-        return new ResponseEntity<>(imageSearchResponse, HttpStatus.OK);
+        return sseService.getInstance(sseKey);
     }
 
     /**
