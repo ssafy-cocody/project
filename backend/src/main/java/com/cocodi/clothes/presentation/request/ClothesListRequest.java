@@ -1,4 +1,4 @@
-package com.cocodi.codi.presentation.request;
+package com.cocodi.clothes.presentation.request;
 
 import java.util.List;
 
