@@ -66,7 +66,7 @@ const CodyBoard = ({ onClickDeleteClothes, selectedClothes, setDeleteClothes }: 
               onClick={() => handleDeleteClothes(category)}
               className={styles['image-container']}
             >
-              <Image src={selectedClothes[category]?.clothesImage!} alt="" fill className={styles.clothes} />
+              <Image src={selectedClothes[category]?.image!} alt="" fill className={styles.clothes} />
             </button>
           );
         })}

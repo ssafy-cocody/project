@@ -14,7 +14,7 @@ const useSession = () => {
 
   const getSession = useCallback(async () => {
     try {
-      const response = await fetch('/api/auth/cookie');
+      const response = await fetch('/api/auth/cookie', { cache: 'no-store' });
       const { accessToken, ...data } = await response.json();
       setAccessToken(accessToken);
       setSession(data);
