@@ -23,6 +23,7 @@ const SearchWithImage = ({ onClickButton }: { onClickButton: () => void }) => {
     queryKey: [{ clothesUuid }], // TODO uuid는 30분만 유효
     queryFn: () => fetchGetClothesInfo({ uuid: clothesUuid }),
     enabled: !!clothesUuid,
+    retry: false,
   });
 
   const postClothesImage = useMutation({
