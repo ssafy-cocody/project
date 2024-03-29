@@ -1,9 +1,12 @@
 /* eslint-disable no-unused-expressions */
+import { useInfiniteQuery } from '@tanstack/react-query';
 import Image from 'next/image';
-import { useState } from 'react';
 
 import styles from '@/components/ClothesList/ClothesList.module.scss';
-import { Category, IClothes } from '@/types/clothes';
+import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
+import { fetchGetClothes } from '@/services/closet';
+import { IFetchGetClosetResponse } from '@/services/closet/type';
+import { IClothes } from '@/types/clothes';
 
 interface Props {
   handleModal?: () => void;
@@ -11,41 +14,45 @@ interface Props {
   onSelectClothes?: (newlyClickedClothes: IClothes) => void;
 }
 
+const PAGE_SIZE = 9;
+
 const ClothesList = ({ handleModal, className, onSelectClothes }: Props) => {
-  const [clothes] = useState<IClothes[]>([
-    { clothesId: 0, category: Category.TOP, image: '/images/clothes/top.png' },
-    { clothesId: 1, category: Category.TOP, image: '/images/clothes/top.png' },
-    { clothesId: 2, category: Category.TOP, image: '/images/clothes/top.png' },
-    { clothesId: 3, category: Category.OUTER, image: '/images/clothes/cardigan.png' },
-    { clothesId: 4, category: Category.OUTER, image: '/images/clothes/cardigan.png' },
-    { clothesId: 5, category: Category.OUTER, image: '/images/clothes/cardigan.png' },
-    { clothesId: 6, category: Category.BOTTOM, image: '/images/clothes/pants.png' },
-    { clothesId: 7, category: Category.BOTTOM, image: '/images/clothes/pants.png' },
-    { clothesId: 8, category: Category.BOTTOM, image: '/images/clothes/pants.png' },
-    { clothesId: 9, category: Category.BOTTOM, image: '/images/clothes/pants.png' },
-    { clothesId: 10, category: Category.SHOES, image: '/images/clothes/shoes.png' },
-  ]);
+  const { data, fetchNextPage, hasNextPage } = useInfiniteQuery<IFetchGetClosetResponse>({
+    queryKey: ['ClothesQueryKey'],
+    queryFn: ({ pageParam }) => fetchGetClothes({ page: pageParam as number, size: PAGE_SIZE }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => (lastPage.last ? undefined : lastPage.pageable.pageNumber + 1),
+  });
+
+  const refLast = useIntersectionObserver({ hasNextPage, fetchNextPage }).ref;
 
   return (
     <div className={`${styles['list-container']} ${className}`}>
       <div className={styles['closet-container']}>
         <div className={styles['clothes-container']}>
-          {clothes.map((item: IClothes) => {
-            const { clothesId, image } = item;
-            return (
-              <button
-                type="button"
-                className={styles['clothes-image-container']}
-                key={clothesId.toString()}
-                onClick={() => {
-                  handleModal ? handleModal() : '';
-                  onSelectClothes ? onSelectClothes(item) : '';
-                }}
-              >
-                <Image src={image!} alt={clothesId.toString()} fill className={styles.clothes} />
-              </button>
-            );
+          {data?.pages.map(({ content }: { content: IClothes[] }) => {
+            return content.map((item: IClothes) => {
+              const { clothesId, image } = item;
+              return (
+                <button
+                  type="button"
+                  className={styles['clothes-image-container']}
+                  key={clothesId.toString()}
+                  onClick={() => {
+                    handleModal ? handleModal() : '';
+                    onSelectClothes ? onSelectClothes(item) : '';
+                  }}
+                >
+                  <Image src={image!} alt={clothesId.toString()} fill className={styles.clothes} />
+                </button>
+              );
+            });
           })}
+          {hasNextPage ? (
+            <div ref={refLast} className={styles['page-end']} />
+          ) : (
+            <div className={styles['page-end']}>⋆₊ 옷을 더 담아주세요! ₊⁺</div>
+          )}
         </div>
       </div>
     </div>
