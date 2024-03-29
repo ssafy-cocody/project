@@ -1,4 +1,4 @@
-import { BASE_URL, getAccessToken } from '@/services/';
+import { api, BASE_URL, getAccessToken } from '@/services/';
 import {
   IFetchGetClothesInfoRequest,
   IFetchGetClothesInfoResponse,
@@ -12,6 +12,8 @@ import {
 const fetchPostClothesImage = async ({
   formData,
 }: IFetchPostClothesImageRequest): Promise<IFetchPostClothesImageResponse> => {
+  console.log('hi');
+
   const response = await fetch(`${BASE_URL}/public/v1/clothes/image`, {
     method: 'POST',
     body: formData,
@@ -55,14 +57,10 @@ const fetchPostClothesImage = async ({
 /**
  * UUID로 유사한 옷 검색
  */
-const fetchGetClothesInfo = async ({ uuid }: IFetchGetClothesInfoRequest): Promise<IFetchGetClothesInfoResponse> => {
-  const response = await fetch(`${BASE_URL}/auth/v1/clothes/temp/info/${uuid}`, {
-    headers: {
-      Authorization: `Bearer ${getAccessToken()}`,
-    },
-  });
+const fetchGetClothesInfo = async ({ uuid }: IFetchGetClothesInfoRequest) => {
+  const response = await api.get<IFetchGetClothesInfoResponse>(`/clothes/temp/info/${uuid}`);
 
-  return response.json();
+  return response;
 };
 
 export { fetchGetClothesInfo, fetchPostClothesImage };
