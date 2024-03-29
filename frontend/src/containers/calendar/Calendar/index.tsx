@@ -2,6 +2,7 @@
 
 'use client';
 
+import { QueryKey, useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
@@ -12,13 +13,13 @@ import ImageInput from '@/components/ImageInput';
 import styles from '@/containers/calendar/Calendar/Calendar.module.scss';
 import { ICalendar } from '@/containers/calendar/Calendar/type';
 import useModal from '@/hooks/useModal';
-import { fetchGetCalendar } from '@/services/clothes';
+import { fetchGetCalendar } from '@/services/calendar';
 
 const Calendar = () => {
   const [year] = useState<number>(new Date().getFullYear());
   const [month] = useState<number>(new Date().getMonth() + 1);
-  const [ootds, setOOTD] = useState<ICalendar[][]>([]);
-  const [data, setData] = useState<ICalendar[]>();
+  const [calendar, setCalendar] = useState<ICalendar[][]>([]);
+
   const { Modal, openModal } = useModal();
 
   // currentDate가 몇 주차인지 구하는 함수
@@ -31,42 +32,36 @@ const Calendar = () => {
     [year, month],
   );
 
-  const fetchCalendarData = async () => {
-    setData(await fetchGetCalendar({ year: year.toString(), month: paddingMonth(month) }));
-  };
+  const { data: ootds } = useQuery<ICalendar[], QueryKey>({
+    queryKey: ['CalendarQueryKey'],
+    queryFn: () => fetchGetCalendar({ year: year.toString(), month: paddingMonth(month) }),
+  });
 
   useEffect(() => {
     if (year && month) {
-      const lastDay = new Date(year, month, 0).getDate();
+      const dateOfLastDay = new Date(year, month, 0).getDate();
       const dayOfWeekOfDay1 = getDayOfWeek(1);
-      const week = getWeek(lastDay, dayOfWeekOfDay1);
-      const ootd = Array.from({ length: week }, (_, j) =>
+      const weeks = getWeek(dateOfLastDay, dayOfWeekOfDay1);
+      const newCalendar = Array.from({ length: weeks }, (_, j) =>
         Array.from({ length: 7 }, (__, i) => {
           return { ootdId: -(j * 7 + i), day: 0, image: '' };
         }),
       );
-      for (let i = 1; i <= lastDay; i++) {
-        const itemOfDayi = data?.filter((item) => item.day === i) || [];
-        if (itemOfDayi.length) {
-          ootd[getWeek(i, dayOfWeekOfDay1) - 1][getDayOfWeek(i)] = itemOfDayi[0];
+      for (let i = 1; i <= dateOfLastDay; i++) {
+        const ootdOfDay = ootds?.filter((item) => item.day === i) || [];
+        if (ootdOfDay.length) {
+          newCalendar[getWeek(i, dayOfWeekOfDay1) - 1][getDayOfWeek(i)] = ootdOfDay[0];
         } else {
-          ootd[getWeek(i, dayOfWeekOfDay1) - 1][getDayOfWeek(i)] = {
+          newCalendar[getWeek(i, dayOfWeekOfDay1) - 1][getDayOfWeek(i)] = {
             ootdId: i,
             day: i,
             image: '',
           };
         }
       }
-      setOOTD(ootd);
+      setCalendar(newCalendar);
     }
-  }, [getDayOfWeek, month, year, data]);
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    if (year && month) {
-      fetchCalendarData();
-    }
-  }, [year, month]);
+  }, [getDayOfWeek, month, year, ootds]);
 
   return (
     <div className={styles['main-container']}>
@@ -86,7 +81,7 @@ const Calendar = () => {
           <div className={styles['day-of-week']}>SAT</div>
         </div>
         <div className={styles['ootd-container']}>
-          {ootds.map((week: ICalendar[], index) => {
+          {calendar.map((week: ICalendar[], index) => {
             return (
               <div className={styles.week} key={week[index].ootdId}>
                 {week.map(({ ootdId, day, image }: ICalendar) => {

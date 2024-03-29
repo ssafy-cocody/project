@@ -1,5 +1,5 @@
-import { IFetchGetCalendarRequest, IFetchGetCalendarResponse } from '@/containers/calendar/Calendar/type';
 import { api } from '@/services';
+import { IFetchGetCalendarRequest, IFetchGetCalendarResponse } from '@/services/calendar/type';
 
 export const fetchGetCalendar = async ({
   year,
