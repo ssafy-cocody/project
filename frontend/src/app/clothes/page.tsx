@@ -1,5 +1,6 @@
 'use client';
 
+import { useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 
 import Background from '@/components/Background';
@@ -10,11 +11,18 @@ import styles from '@/containers/clothes/ClothesLayout.module.scss';
 import SearchWithCode from '@/containers/clothes/SearchWithCode';
 import SearchWithImage from '@/containers/clothes/SearchWithImage';
 import useClothesStep from '@/hooks/useClothesStep';
+import { fetchPostSaveClothes } from '@/services/clothes';
 import { DONE, INewClothes, Step } from '@/types/clothes';
+
+const initClothes = {
+  uuid: '',
+  image: '',
+};
 
 const Page = () => {
   const { step, goBackStep, goNextStep, initClothesStep } = useClothesStep();
-  const [clothes, setClothes] = useState<INewClothes>();
+  const [clothes, setClothes] = useState<INewClothes>(initClothes);
+  const clothesMutation = useMutation({ mutationFn: fetchPostSaveClothes });
 
   useEffect(() => {
     // 페이지 첫 렌더시 초기화
@@ -29,7 +37,23 @@ const Page = () => {
   };
 
   const handleSumbit = () => {
-    console.log('clothes', clothes);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { uuid, image, ...data } = clothes;
+    if (!uuid) return;
+
+    const formdata = new FormData();
+    formdata.append('category', data.category!);
+    formdata.append('name', data.name!);
+    formdata.append('color', data.color!);
+    formdata.append('brand', data.brand!);
+    formdata.append('productNo', data.productNo!);
+    formdata.append('price', data.price!.toString());
+    formdata.append('link', data.link!);
+
+    clothesMutation.mutate({
+      uuid,
+      clothes: formdata,
+    });
   };
 
   const uploadStep = {
@@ -38,8 +62,8 @@ const Page = () => {
       title: '사진 검색',
       renderStep: (nextStep: Step | '') => (
         <SearchWithImage
-          onSelectResult={({ category, name, color, brand, productNo, price }) => {
-            const newItem: INewClothes = { ...clothes, category, name, color, brand, productNo, price };
+          onSelectResult={({ uuid, category, name, color, brand, productNo, price, image }) => {
+            const newItem = { ...clothes, category, name, color, brand, productNo, price, image, uuid };
 
             setClothes(newItem);
             goNextStep(nextStep);
@@ -51,7 +75,7 @@ const Page = () => {
     [Step.SEARCH_WITH_CAMERA_BASIC_FORM]: {
       title: '기본 정보 입력',
       renderStep: (nextStep: Step | '') => (
-        <BasicForm onChange={handleChangeInput} onClickButton={() => goNextStep(nextStep)} />
+        <BasicForm onChange={handleChangeInput} onClickButton={() => goNextStep(nextStep)} {...clothes} />
       ),
       nextStep: Step.SEARCH_WITH_CAMERA_ADDITIONAL_FORM,
     },
@@ -61,9 +85,10 @@ const Page = () => {
         <AdditionalForm
           onChange={handleChangeInput}
           onClickButton={() => {
-            goNextStep(nextStep);
             handleSumbit();
+            // goNextStep(nextStep); TODO 폼 요청 후 이동
           }}
+          {...clothes}
         />
       ),
       nextStep: DONE,
@@ -87,8 +112,8 @@ const Page = () => {
         <AdditionalForm
           onChange={handleChangeInput}
           onClickButton={() => {
-            goNextStep(nextStep);
             handleSumbit();
+            // goNextStep(nextStep);
           }}
         />
       ),
