@@ -10,25 +10,10 @@ import RecommendItems from '@/containers/home/RecommendItems';
 import RecommendTab from '@/containers/home/RecommendTab';
 import RecommendViewer from '@/containers/home/RecommendViewer';
 import { IRecommendCody } from '@/containers/home/type';
-import useScrollDirection from '@/hooks/useScrollDirection';
 
 const Home = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [selectedCody, setSelectedCody] = useState<IRecommendCody>({ id: 0, image: '' });
-  const [isScrolledToTop, setIsScrolledToTop] = useState(false);
-  const [isNavShow, setIsNavShow] = useState(true);
-
-  useScrollDirection({
-    ref: scrollRef,
-    downFunc: () => {
-      setIsScrolledToTop(false);
-      setTimeout(() => setIsNavShow(false), 500);
-    },
-    upFunc: () => {
-      setIsNavShow(true);
-      setIsScrolledToTop(true);
-    },
-  });
 
   return (
     <main ref={scrollRef}>
@@ -41,9 +26,7 @@ const Home = () => {
         <RecommendItems />
         <MyCodyPreview />
       </div>
-      <Nav
-        className={`${isNavShow ? styles.visable : styles.hidden} ${isScrolledToTop ? styles.scrollToTop : styles.scrollToBottom}`}
-      />
+      <Nav />
     </main>
   );
 };
