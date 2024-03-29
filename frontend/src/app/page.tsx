@@ -13,7 +13,7 @@ import { IRecommendCody } from '@/containers/home/type';
 
 const Home = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [selectedCody, setSelectedCody] = useState<IRecommendCody>({ id: 0, image: '' });
+  const [selectedCody, setSelectedCody] = useState<IRecommendCody>({ id: 0, image: '/images/logo.png' });
 
   return (
     <main ref={scrollRef}>

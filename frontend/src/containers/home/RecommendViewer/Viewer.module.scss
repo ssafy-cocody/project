@@ -12,10 +12,12 @@
     width: 45%;
     height: 240px;
     position: relative;
+    background-color: var(--color-white);
 
     > img {
       border: 2px solid var(--color-black);
       box-sizing: border-box;
+      object-fit: contain;
     }
   }
 
