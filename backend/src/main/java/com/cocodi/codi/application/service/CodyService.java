@@ -1,7 +1,6 @@
 package com.cocodi.codi.application.service;
 
 import com.cocodi.clothes.domain.model.Clothes;
-import com.cocodi.clothes.domain.repository.ClothesRepository;
 import com.cocodi.codi.domain.model.Cody;
 import com.cocodi.codi.domain.model.MyCody;
 import com.cocodi.codi.domain.model.Ootd;
@@ -37,7 +36,6 @@ public class CodyService {
     private final MyCodyRepository myCodyRepository;
     private final CodyRepository codyRepository;
     private final MemberRepository memberRepository;
-    private final ClothesRepository clothesRepository;
     private final OotdRepository ootdRepository;
     private final EntityManager entityManager;
 
@@ -108,19 +106,6 @@ public class CodyService {
         return recommendCodyResponses;
     }
 
-//    private boolean isMyOotd(Ootd ootd, ClothesRequest clothesRequest) {
-//        Cody cody = ootd.getCody();
-//        return isClothesIdMatch(clothesRequest.topId(), cody.getTop()) &&
-//                isClothesIdMatch(clothesRequest.bottomId(), cody.getBottom()) &&
-//                isClothesIdMatch(clothesRequest.outerId(), cody.getOuter()) &&
-//                isClothesIdMatch(clothesRequest.shoesId(), cody.getShoes()) &&
-//                isClothesIdMatch(clothesRequest.onepieceId(), cody.getOnepiece());
-//    }
-//
-//    private boolean isClothesIdMatch(Long clothesRequestId, Clothes clothes) {
-//        return clothesRequestId == null || (clothes != null && Objects.equals(clothesRequestId, clothes.getClothesId()));
-//    }
-
     public boolean isMyCody(Member member, Cody cody) {
         return myCodyRepository.findByMemberAndCody(member, cody).isPresent();
     }
@@ -148,8 +133,7 @@ public class CodyService {
     private Clothes getClothesOrNull(Long clothesId) {
         if (clothesId != null) {
             return entityManager.getReference(Clothes.class, clothesId);
-        }
-        else {
+        } else {
             return null;
         }
     }
