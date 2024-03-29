@@ -12,9 +12,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 import static com.cocodi.common.infrastructure.config.ConvertUtils.getLongs;
-
 @Component
 @Slf4j
 @RequiredArgsConstructor
@@ -30,8 +31,36 @@ public class ClothesRabbitListener {
 
         if (listObj instanceof List<?>) {
             List<Long> longList = getLongs((List<?>) listObj);
-            clothesTempRepository.save(new ClothesTemp(sseObject.sseId(), hashMap.get("img").toString(), longList));
-            sseService.sendMessageAndRemove(sseObject.sseId(), "message", sseObject.sseId());
+            CompletableFuture<Void> future = saveWithRetry(new ClothesTemp(sseObject.sseId(), hashMap.get("img").toString(), longList), 3, 1000)
+                    .thenRun(() -> {
+                        // 저장 성공 후 SSE 메시지 전송
+                        sseService.sendMessageAndRemove(sseObject.sseId(), "message", sseObject.sseId());
+                    }).exceptionally(ex -> {
+                        // 모든 재시도가 실패한 경우 여기서 처리
+                        log.info("Failed to save ClothesTemp after retries: " + ex.getMessage());
+                        return null;
+                    });
         }
+    }
+
+
+    private CompletableFuture<Void> saveWithRetry(ClothesTemp clothesTemp, int maxRetries, int delay) {
+        return CompletableFuture.runAsync(() -> {
+            clothesTempRepository.save(clothesTemp);
+        }).exceptionallyCompose(ex -> {
+            if (maxRetries > 0) {
+                // 재시도 전에 지정된 지연 시간 동안 대기
+                return CompletableFuture.runAsync(() -> {
+                    try {
+                        TimeUnit.MILLISECONDS.sleep(delay);
+                    } catch (InterruptedException ie) {
+                        Thread.currentThread().interrupt();
+                    }
+                }).thenCompose(aVoid -> saveWithRetry(clothesTemp, maxRetries - 1, delay));
+            } else {
+                // 재시도 횟수를 모두 소진한 경우 예외를 전파
+                throw new RuntimeException("Failed to save ClothesTemp to Redis", ex);
+            }
+        });
     }
 }
