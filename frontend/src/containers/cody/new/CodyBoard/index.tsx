@@ -5,8 +5,7 @@ import { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from 'reac
 
 import TextInputWithUnderLine from '@/components/TextInputWithUnderLine';
 import styles from '@/containers/cody/new/CodyBoard/Board.module.scss';
-import { ISelectedClothes } from '@/containers/cody/new/type';
-import { Category, IClothes } from '@/types/clothes';
+import { Category, IClothes, ISelectedClothes } from '@/types/clothes';
 import { getValidCodyName } from '@/utils/getValidCodyName';
 
 interface Props {
@@ -67,7 +66,7 @@ const CodyBoard = ({ onClickDeleteClothes, selectedClothes, setDeleteClothes }: 
               onClick={() => handleDeleteClothes(category)}
               className={styles['image-container']}
             >
-              <Image src={selectedClothes[category]?.clothesImage!} alt="" fill className={styles.clothes} />
+              <Image src={selectedClothes[category]?.image!} alt="" fill className={styles.clothes} />
             </button>
           );
         })}
