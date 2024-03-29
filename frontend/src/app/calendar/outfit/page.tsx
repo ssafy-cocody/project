@@ -11,27 +11,27 @@ import Background from '@/components/Background';
 import Button from '@/components/Button';
 import Header from '@/components/Header';
 import styles from '@/containers/calendar/Outfit/Outfit.module.scss';
-import { Category, IClothes, ISelectedClothes } from '@/types/clothes';
+import { ClothesCategory, IClothes, ISelectedClothes } from '@/types/clothes';
 
 const Page = () => {
   const [clothesByCategory] = useState<Record<string, IClothes[]>>({
-    [Category.TOP]: [
-      { image: '/images/test1.jpg', clothesId: 1, category: Category.TOP },
-      { image: '/images/test2.jpg', clothesId: 2, category: Category.TOP },
-      { image: '/images/test3.jpg', clothesId: 3, category: Category.TOP },
+    [ClothesCategory.TOP]: [
+      { image: '/images/test1.jpg', clothesId: 1, category: ClothesCategory.TOP },
+      { image: '/images/test2.jpg', clothesId: 2, category: ClothesCategory.TOP },
+      { image: '/images/test3.jpg', clothesId: 3, category: ClothesCategory.TOP },
     ],
-    [Category.BOTTOM]: [
-      { image: '/images/test2.jpg', clothesId: 4, category: Category.BOTTOM },
-      { image: '/images/test4.jpg', clothesId: 5, category: Category.BOTTOM },
-      { image: '/images/test3.jpg', clothesId: 6, category: Category.BOTTOM },
+    [ClothesCategory.BOTTOM]: [
+      { image: '/images/test2.jpg', clothesId: 4, category: ClothesCategory.BOTTOM },
+      { image: '/images/test4.jpg', clothesId: 5, category: ClothesCategory.BOTTOM },
+      { image: '/images/test3.jpg', clothesId: 6, category: ClothesCategory.BOTTOM },
     ],
-    [Category.SHOES]: [
-      { image: '/images/test2.jpg', clothesId: 8, category: Category.SHOES },
-      { image: '/images/test4.jpg', clothesId: 9, category: Category.SHOES },
-      { image: '/images/test3.jpg', clothesId: 10, category: Category.SHOES },
+    [ClothesCategory.SHOES]: [
+      { image: '/images/test2.jpg', clothesId: 8, category: ClothesCategory.SHOES },
+      { image: '/images/test4.jpg', clothesId: 9, category: ClothesCategory.SHOES },
+      { image: '/images/test3.jpg', clothesId: 10, category: ClothesCategory.SHOES },
     ],
   });
-  const [categories] = useState<string[]>([Category.TOP, Category.BOTTOM, Category.SHOES]);
+  const [categories] = useState<string[]>([ClothesCategory.TOP, ClothesCategory.BOTTOM, ClothesCategory.SHOES]);
   const [selected, setSelected] = useState<ISelectedClothes>({});
 
   const handleClickItem = (e: ChangeEvent<HTMLInputElement>) => {
