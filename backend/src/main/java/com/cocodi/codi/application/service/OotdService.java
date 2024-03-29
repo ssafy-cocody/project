@@ -1,23 +1,31 @@
 package com.cocodi.codi.application.service;
 
+import com.amazonaws.util.Base64;
 import com.cocodi.codi.domain.model.Cody;
 import com.cocodi.codi.domain.model.Ootd;
 import com.cocodi.codi.domain.repository.CodyRepository;
 import com.cocodi.codi.domain.repository.OotdRepository;
+import com.cocodi.codi.presentation.request.CodyClothesSearchResponse;
 import com.cocodi.codi.presentation.request.OotdCodyRequest;
 import com.cocodi.codi.presentation.request.OotdImageRequest;
 import com.cocodi.codi.presentation.response.OotdResponse;
+import com.cocodi.common.infrastructure.rabbit.util.RabbitMQUtil;
 import com.cocodi.member.domain.model.Member;
 import com.cocodi.member.domain.repository.MemberRepository;
 import com.cocodi.member.infrastructure.exception.MemberFindException;
+import com.cocodi.sse.domain.model.SseObject;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OotdService {
@@ -26,6 +34,7 @@ public class OotdService {
     private final OotdRepository ootdRepository;
     private final MemberRepository memberRepository;
     private final CodyRepository codyRepository;
+    private final RabbitMQUtil rabbitMQUtil;
 
     public List<OotdResponse> findOotd(int year, int month, Long memberId) {
         YearMonth yearMonth = YearMonth.of(year, month);
@@ -70,4 +79,14 @@ public class OotdService {
     }
 
 
+    public void codyClothesSearch(String sseKey, MultipartFile ootdImage, List<Long> memberCloset) {
+        try {
+            CodyClothesSearchResponse codyClothesSearchResponse = new CodyClothesSearchResponse(memberCloset, Base64.encodeAsString(ootdImage.getBytes()));
+            SseObject sseObject = new SseObject(sseKey, codyClothesSearchResponse);
+            rabbitMQUtil.convertAndSend("cody_clothes_search", "order_direct_exchange", "cody_clothes_search", sseObject);
+        } catch (IOException e) {
+            log.info(e.getMessage());
+
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package com.cocodi.codi.presentation.controller;
 
+import com.cocodi.clothes.application.service.ClosetService;
 import com.cocodi.codi.application.service.CodyService;
 import com.cocodi.codi.presentation.request.ClothesRequest;
 import com.cocodi.codi.presentation.request.CodyCreateRequest;
@@ -27,6 +28,7 @@ import java.util.List;
 public class AuthCodyController {
 
     private final CodyService codyService;
+    private final ClosetService closetService;
 
     /**
      * 저장된 코디 리스트 조회
@@ -56,6 +58,7 @@ public class AuthCodyController {
     @PostMapping
     public ResponseEntity<?> createCody(@RequestBody CodyCreateRequest codyCreateRequest, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         if (codyService.createCody(codyCreateRequest, principalDetails.getMemberId())) {
+
             return new ResponseEntity<>("success", HttpStatus.CREATED);
         } else {
             return new ResponseEntity<>("이미 등록된 코디입니다.", HttpStatus.BAD_REQUEST);
@@ -79,8 +82,10 @@ public class AuthCodyController {
      */
     @GetMapping("/recommend/cody")
     public ResponseEntity<?> getRecommendCodyList(@RequestParam LocalDate date, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        Long memberId = principalDetails.getMemberId();
         // 추천 코디 갯수가 여러개(3~6개)
         // todo 파이썬에 사용자 옷장 정보 넘기기(clothesId)
+        List<Long> memberCloset = closetService.findClothesListByMember(memberId);
         // todo 옷 Id 리스트 받기
         List<ClothesRequest> recommendCodyIds = new ArrayList<>();
         recommendCodyIds.add(new ClothesRequest(34L, 35L, 36L, 37L, null));
@@ -95,7 +100,7 @@ public class AuthCodyController {
         codyImages.add("image4");
 
         List<RecommendCodyResponse> recommendCodyResponses
-                = codyService.getRecommendCodyList(recommendCodyIds, codyImages, date, principalDetails.getMemberId());
+                = codyService.getRecommendCodyList(recommendCodyIds, codyImages, date, memberId);
         return new ResponseEntity<>(recommendCodyResponses, HttpStatus.OK);
     }
 
@@ -103,7 +108,12 @@ public class AuthCodyController {
      * @return
      */
     @GetMapping("/recommend/item")
-    public ResponseEntity<?> getRecommendItemList() {
+    public ResponseEntity<?> getRecommendItemList(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        Long memberId = principalDetails.getMemberId();
+        // todo 파이썬에 사용자 옷장 정보 넘기기(clothesId)
+        List<Long> memberCloset = closetService.findClothesListByMember(memberId);
+        // todo 파이썬에서 추천 아이템 clothesId, 코디 clothesId 3개 받아오기
+
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 

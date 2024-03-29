@@ -6,6 +6,6 @@ public record ImageSearchResponse(
         List<ImageResponse> topList,
         List<ImageResponse> bottomList,
         List<ImageResponse> outerList,
-        List<ImageResponse> shoesList
-) {
+        List<ImageResponse> shoesList,
+        List<ImageResponse> onepieceList) {
 }
