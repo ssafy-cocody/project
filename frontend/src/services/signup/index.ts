@@ -1,5 +1,5 @@
 import { api } from '@/services';
-import { IFetchCreateMemberRequest } from '@/services/auth/type';
+import { IFetchCreateMemberRequest } from '@/services/signup/type';
 
 /**
  * 회원가입
