@@ -55,6 +55,7 @@ public class ClothesService {
                 .orElseThrow(() -> new NoSuchElementException("해당 UUID를 가진 임시 의류가 존재하지 않습니다: " + uuid));
         String url = s3Service.uploadAI(uuid, Base64.decode(clothesTemp.getImg()));
         Clothes clothes = mappingClothesRequest(createRequest, url, memberId);
+        clothesTempRepository.deleteById(uuid);
         return clothesRepository.save(clothes);
     }
 
@@ -80,5 +81,14 @@ public class ClothesService {
         ClothesTemp clothesTemp = clothesTempRepository.findById(uuid)
                 .orElseThrow(() -> new NoSuchElementException("해당 UUID를 가진 임시 리스트가 존재하지 않습니다: " + uuid));
         return findClothesListIn(clothesTemp.getList());
+    }
+
+    public List<Clothes> findClothesListByProductNo(String productNo) {
+        return clothesRepository.findByProductNo(productNo);
+    }
+
+    @Transactional
+    public void deleteClothes(Long clothesId) {
+        clothesRepository.deleteById(clothesId);
     }
 }
