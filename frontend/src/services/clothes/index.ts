@@ -4,6 +4,7 @@ import {
   IFetchGetClothesInfoResponse,
   IFetchPostClothesImageRequest,
   IFetchPostClothesImageResponse,
+  IFetchPostSaveClothesRequest,
 } from '@/services/clothes/type';
 
 /**
@@ -12,8 +13,6 @@ import {
 const fetchPostClothesImage = async ({
   formData,
 }: IFetchPostClothesImageRequest): Promise<IFetchPostClothesImageResponse> => {
-  console.log('hi');
-
   const response = await fetch(`${BASE_URL}/public/v1/clothes/image`, {
     method: 'POST',
     body: formData,
@@ -63,4 +62,12 @@ const fetchGetClothesInfo = async ({ uuid }: IFetchGetClothesInfoRequest) => {
   return response;
 };
 
-export { fetchGetClothesInfo, fetchPostClothesImage };
+/**
+ * 옷 등록
+ */
+const fetchPostSaveClothes = async ({ uuid, ...clothes }: IFetchPostSaveClothesRequest) => {
+  const response = await api.post(`/clothes/temp/save/${uuid}`, { ...clothes });
+  return response;
+};
+
+export { fetchGetClothesInfo, fetchPostClothesImage, fetchPostSaveClothes };

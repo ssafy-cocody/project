@@ -24,7 +24,7 @@ const MOCK_COLORS = [
   },
 ];
 
-const ColorSelect = () => {
+const ColorSelect = ({ onChange: handleChange }: { onChange: (color: string) => void }) => {
   const [color, setColor] = useState('');
 
   return (
@@ -41,7 +41,12 @@ const ColorSelect = () => {
                 name="color"
                 id={id}
                 value={backgroundColor.toString()}
-                onChange={(e) => setColor(e.target.value.toString())}
+                onChange={(e) => {
+                  const { value } = e.target;
+                  const newcolor = value.toString();
+                  setColor(newcolor);
+                  handleChange(newcolor);
+                }}
               />
             </ColorBox>
           );
