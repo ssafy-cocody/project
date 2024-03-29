@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>조합 평가하기</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            padding-bottom: 20px; /* 하단 공간 주기 */
+            position: relative;
+        }
+        .images {
+            display: flex;
+            justify-content: center; /* 사진 중앙 배치 */
+            margin-bottom: 20px;
+        }
+        .image {
+            flex: 0 0 45%; /* 각 이미지 너비 조절 */
+            position: relative;
+        }
+        .image img {
+            width: 100%;
+            height: auto;
+        }
+        .feedback-buttons {
+            position: absolute; /* 절대 위치로 설정 */
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: -40px; /* 사진 위로 버튼 위치 조절 */
+        }
+        .feedback-buttons button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>사진을 평가해주세요</h1>
+        <div class="images" id="imageContainer">
+            <!-- 이미지가 백엔드 서버로부터 동적으로 로드됩니다. -->
+        </div>
+        <div class="feedback-buttons">
+            <button onclick="like()">좋아요</button>
+            <button onclick="dislike()">싫어요</button>
+        </div>
+    </div>
+
+    <script>
+
+        let ids = [];
+
+        // 백엔드 서버로부터 이미지 링크를 가져오는 함수
+        async function fetchImages() {
+            try {
+                const response = await fetch('/photo'); // 백엔드 서버의 URL에 맞게 수정하세요
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Error fetching images:', error);
+            }
+        }
+
+        // 이미지를 화면에 렌더링하는 함수
+        async function renderImages() {
+            const imageContainer = document.getElementById('imageContainer');
+            const images = await fetchImages();
+            ids = [];
+
+            images.forEach(image => {
+                const imageElement = document.createElement('div');
+                ids.push(image.clothes_id);
+
+                imageElement.className = 'image';
+                imageElement.dataset.id = image.clothes_id;
+                imageElement.innerHTML = `<img src="${image.image}" alt="사진">`;
+                imageContainer.appendChild(imageElement);
+            });
+        }
+
+        function deleteImages() {
+            const imageContainer = document.getElementById('imageContainer');
+            imageContainer.replaceChildren();
+        }
+
+        // 좋아요 버튼 클릭 시 동작하는 함수
+        async function like() {
+            const imageContainer = document.getElementById('imageContainer');
+            
+            try {
+                await fetch("/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(ids)
+                })
+
+            } catch (error) {
+                console.error('Error fetching images:', error);
+            }
+
+            deleteImages();
+            renderImages();
+        }
+
+        // 싫어요 버튼 클릭 시 동작하는 함수
+        function dislike() {
+            deleteImages();
+            renderImages();
+        }
+
+        // 페이지 로드 시 이미지 렌더링
+        window.onload = renderImages;
+    </script>
+</body>
+</html>
