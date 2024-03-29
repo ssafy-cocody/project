@@ -36,7 +36,16 @@ const Page = () => {
     // 사진 검색 플로우
     [Step.SEARCH_WITH_CAMERA]: {
       title: '사진 검색',
-      renderStep: (nextStep: Step | '') => <SearchWithImage onClickButton={() => goNextStep(nextStep)} />,
+      renderStep: (nextStep: Step | '') => (
+        <SearchWithImage
+          onSelectResult={({ category, name, color, brand, productNo, price }) => {
+            const newItem: INewClothes = { ...clothes, category, name, color, brand, productNo, price };
+
+            setClothes(newItem);
+            goNextStep(nextStep);
+          }}
+        />
+      ),
       nextStep: Step.SEARCH_WITH_CAMERA_BASIC_FORM,
     },
     [Step.SEARCH_WITH_CAMERA_BASIC_FORM]: {
