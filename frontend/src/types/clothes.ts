@@ -79,9 +79,17 @@ const Color = {
   GOLD: '#B9B018',
 } as const;
 
+const ClothesCategory = {
+  TOP: 'TOP',
+  BOTTOM: 'BOTTOM',
+  ONEPIECE: 'ONEPIECE',
+  OUTER: 'OUTER',
+  SHOES: 'SHOES',
+} as const;
+
 interface IClothes {
   clothesId: number;
-  category?: string; // FIXME 카테고리 타입 'TOP'|
+  category?: keyof typeof ClothesCategory;
   name?: string;
   color?: keyof typeof Color;
   brand?: string;
@@ -99,5 +107,5 @@ type ISelectedClothes = {
   [Category.SHOES]?: IClothes;
 };
 
-export { Category, DONE, Step };
+export { Category, ClothesCategory, DONE, Step };
 export type { IClothes, ISelectedClothes, TCategory };

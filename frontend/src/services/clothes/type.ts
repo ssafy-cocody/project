@@ -14,9 +14,15 @@ interface IFetchGetClothesInfoRequest {
 
 type IFetchGetClothesInfoResponse = IClothes[];
 
+interface IFetchPostSaveClothesRequest {
+  clothes: IClothes;
+  uuid: string;
+}
+
 export type {
   IFetchGetClothesInfoRequest,
   IFetchGetClothesInfoResponse,
   IFetchPostClothesImageRequest,
   IFetchPostClothesImageResponse,
+  IFetchPostSaveClothesRequest,
 };
