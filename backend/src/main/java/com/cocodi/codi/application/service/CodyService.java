@@ -74,7 +74,6 @@ public class CodyService {
                 .member(member)
                 .build();
         myCodyRepository.save(myCody);
-        // todo : 이미지 생성
         return true;
     }
 
@@ -153,12 +152,14 @@ public class CodyService {
         Map<Category, String> imageMap = clothesList.stream()
                 .collect(Collectors.toMap(Clothes::getCategory, Clothes::getImage));
 
+        String topImage = imageMap.get(Category.TOP);
+        String onePieceImage = imageMap.get(Category.ONEPIECE);
+
         ClothesImageRequest clothesImageRequest = new ClothesImageRequest(
-                imageMap.getOrDefault(Category.TOP, null),
+                topImage != null ? topImage : onePieceImage,
                 imageMap.getOrDefault(Category.BOTTOM, null),
                 imageMap.getOrDefault(Category.OUTER, null),
-                imageMap.getOrDefault(Category.SHOES, null),
-                imageMap.getOrDefault(Category.ONEPIECE, null)
+                imageMap.getOrDefault(Category.SHOES, null)
         );
 
         try {

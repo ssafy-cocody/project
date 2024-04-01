@@ -63,10 +63,9 @@ public class AuthCodyController {
         if (codyService.createCody(codyCreateRequest, principalDetails.getMemberId())) {
             String sseKey = sseService.createInstance();
             codyService.createCodyImage(codyCreateRequest.clothesRequest(), sseKey);
-            return null;
-        } else {
-            return null;
+            return sseService.getInstance(sseKey);
         }
+        throw new RuntimeException("already exist cody :" + "AuthCodyController.createCody");
     }
 
     /**
