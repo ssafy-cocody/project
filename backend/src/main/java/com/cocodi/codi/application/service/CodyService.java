@@ -1,34 +1,40 @@
 package com.cocodi.codi.application.service;
 
+import com.cocodi.clothes.domain.model.Category;
 import com.cocodi.clothes.domain.model.Clothes;
+import com.cocodi.clothes.domain.repository.ClothesRepository;
+import com.cocodi.clothes.presentation.request.ClothesImageRequest;
+import com.cocodi.clothes.presentation.request.ClothesRequest;
 import com.cocodi.codi.domain.model.Cody;
 import com.cocodi.codi.domain.model.MyCody;
 import com.cocodi.codi.domain.model.Ootd;
 import com.cocodi.codi.domain.repository.CodyRepository;
 import com.cocodi.codi.domain.repository.MyCodyRepository;
 import com.cocodi.codi.domain.repository.OotdRepository;
-import com.cocodi.codi.presentation.request.ClothesRequest;
 import com.cocodi.codi.presentation.request.CodyCreateRequest;
 import com.cocodi.codi.presentation.response.CodyResponse;
 import com.cocodi.codi.presentation.response.RecommendCodyResponse;
+import com.cocodi.common.infrastructure.rabbit.util.RabbitMQUtil;
 import com.cocodi.member.domain.model.Member;
 import com.cocodi.member.domain.repository.MemberRepository;
 import com.cocodi.member.infrastructure.exception.MemberFindException;
+import com.cocodi.sse.domain.model.SseObject;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CodyService {
@@ -38,6 +44,8 @@ public class CodyService {
     private final MemberRepository memberRepository;
     private final OotdRepository ootdRepository;
     private final EntityManager entityManager;
+    private final ClothesRepository clothesRepository;
+    private final RabbitMQUtil rabbitMQUtil;
 
     public Slice<CodyResponse> findCody(Pageable pageable, Long memberId) {
         Member member = memberRepository.findById(memberId)
@@ -136,5 +144,39 @@ public class CodyService {
         } else {
             return null;
         }
+    }
+
+    public void createCodyImage(ClothesRequest clothesRequest, String sseKey) {
+        List<Long> clothesIdList = getClothesIdList(clothesRequest);
+        List<Clothes> clothesList = clothesRepository.findByClothesIdIn(clothesIdList);
+
+        Map<Category, String> imageMap = clothesList.stream()
+                .collect(Collectors.toMap(Clothes::getCategory, Clothes::getImage));
+
+        ClothesImageRequest clothesImageRequest = new ClothesImageRequest(
+                imageMap.getOrDefault(Category.TOP, null),
+                imageMap.getOrDefault(Category.BOTTOM, null),
+                imageMap.getOrDefault(Category.OUTER, null),
+                imageMap.getOrDefault(Category.SHOES, null),
+                imageMap.getOrDefault(Category.ONEPIECE, null)
+        );
+
+        try {
+            SseObject sseObject = new SseObject(sseKey, clothesImageRequest);
+            rabbitMQUtil.convertAndSend("cody_image_create", "order_direct_exchange", "cody_image_create", sseObject);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+    }
+
+    @NotNull
+    private static List<Long> getClothesIdList(ClothesRequest clothesRequest) {
+        List<Long> clothesIdList = new ArrayList<>();
+        if (clothesRequest.topId() != null) clothesIdList.add(clothesRequest.topId());
+        if (clothesRequest.bottomId() != null) clothesIdList.add(clothesRequest.bottomId());
+        if (clothesRequest.outerId() != null) clothesIdList.add(clothesRequest.outerId());
+        if (clothesRequest.shoesId() != null) clothesIdList.add(clothesRequest.shoesId());
+        if (clothesRequest.onepieceId() != null) clothesIdList.add(clothesRequest.onepieceId());
+        return clothesIdList;
     }
 }
