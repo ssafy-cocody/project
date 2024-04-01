@@ -7,4 +7,25 @@ interface IFetchGetCalendarRequest {
 
 type IFetchGetCalendarResponse = ICalendar[];
 
-export type { IFetchGetCalendarRequest, IFetchGetCalendarResponse };
+type TSimilarClothes = {
+  clothesId: number;
+  imageUrl: string;
+};
+interface IFetchGetOotdImageResponse {
+  // TODO TOP, BOTTOM, OUTER, SHOES 로 변경
+  topList: TSimilarClothes[];
+  bottomList: TSimilarClothes[];
+  outerList: TSimilarClothes[];
+  shoesList: TSimilarClothes[];
+}
+
+interface IFetchGetOotdImageRequest {
+  formData: FormData; // key: ootdImage
+}
+
+export type {
+  IFetchGetCalendarRequest,
+  IFetchGetCalendarResponse,
+  IFetchGetOotdImageRequest,
+  IFetchGetOotdImageResponse,
+};
