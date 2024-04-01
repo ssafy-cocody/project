@@ -1,19 +1,26 @@
 import { cookies } from 'next/headers';
 
 import { ACCESS_TOKEN } from '@/services';
-import { fetchUserInfo } from '@/services/auth';
 
 export const dynamic = 'force-dynamic';
 
+const endpoint = process.env.NEXT_PUBLIC_API_PUBLIC_ENDPOINT;
+
 export async function GET() {
   try {
-    const { accessToken, ...data } = await fetchUserInfo();
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/${endpoint}`, {
+      credentials: 'include',
+      headers: {
+        Cookie: cookies().toString(),
+      },
+    });
 
-    if (!accessToken) {
-      return new Response('Access token is missing', {
-        status: 400,
-      });
+    if (!response.ok) {
+      const error = new Error(`${response.status} headers${response.headers}`);
+      return Promise.reject(error);
     }
+
+    const { accessToken, ...data } = await response.json();
 
     cookies().set({ name: ACCESS_TOKEN, value: accessToken, httpOnly: true, secure: true });
 
