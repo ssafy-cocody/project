@@ -23,6 +23,14 @@ interface IFetchGetOotdImageRequest {
 
 interface IFetchPostOotdImageRequest {
   formData: FormData; // ootdImage
+  clothesRequest: {
+    topId: number;
+    bottomId: number;
+    outerId: number;
+    shoesId: number;
+    onepieceId: number;
+  };
+  date: string; // 'yyyy-MM-dd';
 }
 interface IFetchPostOotdImageResponse {}
 

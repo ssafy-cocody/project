@@ -54,8 +54,13 @@ export const fetchGetOotdImage = async ({
 
 /**
  * 내 코디 등록
+ * TODO: 파라미터 넘기기
  */
-export const fetchPostOotdImage = async ({ formData }: IFetchGetOotdImageRequest) => {
-  const response = await api.post<IFetchPostOotdImageResponse, IFetchPostOotdImageRequest>('/ootd/image', formData);
+export const fetchPostOotdImage = async ({ formData, clothesRequest, date }: IFetchGetOotdImageRequest) => {
+  const response = await fetch(`${BASE_URL}/v1/auth/ootd/image`, {
+    method: 'POST',
+    body: JSON.stringify({}),
+  });
+
   return response;
 };
