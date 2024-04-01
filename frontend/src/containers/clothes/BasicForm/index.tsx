@@ -32,9 +32,9 @@ const CLOTHES_OPTIONS = [
 
 const BasicForm = ({ onClickButton, onChange: handleChange, readOnly, image, ...initValue }: BasicFormProps) => {
   const [formInput, setFormInput] = useState({
-    category: initValue.category,
-    name: initValue.name,
-    color: initValue.color,
+    category: initValue.category || '',
+    name: initValue.name || '',
+    color: initValue.color || '',
   });
   const [isValid, setIsValid] = useState(!Object.values(formInput).some((v) => v === ''));
 
