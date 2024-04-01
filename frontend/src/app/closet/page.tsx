@@ -41,8 +41,8 @@ const Page = () => {
             </Link>
           </div>
           <div className={styles['cody-scroll']}>
-            {data?.content.length ? (
-              data?.content.map(({ image, name }: ICody) => {
+            {data?.content ? (
+              data.content.map(({ image, name }: ICody) => {
                 return (
                   <div key={name} className={styles.cody}>
                     <div className={styles['cody-image-container']}>
