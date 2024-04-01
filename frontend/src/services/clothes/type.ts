@@ -1,4 +1,4 @@
-import { IClothes, INewClothes } from '@/types/clothes';
+import { IClothes } from '@/types/clothes';
 
 interface IFetchPostClothesImageRequest {
   formData: FormData;
@@ -15,7 +15,7 @@ interface IFetchGetClothesInfoRequest {
 type IFetchGetClothesInfoResponse = IClothes[];
 
 interface IFetchPostSaveClothesRequest {
-  clothes: INewClothes;
+  clothes: FormData; // FIXME FormData에 INewClothes 타입 정의
   uuid: string;
 }
 
