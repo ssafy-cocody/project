@@ -4,7 +4,7 @@
 
 import { useMutation } from '@tanstack/react-query';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ChangeEvent, useState } from 'react';
 
 import { CheckIcon } from '@/../public/svgs';
@@ -20,7 +20,9 @@ import { queryClient } from '@/utils/Provider';
 
 const Page = () => {
   const router = useRouter();
-  const [year, month, date] = [2024, 4, 1];
+  const searchParams = useSearchParams();
+  const [year, month, date] = [searchParams.get('year'), searchParams.get('month'), searchParams.get('date')];
+
   const data = queryClient.getQueryData(OUTFIT_QUERY_KEY);
   const outfitMutation = useMutation({
     mutationFn: fetchPostOotdImage,
@@ -55,7 +57,7 @@ const Page = () => {
 
     const params = {
       clothesRequest,
-      date: yearMonthDateFormatter(year, month, date),
+      date: yearMonthDateFormatter(Number(year), Number(month), Number(date)),
     };
 
     // outfitMutation.mutate();

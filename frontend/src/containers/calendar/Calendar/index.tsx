@@ -25,6 +25,7 @@ const Calendar = () => {
 
   const [year] = useState<number>(new Date().getFullYear());
   const [month] = useState<number>(new Date().getMonth() + 1);
+  const [date, setDate] = useState<number>();
   const [calendar, setCalendar] = useState<ICalendar[][]>([]);
   const ootdImageRef = useRef<File>();
   const { Modal, openModal } = useModal();
@@ -33,7 +34,7 @@ const Calendar = () => {
     mutationFn: fetchGetOotdImage,
     onSuccess: (result) => {
       queryClient.setQueryData(OUTFIT_QUERY_KEY, () => result);
-      router.push('/calendar/outfit');
+      router.push(`/calendar/outfit?year=${year}&month=${month}&date=${date}`);
     },
   });
 
@@ -77,6 +78,14 @@ const Calendar = () => {
     }
   }, [getDayOfWeek, month, year, ootds]);
 
+  /**
+   * 날짜 클릭
+   */
+  const handleClickDate = (date_: number) => {
+    setDate(date_);
+    openModal();
+  };
+
   const handleImageChange = (file: File) => {
     ootdImageRef.current = file;
   };
@@ -114,7 +123,7 @@ const Calendar = () => {
               <div className={styles.week} key={week[index].ootdId}>
                 {week.map(({ ootdId, day, image }: ICalendar) => {
                   return (
-                    <button type="button" onClick={openModal} className={styles.ootd} key={ootdId}>
+                    <button type="button" onClick={() => handleClickDate(day)} className={styles.ootd} key={ootdId}>
                       {!!day && (
                         <>
                           <div
