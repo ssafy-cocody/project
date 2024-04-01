@@ -11,7 +11,7 @@ import styles from '@/containers/clothes/ClothesLayout.module.scss';
 import SearchWithCode from '@/containers/clothes/SearchWithCode';
 import SearchWithImage from '@/containers/clothes/SearchWithImage';
 import useClothesStep from '@/hooks/useClothesStep';
-import { fetchPostSaveClothes } from '@/services/clothes';
+import { fetchGetClothesTempImg, fetchPostSaveClothes } from '@/services/clothes';
 import { DONE, INewClothes, Step } from '@/types/clothes';
 
 const initClothes = {
@@ -20,9 +20,14 @@ const initClothes = {
 };
 
 const Page = () => {
-  const { step, goBackStep, goNextStep, initClothesStep } = useClothesStep();
+  const { step, goBackStep, goNextStep, initClothesStep, jumpStep } = useClothesStep();
   const [clothes, setClothes] = useState<INewClothes>(initClothes);
-  const clothesMutation = useMutation({ mutationFn: fetchPostSaveClothes });
+  const clothesMutation = useMutation({
+    mutationFn: fetchPostSaveClothes,
+    onSuccess: () => {
+      // TODO closet 업데이트
+    },
+  });
 
   useEffect(() => {
     // 페이지 첫 렌더시 초기화
@@ -76,6 +81,17 @@ const Page = () => {
 
             setClothes(newItem);
             goNextStep(nextStep);
+          }}
+          onClickSelfBasicForm={({ uuid }) => {
+            const setClothesImage = async () => {
+              const res = await fetchGetClothesTempImg(uuid);
+              setClothes({
+                uuid,
+                image: res?.toString(),
+              });
+            };
+            setClothesImage();
+            jumpStep(Step.SELF_BASIC_FORM);
           }}
         />
       ),
