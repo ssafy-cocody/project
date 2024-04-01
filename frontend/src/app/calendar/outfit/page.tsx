@@ -11,10 +11,15 @@ import Background from '@/components/Background';
 import Button from '@/components/Button';
 import Header from '@/components/Header';
 import styles from '@/containers/calendar/Outfit/Outfit.module.scss';
-import { ClothesCategory, IClothes, ISelectedClothes } from '@/types/clothes';
+import { ClosetCategory, ClothesCategory, IClothes, ISelectedClothes } from '@/types/clothes';
 
 const Page = () => {
-  const [clothesByCategory] = useState<Record<string, IClothes[]>>({
+  const [clothesByCategory] = useState({
+    [ClothesCategory.OUTER]: [
+      { image: '/images/test2.jpg', clothesId: 11, category: ClothesCategory.OUTER },
+      { image: '/images/test4.jpg', clothesId: 12, category: ClothesCategory.OUTER },
+      { image: '/images/test3.jpg', clothesId: 13, category: ClothesCategory.OUTER },
+    ],
     [ClothesCategory.TOP]: [
       { image: '/images/test1.jpg', clothesId: 1, category: ClothesCategory.TOP },
       { image: '/images/test2.jpg', clothesId: 2, category: ClothesCategory.TOP },
@@ -31,12 +36,18 @@ const Page = () => {
       { image: '/images/test3.jpg', clothesId: 10, category: ClothesCategory.SHOES },
     ],
   });
-  const [categories] = useState<string[]>([ClothesCategory.TOP, ClothesCategory.BOTTOM, ClothesCategory.SHOES]);
+
+  const [categories] = useState([
+    ClothesCategory.OUTER,
+    ClothesCategory.TOP,
+    ClothesCategory.BOTTOM,
+    ClothesCategory.SHOES,
+  ]);
+
   const [selected, setSelected] = useState<ISelectedClothes>({});
 
   const handleClickItem = (e: ChangeEvent<HTMLInputElement>) => {
-    const newSelected: ISelectedClothes = { ...selected };
-    newSelected[e.target.value] = { clothesId: Number(e.target.id) };
+    const newSelected = { ...selected, [e.target.value]: { clothesId: Number(e.target.id) } };
     setSelected(newSelected);
   };
 
@@ -52,7 +63,7 @@ const Page = () => {
           {categories.map((category) => {
             return (
               <div key={category} className={styles['clothes-by-category']}>
-                <div className={styles.category}>{category}</div>
+                <div className={styles.category}>{ClosetCategory[category]}</div>
                 <div className={styles.clothes}>
                   {clothesByCategory[category].map(({ image, clothesId }: IClothes, index) => {
                     return (
@@ -76,8 +87,8 @@ const Page = () => {
                         <input
                           type="radio"
                           id={clothesId.toString()}
-                          value={category.toString()}
-                          radioGroup={category.toString()}
+                          value={category}
+                          radioGroup={category}
                           onChange={handleClickItem}
                         />
                       </div>

@@ -14,25 +14,40 @@ import TostMessage from '@/components/TostMessage';
 import CodyBoard from '@/containers/cody/new/CodyBoard';
 import styles from '@/containers/cody/new/NewCody.module.scss';
 import useModal from '@/hooks/useModal';
-import { Category, IClothes, ISelectedClothes, TCategory } from '@/types/clothes';
+import { ClosetCategory, ClothesCategory, IClothes, ISelectedClothes } from '@/types/clothes';
 
-const categoryOrder: (keyof TCategory)[] = [Category.TOP, Category.OUTER, Category.BOTTOM, Category.SHOES];
+const categoryOrder: (keyof typeof ClothesCategory)[] = [
+  ClothesCategory.TOP,
+  ClothesCategory.OUTER,
+  ClothesCategory.BOTTOM,
+  ClothesCategory.SHOES,
+];
 
 const Page = () => {
   const { Modal, openModal, closeModal } = useModal();
   const [selectedClothes, setSelectedClothes] = useState<ISelectedClothes>({});
   const [deleteClothes, setDeleteClothes] = useState<IClothes>();
   const [duplicatedCategory, setDuplicatedCategory] = useState<string | null>(null);
+  const [currentCategory, setCurrentCategory] = useState<keyof typeof ClosetCategory>('ALL');
 
   const handleTostMessage = (category: string) => {
     setDuplicatedCategory(category);
     setTimeout(() => setDuplicatedCategory(null), 1000);
   };
 
+  const filterCategory = (category: keyof typeof ClothesCategory) => {
+    if (category === 'ONEPIECE') return 'TOP';
+    return category;
+  };
+
   const handleSelectedClothes = (newlyClickedClothes: IClothes) => {
-    const { category } = newlyClickedClothes;
+    const category = filterCategory(newlyClickedClothes.category!);
     if (Object.keys(selectedClothes).filter((key) => key === category).length) {
-      handleTostMessage(category!);
+      if (category === 'TOP') {
+        handleTostMessage('상의/원피스');
+      } else {
+        handleTostMessage(ClosetCategory[category]!);
+      }
     } else {
       const newSelectedClothes = { ...selectedClothes, [category!]: newlyClickedClothes };
       setSelectedClothes(
@@ -56,8 +71,12 @@ const Page = () => {
           selectedClothes={selectedClothes}
           setDeleteClothes={setDeleteClothes}
         />
-        <ClothesTap />
-        <ClothesList className={`${styles.overflow}`} onSelectClothes={handleSelectedClothes} />
+        <ClothesTap currentCategory={currentCategory} setCurrentCategory={setCurrentCategory} />
+        <ClothesList
+          className={`${styles.overflow}`}
+          onSelectClothes={handleSelectedClothes}
+          currentCategory={currentCategory}
+        />
       </main>
       {duplicatedCategory && <TostMessage tostMessage={`${duplicatedCategory}는 하나만 등록할 수 있어요`} />}
       <div id="modal">
@@ -65,11 +84,12 @@ const Page = () => {
           <div className={styles['modal-button']}>
             <Button
               onClick={() => {
-                const { category } = deleteClothes || {};
+                const category = filterCategory(deleteClothes?.category!);
                 setSelectedClothes(
-                  Object.keys(selectedClothes).reduce((result: ISelectedClothes, key: string) => {
+                  Object.keys(selectedClothes).reduce((result, key) => {
                     if (key !== category) {
-                      result[key] = selectedClothes[key];
+                      const newResult = { ...result, [key]: { ...selectedClothes[key as keyof ISelectedClothes] } };
+                      return newResult;
                     }
                     return result;
                   }, {}),
