@@ -72,7 +72,6 @@ const BasicForm = ({ onClickButton, onChange: handleChange, readOnly, image, ...
             value={formInput.name}
             onChange={(e) => handleFormChange({ key: 'name', value: e.target.value })}
           />
-          {/* TODO: 색상은 1개만 선택 가능 */}
           <ColorSelect
             color={formInput.color}
             disabled={readOnly}

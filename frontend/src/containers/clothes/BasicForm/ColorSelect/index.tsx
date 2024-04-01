@@ -30,6 +30,7 @@ const ColorSelect = ({
 }) => {
   const [color, setColor] = useState(initColor);
 
+  // TODO 선택한 색깔 더 잘보이게 ui 개선
   return (
     <div className={styles['picker-container']}>
       <Label required label="색상" />
