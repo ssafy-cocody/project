@@ -2,11 +2,12 @@ package com.cocodi.codi.presentation.controller;
 
 import com.cocodi.clothes.application.service.ClosetService;
 import com.cocodi.codi.application.service.CodyService;
-import com.cocodi.codi.presentation.request.ClothesRequest;
+import com.cocodi.clothes.presentation.request.ClothesRequest;
 import com.cocodi.codi.presentation.request.CodyCreateRequest;
 import com.cocodi.codi.presentation.response.CodyResponse;
 import com.cocodi.codi.presentation.response.RecommendCodyResponse;
 import com.cocodi.security.domain.model.PrincipalDetails;
+import com.cocodi.sse.application.service.SseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ public class AuthCodyController {
 
     private final CodyService codyService;
     private final ClosetService closetService;
+    private final SseService sseService;
 
     /**
      * 저장된 코디 리스트 조회
@@ -56,12 +59,13 @@ public class AuthCodyController {
      * @return null
      */
     @PostMapping
-    public ResponseEntity<?> createCody(@RequestBody CodyCreateRequest codyCreateRequest, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public SseEmitter createCody(@RequestBody CodyCreateRequest codyCreateRequest, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         if (codyService.createCody(codyCreateRequest, principalDetails.getMemberId())) {
-
-            return new ResponseEntity<>("success", HttpStatus.CREATED);
+            String sseKey = sseService.createInstance();
+            codyService.createCodyImage(codyCreateRequest.clothesRequest(), sseKey);
+            return null;
         } else {
-            return new ResponseEntity<>("이미 등록된 코디입니다.", HttpStatus.BAD_REQUEST);
+            return null;
         }
     }
 

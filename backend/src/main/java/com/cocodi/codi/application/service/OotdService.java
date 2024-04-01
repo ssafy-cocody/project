@@ -68,12 +68,24 @@ public class OotdService {
 
         Cody cody = codyService.getCodyFromRequest(ootdCreateRequest.clothesRequest(), null);
 
-        Ootd ootd = Ootd.builder()
-                .date(ootdCreateRequest.date())
-                .snapShot(ootdImage)
-                .cody(cody)
-                .member(member)
-                .build();
+        Optional<Ootd> byMemberAndDate = ootdRepository.findByMemberAndDate(member, ootdCreateRequest.date());
+        Ootd ootd;
+        if(byMemberAndDate.isPresent()) {
+            ootd = Ootd.builder()
+                    .ootdId(byMemberAndDate.get().getOotdId())
+                    .date(ootdCreateRequest.date())
+                    .snapShot(ootdImage)
+                    .cody(cody)
+                    .member(member)
+                    .build();
+        } else {
+            ootd = Ootd.builder()
+                    .date(ootdCreateRequest.date())
+                    .snapShot(ootdImage)
+                    .cody(cody)
+                    .member(member)
+                    .build();
+        }
 
         ootdRepository.save(ootd);
     }
