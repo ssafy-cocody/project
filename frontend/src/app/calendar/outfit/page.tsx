@@ -21,7 +21,7 @@ import { queryClient } from '@/utils/Provider';
 const Page = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [year, month, date] = [searchParams.get('year'), searchParams.get('month'), searchParams.get('date')];
+  const [year, month, date] = [searchParams.get('year'), searchParams.get('month'), searchParams.get('date')]; // TODO: year, month, date 모두 있어야 함
 
   const data = queryClient.getQueryData(OUTFIT_QUERY_KEY);
   const outfitMutation = useMutation({
