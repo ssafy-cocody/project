@@ -48,6 +48,9 @@ public class ClothesRabbitListener {
             if (!clothesTempRepository.existsById(clothesTemp.getUuid())) {
                 throw new RuntimeException();
             }
+            else {
+                clothesTempRepository.findById(clothesTemp.getUuid()).orElseThrow();
+            }
         }).exceptionallyCompose(ex -> {
             if (maxRetries > 0) {
                 // 재시도 전에 지정된 지연 시간 동안 대기
