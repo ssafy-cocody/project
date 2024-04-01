@@ -12,6 +12,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 import static com.cocodi.common.infrastructure.config.ConvertUtils.getLongs;
 
@@ -30,8 +33,35 @@ public class ClothesRabbitListener {
 
         if (listObj instanceof List<?>) {
             List<Long> longList = getLongs((List<?>) listObj);
-            clothesTempRepository.save(new ClothesTemp(sseObject.sseId(), hashMap.get("img").toString(), longList));
-            sseService.sendMessageAndRemove(sseObject.sseId(), "message", sseObject.sseId());
+            String uuid = UUID.randomUUID().toString();
+            saveWithRetry(new ClothesTemp(uuid, hashMap.get("img").toString(), longList), 3, 1000)
+                    .thenRun(() -> sseService.sendMessageAndRemove(sseObject.sseId(), "message", uuid)).exceptionally(ex -> {
+                        log.info("Failed to save ClothesTemp after retries: " + ex.getMessage());
+                        return null;});
         }
+    }
+
+
+    private CompletableFuture<Void> saveWithRetry(ClothesTemp clothesTemp, int maxRetries, int delay) {
+        return CompletableFuture.runAsync(() -> {
+            clothesTempRepository.save(clothesTemp);
+            if (!clothesTempRepository.existsById(clothesTemp.getUuid())) {
+                throw new RuntimeException();
+            }
+        }).exceptionallyCompose(ex -> {
+            if (maxRetries > 0) {
+                // 재시도 전에 지정된 지연 시간 동안 대기
+                return CompletableFuture.runAsync(() -> {
+                    try {
+                        TimeUnit.MILLISECONDS.sleep(delay);
+                    } catch (InterruptedException ie) {
+                        Thread.currentThread().interrupt();
+                    }
+                }).thenCompose(aVoid -> saveWithRetry(clothesTemp, maxRetries - 1, delay));
+            } else {
+                // 재시도 횟수를 모두 소진한 경우 예외를 전파
+                throw new RuntimeException("Failed to save ClothesTemp to Redis", ex);
+            }
+        });
     }
 }

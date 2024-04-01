@@ -33,7 +33,7 @@ public class Clothes {
     @Enumerated(STRING)
     private Color color;
 
-    private int price;
+    private Integer price;
 
     private String link;
 
