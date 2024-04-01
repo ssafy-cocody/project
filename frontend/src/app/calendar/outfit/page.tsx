@@ -4,7 +4,6 @@
 
 import { useMutation } from '@tanstack/react-query';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ChangeEvent, useState } from 'react';
 
@@ -16,10 +15,12 @@ import { OUTFIT_QUERY_KEY } from '@/containers/calendar/Calendar';
 import styles from '@/containers/calendar/Outfit/Outfit.module.scss';
 import { fetchPostOotdImage } from '@/services/calendar/outfit';
 import { ClothesCategory, IClothes, ISelectedClothes } from '@/types/clothes';
+import { yearMonthDateFormatter } from '@/utils/date';
 import { queryClient } from '@/utils/Provider';
 
 const Page = () => {
   const router = useRouter();
+  const [year, month, date] = [2024, 4, 1];
   const data = queryClient.getQueryData(OUTFIT_QUERY_KEY);
   const outfitMutation = useMutation({
     mutationFn: fetchPostOotdImage,
@@ -37,11 +38,47 @@ const Page = () => {
   const handleSubmit = () => {
     if (outfitMutation.isPending) return;
 
+    const clothesRequestKey = {
+      [ClothesCategory.TOP]: 'topId',
+      [ClothesCategory.BOTTOM]: 'bottomId',
+      [ClothesCategory.OUTER]: 'outerId',
+      [ClothesCategory.SHOES]: 'shoesId',
+      [ClothesCategory.ONEPIECE]: 'onepieceId',
+    };
+
+    const clothesRequest = {};
+    Object.entries(selected).forEach(([category, clothes]) => {
+      const categoryKey = category as keyof typeof ClothesCategory;
+      const mappedData = { [clothesRequestKey[categoryKey]]: clothes?.clothesId };
+      Object.assign(clothesRequest, mappedData);
+    });
+
+    const params = {
+      clothesRequest,
+      date: yearMonthDateFormatter(year, month, date),
+    };
+
     // outfitMutation.mutate();
-    router.replace('/calendar'); // 뒤로가기시 /outfit으로 이동하지 않도록 replace
+    // router.replace('/calendar'); // 뒤로가기시 /outfit으로 이동하지 않도록 replace
   };
 
-  const clothesByCategory = (data as Record<string, IClothes[]>) || {};
+  const clothesByCategory = {
+    [ClothesCategory.TOP]: [
+      { image: '/images/test1.jpg', clothesId: 1, category: ClothesCategory.TOP },
+      { image: '/images/test2.jpg', clothesId: 2, category: ClothesCategory.TOP },
+      { image: '/images/test3.jpg', clothesId: 3, category: ClothesCategory.TOP },
+    ],
+    [ClothesCategory.BOTTOM]: [
+      { image: '/images/test2.jpg', clothesId: 4, category: ClothesCategory.BOTTOM },
+      { image: '/images/test4.jpg', clothesId: 5, category: ClothesCategory.BOTTOM },
+      { image: '/images/test3.jpg', clothesId: 6, category: ClothesCategory.BOTTOM },
+    ],
+    [ClothesCategory.SHOES]: [
+      { image: '/images/test2.jpg', clothesId: 8, category: ClothesCategory.SHOES },
+      { image: '/images/test4.jpg', clothesId: 9, category: ClothesCategory.SHOES },
+      { image: '/images/test3.jpg', clothesId: 10, category: ClothesCategory.SHOES },
+    ],
+  }; // (data as Record<string, IClothes[]>) || {};
 
   return (
     <>
@@ -94,9 +131,7 @@ const Page = () => {
         </div>
         <div className={styles['regist-button-container']}>
           <div className={styles['regist-button']}>
-            <Link href="/calendar">
-              <Button onClick={handleSubmit}>등록</Button>
-            </Link>
+            <Button onClick={handleSubmit}>등록</Button>
           </div>
         </div>
       </main>

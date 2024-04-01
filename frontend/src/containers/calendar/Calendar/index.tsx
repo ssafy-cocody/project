@@ -15,6 +15,7 @@ import { ICalendar } from '@/containers/calendar/Calendar/type';
 import useModal from '@/hooks/useModal';
 import { fetchGetCalendar } from '@/services/calendar';
 import { fetchGetOotdImage } from '@/services/calendar/outfit';
+import { paddingMonth } from '@/utils/date';
 import { queryClient } from '@/utils/Provider';
 
 export const OUTFIT_QUERY_KEY = ['outfit'];
@@ -38,8 +39,7 @@ const Calendar = () => {
 
   // currentDate가 몇 주차인지 구하는 함수
   const getWeek = (currentDate: number, firstDay: number) => Math.ceil((currentDate + firstDay) / 7);
-  // 한자리 수 숫자인 달 앞에 0을 붙이는 함수
-  const paddingMonth = (month_: Number) => month_.toString().padStart(2, '0');
+
   // 현재 연도와 달의 day의 요일 구하는 함수
   const getDayOfWeek = useCallback(
     (day: number) => new Date(`${year}-${paddingMonth(month)}-${paddingMonth(day)}`).getDay(),
