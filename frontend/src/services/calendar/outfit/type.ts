@@ -21,4 +21,14 @@ interface IFetchGetOotdImageRequest {
   formData: FormData;
 }
 
-export type { IFetchGetOotdImageRequest, IFetchGetOotdImageResponse };
+interface IFetchPostOotdImageRequest {
+  formData: FormData; // ootdImage
+}
+interface IFetchPostOotdImageResponse {}
+
+export type {
+  IFetchGetOotdImageRequest,
+  IFetchGetOotdImageResponse,
+  IFetchPostOotdImageRequest,
+  IFetchPostOotdImageResponse,
+};

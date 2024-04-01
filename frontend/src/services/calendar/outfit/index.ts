@@ -1,5 +1,10 @@
-import { BASE_URL, getAccessToken } from '@/services';
-import { IFetchGetOotdImageRequest, IFetchGetOotdImageResponse } from '@/services/calendar/outfit/type';
+import { api, BASE_URL, getAccessToken } from '@/services';
+import {
+  IFetchGetOotdImageRequest,
+  IFetchGetOotdImageResponse,
+  IFetchPostOotdImageRequest,
+  IFetchPostOotdImageResponse,
+} from '@/services/calendar/outfit/type';
 
 /**
  * 내 코디 올리기
@@ -45,4 +50,12 @@ export const fetchGetOotdImage = async ({
   // TODO data타입 확인
   if (data) return data;
   return Promise.reject(new Error('upload error'));
+};
+
+/**
+ * 내 코디 등록
+ */
+export const fetchPostOotdImage = async ({ formData }: IFetchGetOotdImageRequest) => {
+  const response = await api.post<IFetchPostOotdImageResponse, IFetchPostOotdImageRequest>('/ootd/image', formData);
+  return response;
 };
