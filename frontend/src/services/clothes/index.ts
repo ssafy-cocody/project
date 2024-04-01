@@ -77,4 +77,25 @@ const fetchPostSaveClothes = async ({ uuid, clothes }: IFetchPostSaveClothesRequ
   return response.json();
 };
 
-export { fetchGetClothesInfo, fetchPostClothesImage, fetchPostSaveClothes };
+/**
+ * 누끼딴 옷 이미지 조회
+ */
+const fetchGetClothesTempImg = async (uuid: string) => {
+  const response = await fetch(`${BASE_URL}/auth/v1/clothes/temp/img/${uuid}`, {
+    headers: {
+      Authorization: `Bearer ${getAccessToken()}`,
+    },
+  });
+
+  const blob = await response.blob();
+  const reader = new FileReader();
+  await new Promise((resolve, reject) => {
+    reader.onload = resolve;
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+
+  return reader.result;
+};
+
+export { fetchGetClothesInfo, fetchGetClothesTempImg, fetchPostClothesImage, fetchPostSaveClothes };
