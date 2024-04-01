@@ -3,9 +3,10 @@ import styled from 'styled-components';
 
 import Label from '@/components/Label';
 import styles from '@/containers/clothes/BasicForm/ColorSelect/ColorSelect.module.scss';
-import ColorPicker from '@/containers/clothes/ColorPicker';
+import { Color } from '@/types/clothes';
 
-const ColorBox = styled.label<{ color: string; $isSelected?: boolean }>`
+const ColorBox = styled.label<{ color?: string; $isSelected?: boolean }>`
+  min-width: 48px;
   width: 48px;
   height: 48px;
   border: 1px solid var(--color-lightGray);
@@ -16,23 +17,24 @@ const ColorBox = styled.label<{ color: string; $isSelected?: boolean }>`
   background: ${({ color }) => color};
 `;
 
-const MOCK_COLORS = [
-  { color: '#fff', id: '#fff' },
-  {
-    color: '#000',
-    id: '#000',
-  },
-];
+const ColorOptions = Object.entries(Color).map(([name, colorCode]) => ({ value: name, colorCode }));
 
-const ColorSelect = ({ onChange: handleChange }: { onChange: (color: string) => void }) => {
-  const [color, setColor] = useState('');
+const ColorSelect = ({
+  color: initColor,
+  onChange: handleChange,
+}: {
+  color?: keyof typeof Color;
+  onChange: (color: string) => void;
+}) => {
+  const [color, setColor] = useState(initColor);
 
   return (
     <div className={styles['picker-container']}>
       <Label required label="색상" />
       <div className={styles.picker}>
-        {MOCK_COLORS.map(({ color: backgroundColor, id }) => {
-          const isSelected = color === backgroundColor.toString();
+        {ColorOptions.map(({ colorCode: backgroundColor, value }) => {
+          const id = value;
+          const isSelected = color === value;
 
           return (
             <ColorBox htmlFor={id} key={id} color={backgroundColor} $isSelected={isSelected}>
@@ -40,10 +42,9 @@ const ColorSelect = ({ onChange: handleChange }: { onChange: (color: string) => 
                 type="radio"
                 name="color"
                 id={id}
-                value={backgroundColor.toString()}
+                value={value}
                 onChange={(e) => {
-                  const { value } = e.target;
-                  const newcolor = value.toString();
+                  const newcolor = e.target.value.toString() as keyof typeof Color;
                   setColor(newcolor);
                   handleChange(newcolor);
                 }}
@@ -51,7 +52,7 @@ const ColorSelect = ({ onChange: handleChange }: { onChange: (color: string) => 
             </ColorBox>
           );
         })}
-        <ColorPicker />
+        {/* <ColorPicker /> */}
       </div>
       <span className={styles.desc}>색상을 선택해 주세요.</span>
     </div>

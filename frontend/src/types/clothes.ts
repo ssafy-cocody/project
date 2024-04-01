@@ -113,5 +113,5 @@ type INewClothes = {
   image?: string;
 } & Pick<IClothes, 'category' | 'name' | 'color' | 'brand' | 'productNo' | 'price' | 'link'>;
 
-export { Category, ClothesCategory, DONE, Step };
+export { Category, ClothesCategory, Color, DONE, Step };
 export type { IClothes, INewClothes, ISelectedClothes, TCategory };
