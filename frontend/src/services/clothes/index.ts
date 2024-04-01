@@ -73,7 +73,9 @@ const fetchPostSaveClothes = async ({ uuid, clothes }: IFetchPostSaveClothesRequ
     },
   });
 
-  return response.json();
+  if (!response.ok) throw new Error(response.status.toString());
+
+  return response.json;
 };
 
 /**
