@@ -47,6 +47,7 @@ const SearchWithImage = ({ onSelectResult, onClickSelfBasicForm }: SearchWithIma
     return '옷을 찾는데에 실패했어요. 😥';
   };
 
+  // TODO 로딩 스피너
   const modalContent = () => {
     if (isSearching) return '';
     if (isSuccess)
