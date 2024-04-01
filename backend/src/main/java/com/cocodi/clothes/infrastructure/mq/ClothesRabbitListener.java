@@ -12,10 +12,12 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 import static com.cocodi.common.infrastructure.config.ConvertUtils.getLongs;
+
 @Component
 @Slf4j
 @RequiredArgsConstructor
@@ -31,15 +33,11 @@ public class ClothesRabbitListener {
 
         if (listObj instanceof List<?>) {
             List<Long> longList = getLongs((List<?>) listObj);
-            CompletableFuture<Void> future = saveWithRetry(new ClothesTemp(sseObject.sseId(), hashMap.get("img").toString(), longList), 3, 1000)
-                    .thenRun(() -> {
-                        // 저장 성공 후 SSE 메시지 전송
-                        sseService.sendMessageAndRemove(sseObject.sseId(), "message", sseObject.sseId());
-                    }).exceptionally(ex -> {
-                        // 모든 재시도가 실패한 경우 여기서 처리
+            String uuid = UUID.randomUUID().toString();
+            saveWithRetry(new ClothesTemp(uuid, hashMap.get("img").toString(), longList), 3, 1000)
+                    .thenRun(() -> sseService.sendMessageAndRemove(sseObject.sseId(), "message", uuid)).exceptionally(ex -> {
                         log.info("Failed to save ClothesTemp after retries: " + ex.getMessage());
-                        return null;
-                    });
+                        return null;});
         }
     }
 
@@ -47,6 +45,9 @@ public class ClothesRabbitListener {
     private CompletableFuture<Void> saveWithRetry(ClothesTemp clothesTemp, int maxRetries, int delay) {
         return CompletableFuture.runAsync(() -> {
             clothesTempRepository.save(clothesTemp);
+            if (clothesTempRepository.existsById(clothesTemp.getUuid())) {
+                throw new RuntimeException();
+            }
         }).exceptionallyCompose(ex -> {
             if (maxRetries > 0) {
                 // 재시도 전에 지정된 지연 시간 동안 대기
