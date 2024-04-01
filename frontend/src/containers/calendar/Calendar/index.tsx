@@ -13,7 +13,8 @@ import ImageInput from '@/components/ImageInput';
 import styles from '@/containers/calendar/Calendar/Calendar.module.scss';
 import { ICalendar } from '@/containers/calendar/Calendar/type';
 import useModal from '@/hooks/useModal';
-import { fetchGetCalendar, fetchGetOotdImage } from '@/services/calendar';
+import { fetchGetCalendar } from '@/services/calendar';
+import { fetchGetOotdImage } from '@/services/calendar/outfit';
 import { queryClient } from '@/utils/Provider';
 
 export const OUTFIT_QUERY_KEY = ['outfit'];
