@@ -1,13 +1,13 @@
 import { InfiniteQueryObserverResult } from '@tanstack/react-query';
 import { useEffect, useRef } from 'react';
 
-interface IuseIntersectionObserverProps {
+interface IUseInfinityScrollProps {
   threshold?: number;
   hasNextPage: boolean | undefined;
   fetchNextPage: () => Promise<InfiniteQueryObserverResult>;
 }
 
-export const useIntersectionObserver = ({ hasNextPage, fetchNextPage }: IuseIntersectionObserverProps) => {
+export const useInfinityScroll = ({ hasNextPage, fetchNextPage }: IUseInfinityScrollProps) => {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

@@ -1,10 +1,9 @@
-import { IClothes } from '@/types/clothes';
+import { ClothesCategory, IClothes } from '@/types/clothes';
 
 interface IFetchGetClosetRequest {
   page: number;
   size: number;
-  sort?: string;
-  category?: string;
+  category?: keyof typeof ClothesCategory;
 }
 
 interface ISort {
