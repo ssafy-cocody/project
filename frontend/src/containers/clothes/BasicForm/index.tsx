@@ -7,15 +7,16 @@ import SelectInput from '@/components/SelectInput';
 import TextInput from '@/components/TextInput';
 import styles from '@/containers/clothes/BasicForm/BasicForm.module.scss';
 import ColorSelect from '@/containers/clothes/BasicForm/ColorSelect';
-import { ClothesCategory } from '@/types/clothes';
+import { ClothesCategory, Color } from '@/types/clothes';
 
 interface BasicFormProps {
   onClickButton: () => void;
   onChange: ({ key, value }: { key: string; value: string }) => void;
   category?: string;
   name?: string;
-  color?: string;
+  color?: keyof typeof Color;
   image?: string;
+  readOnly?: boolean;
 }
 
 const CLOTHES_OPTIONS = [
@@ -29,13 +30,13 @@ const CLOTHES_OPTIONS = [
   { text: '신발', value: ClothesCategory.SHOES },
 ];
 
-const BasicForm = ({ onClickButton, onChange: handleChange, image, ...initValue }: BasicFormProps) => {
+const BasicForm = ({ onClickButton, onChange: handleChange, readOnly, image, ...initValue }: BasicFormProps) => {
   const [formInput, setFormInput] = useState({
     category: initValue.category,
     name: initValue.name,
     color: initValue.color,
   });
-  const [isValid, setIsValid] = useState(false);
+  const [isValid, setIsValid] = useState(!Object.values(formInput).some((v) => v === ''));
 
   const handleFormChange = ({ key, value }: { key: string; value: string }) => {
     const newValue = {
@@ -60,17 +61,23 @@ const BasicForm = ({ onClickButton, onChange: handleChange, image, ...initValue 
             required
             label="카테고리"
             options={CLOTHES_OPTIONS}
+            disabled={readOnly}
             value={formInput.category}
             onChange={(e) => handleFormChange({ key: 'category', value: e.target.value })}
           />
           <TextInput
             required
             label="상품명"
+            readOnly={readOnly}
             value={formInput.name}
             onChange={(e) => handleFormChange({ key: 'name', value: e.target.value })}
           />
           {/* TODO: 색상은 1개만 선택 가능 */}
-          <ColorSelect onChange={(color) => handleFormChange({ key: 'color', value: color })} />
+          <ColorSelect
+            color={formInput.color}
+            disabled={readOnly}
+            onChange={(color) => handleFormChange({ key: 'color', value: color })}
+          />
           <Button onClick={onClickButton} disabled={!isValid}>
             다음
           </Button>
