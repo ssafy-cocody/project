@@ -11,32 +11,6 @@ enum Step {
 
 const DONE = '';
 
-type 전체 = '전체';
-type 상의 = '상의';
-type 하의 = '하의';
-type 원피스 = '원피스';
-type 아우터 = '아우터';
-type 신발 = '신발';
-
-type TCategory = {
-  [index: string]: string;
-  ALL: 전체;
-  TOP: 상의;
-  BOTTOM: 하의;
-  ONEPIECE: 원피스;
-  OUTER: 아우터;
-  SHOES: 신발;
-};
-
-const Category: TCategory = {
-  ALL: '전체',
-  TOP: '상의',
-  BOTTOM: '하의',
-  ONEPIECE: '원피스',
-  OUTER: '아우터',
-  SHOES: '신발',
-} as const;
-
 const Color = {
   WHITE: '#FFFFFF',
   BLACK: '#0E0E0E',
@@ -87,6 +61,15 @@ const ClothesCategory = {
   SHOES: 'SHOES',
 } as const;
 
+const ClosetCategory = {
+  ALL: '전체',
+  TOP: '상의',
+  BOTTOM: '하의',
+  ONEPIECE: '원피스',
+  OUTER: '아우터',
+  SHOES: '신발',
+} as const;
+
 interface IClothes {
   clothesId: number;
   category?: keyof typeof ClothesCategory;
@@ -100,15 +83,11 @@ interface IClothes {
 }
 
 type ISelectedClothes = {
-  [index: string]: IClothes | undefined;
-  [Category.TOP]?: IClothes;
-  [Category.OUTER]?: IClothes;
-  [Category.BOTTOM]?: IClothes;
-  [Category.SHOES]?: IClothes;
+  [index in Partial<keyof typeof ClothesCategory>]?: IClothes | undefined;
 };
 
 // 옷 등록 인풋 타입
 type INewClothes = Pick<IClothes, 'category' | 'name' | 'color' | 'brand' | 'productNo' | 'price' | 'link'>;
 
-export { Category, ClothesCategory, DONE, Step };
-export type { IClothes, INewClothes, ISelectedClothes, TCategory };
+export { ClosetCategory, ClothesCategory, DONE, Step };
+export type { IClothes, INewClothes, ISelectedClothes };
