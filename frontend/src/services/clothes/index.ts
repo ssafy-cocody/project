@@ -44,9 +44,8 @@ const fetchPostClothesImage = async ({
       break;
     }
 
-    const dataMatchResult = res[1].match(/[^data: ].+/);
-    const data = dataMatchResult ? dataMatchResult[0] : '';
-    uuid = data;
+    const dataMatchResult = res[1].split(':')[1];
+    uuid = dataMatchResult;
   }
 
   if (uuid) return { uuid };
