@@ -80,7 +80,6 @@ const Page = () => {
           <PlusIcon stroke="#EDEDED" />
         </Link>
       </main>
-      {/* TODO: ClothesList 스크롤 시 Navigation 숨기기 */}
       <Nav />
       <div id="modal">
         <Modal title="이 아이템을 삭제하시겠습니까?">
