@@ -6,8 +6,9 @@
   .picker {
     display: flex;
     gap: 8px;
-    height: 48px;
-    overflow-x: scroll;
+    height: 36px;
+
+    padding-bottom: 11px;
   }
 
   input[type='radio'] {
