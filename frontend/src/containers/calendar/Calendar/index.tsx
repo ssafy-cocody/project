@@ -14,19 +14,26 @@ import styles from '@/containers/calendar/Calendar/Calendar.module.scss';
 import { ICalendar } from '@/containers/calendar/Calendar/type';
 import useModal from '@/hooks/useModal';
 import { fetchGetCalendar, fetchGetOotdImage } from '@/services/calendar';
+import { queryClient } from '@/utils/Provider';
+
+export const OUTFIT_QUERY_KEY = ['outfit'];
 
 const Calendar = () => {
+  const router = useRouter();
+
   const [year] = useState<number>(new Date().getFullYear());
   const [month] = useState<number>(new Date().getMonth() + 1);
   const [calendar, setCalendar] = useState<ICalendar[][]>([]);
   const ootdImageRef = useRef<File>();
+  const { Modal, openModal } = useModal();
+
   const ootdImageMutation = useMutation({
     mutationFn: fetchGetOotdImage,
+    onSuccess: (result) => {
+      queryClient.setQueryData(OUTFIT_QUERY_KEY, () => result);
+      router.push('/calendar/outfit');
+    },
   });
-
-  const router = useRouter();
-
-  const { Modal, openModal } = useModal();
 
   // currentDate가 몇 주차인지 구하는 함수
   const getWeek = (currentDate: number, firstDay: number) => Math.ceil((currentDate + firstDay) / 7);
@@ -80,14 +87,7 @@ const Calendar = () => {
     const formData = new FormData();
     formData.append('ootdImage', ootdImageRef.current);
 
-    ootdImageMutation.mutate(
-      { formData },
-      {
-        onSuccess: () => {
-          router.push('/calendar/outfit');
-        },
-      },
-    );
+    ootdImageMutation.mutate({ formData });
   };
 
   return (

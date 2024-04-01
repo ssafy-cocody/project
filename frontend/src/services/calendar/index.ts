@@ -3,6 +3,7 @@ import {
   IFetchGetCalendarRequest,
   IFetchGetCalendarResponse,
   IFetchGetOotdImageRequest,
+  IFetchGetOotdImageResponse,
 } from '@/services/calendar/type';
 
 export const fetchGetCalendar = async ({
@@ -17,7 +18,9 @@ export const fetchGetCalendar = async ({
  * 내 코디 올리기
  * @return SSE 통신
  */
-export const fetchGetOotdImage = async ({ formData }: IFetchGetOotdImageRequest) => {
+export const fetchGetOotdImage = async ({
+  formData,
+}: IFetchGetOotdImageRequest): Promise<IFetchGetOotdImageResponse> => {
   const response = await fetch(`${BASE_URL}/auth/v1/ootd/image`, {
     method: 'POST',
     body: formData,
