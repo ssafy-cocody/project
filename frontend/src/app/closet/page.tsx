@@ -41,16 +41,23 @@ const Page = () => {
             </Link>
           </div>
           <div className={styles['cody-scroll']}>
-            {data?.content.map(({ image, name }: ICody) => {
-              return (
-                <div key={name} className={styles.cody}>
-                  <div className={styles['cody-image-container']}>
-                    <Image src={image} alt={name} fill className={styles['cody-image']} />
+            {data?.content.length ? (
+              data?.content.map(({ image, name }: ICody) => {
+                return (
+                  <div key={name} className={styles.cody}>
+                    <div className={styles['cody-image-container']}>
+                      <Image src={image} alt={name} fill className={styles['cody-image']} />
+                    </div>
+                    <div className={styles['cody-name']}>{name}</div>
                   </div>
-                  <div className={styles['cody-name']}>{name}</div>
-                </div>
-              );
-            })}
+                );
+              })
+            ) : (
+              <Link href="/cody/new" className={styles['empty-cody']}>
+                코디 채우러 가기
+                <Image src="/images/magicWand.png" width={25} height={25} alt="코디채우러가기" />
+              </Link>
+            )}
           </div>
         </div>
         <div className={styles['closet-tab-container']}>
