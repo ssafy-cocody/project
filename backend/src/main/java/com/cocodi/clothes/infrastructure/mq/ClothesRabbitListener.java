@@ -45,7 +45,7 @@ public class ClothesRabbitListener {
     private CompletableFuture<Void> saveWithRetry(ClothesTemp clothesTemp, int maxRetries, int delay) {
         return CompletableFuture.runAsync(() -> {
             clothesTempRepository.save(clothesTemp);
-            if (clothesTempRepository.existsById(clothesTemp.getUuid())) {
+            if (!clothesTempRepository.existsById(clothesTemp.getUuid())) {
                 throw new RuntimeException();
             }
         }).exceptionallyCompose(ex -> {
