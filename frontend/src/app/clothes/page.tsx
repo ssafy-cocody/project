@@ -36,7 +36,9 @@ const Page = () => {
     setClothes((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleSumbit = () => {
+  const handleSumbit = ({ success }: { success: () => void }) => {
+    if (clothesMutation.isPending) return;
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { uuid, image, ...data } = clothes;
     if (!uuid) return;
@@ -45,15 +47,22 @@ const Page = () => {
     formdata.append('category', data.category!);
     formdata.append('name', data.name!);
     formdata.append('color', data.color!);
-    formdata.append('brand', data.brand!);
-    formdata.append('productNo', data.productNo!);
-    formdata.append('price', data.price!.toString());
-    formdata.append('link', data.link!);
+    formdata.append('brand', data.brand || '');
+    formdata.append('productNo', data.productNo || '');
+    formdata.append('price', data.price ? data.price.toString() : '');
+    formdata.append('link', data.link || '');
 
-    clothesMutation.mutate({
-      uuid,
-      clothes: formdata,
-    });
+    clothesMutation.mutate(
+      {
+        uuid,
+        clothes: formdata,
+      },
+      {
+        onSuccess: () => {
+          success();
+        },
+      },
+    );
   };
 
   const uploadStep = {
@@ -75,7 +84,7 @@ const Page = () => {
     [Step.SEARCH_WITH_CAMERA_BASIC_FORM]: {
       title: '기본 정보 입력',
       renderStep: (nextStep: Step | '') => (
-        <BasicForm onChange={handleChangeInput} onClickButton={() => goNextStep(nextStep)} {...clothes} />
+        <BasicForm readOnly onChange={handleChangeInput} onClickButton={() => goNextStep(nextStep)} {...clothes} />
       ),
       nextStep: Step.SEARCH_WITH_CAMERA_ADDITIONAL_FORM,
     },
@@ -85,8 +94,10 @@ const Page = () => {
         <AdditionalForm
           onChange={handleChangeInput}
           onClickButton={() => {
-            handleSumbit();
-            // goNextStep(nextStep); TODO 폼 요청 후 이동
+            handleSumbit({
+              // 옷 성공 후 /closet 로 이동
+              success: () => goNextStep(nextStep),
+            });
           }}
           {...clothes}
         />
@@ -102,7 +113,7 @@ const Page = () => {
     [Step.SEARCH_WITH_CODE_BASIC_FORM]: {
       title: '기본 정보 입력',
       renderStep: (nextStep: Step | '') => (
-        <BasicForm onChange={handleChangeInput} onClickButton={() => goNextStep(nextStep)} />
+        <BasicForm onChange={handleChangeInput} onClickButton={() => goNextStep(nextStep)} {...clothes} />
       ),
       nextStep: Step.SEARCH_WITH_CODE_ADDITIONAL_FORM,
     },
@@ -112,9 +123,12 @@ const Page = () => {
         <AdditionalForm
           onChange={handleChangeInput}
           onClickButton={() => {
-            handleSumbit();
-            // goNextStep(nextStep);
+            handleSumbit({
+              // 옷 성공 후 /closet 로 이동
+              success: () => goNextStep(nextStep),
+            });
           }}
+          {...clothes}
         />
       ),
       nextStep: DONE,
@@ -123,7 +137,7 @@ const Page = () => {
     [Step.SELF_BASIC_FORM]: {
       title: '기본 정보 입력',
       renderStep: (nextStep: Step | '') => (
-        <BasicForm onChange={handleChangeInput} onClickButton={() => goNextStep(nextStep)} />
+        <BasicForm onChange={handleChangeInput} onClickButton={() => goNextStep(nextStep)} {...clothes} />
       ),
       nextStep: Step.SELF_ADDITIONAL_FORM,
     },
@@ -133,9 +147,12 @@ const Page = () => {
         <AdditionalForm
           onChange={handleChangeInput}
           onClickButton={() => {
-            goNextStep(nextStep);
-            handleSumbit();
+            handleSumbit({
+              // 옷 성공 후 /closet 로 이동
+              success: () => goNextStep(nextStep),
+            });
           }}
+          {...clothes}
         />
       ),
       nextStep: DONE,
