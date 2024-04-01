@@ -6,19 +6,20 @@ import style from '@/containers/clothes/SearchResult/SearchResult.module.scss';
 import { IClothes } from '@/types/clothes';
 
 interface SearchResultProps {
-  onClick: () => void;
+  onSelect: (clothes: IClothes) => void;
   clothesList?: IClothes[];
 }
 
-const SearchResult = ({ onClick, clothesList }: SearchResultProps) => {
-  const [selected, setSelected] = useState('');
+const SearchResult = ({ onSelect, clothesList }: SearchResultProps) => {
+  const [selected, setSelected] = useState<IClothes>();
 
   return (
     <>
       <div className={style['search-result']}>
         {clothesList?.length &&
-          clothesList.map(({ image, clothesId, name, brand }) => {
-            const isSelected = selected === clothesId.toString();
+          clothesList.map((clothes) => {
+            const { image, clothesId, name, brand } = clothes;
+            const isSelected = clothesId.toString() === selected?.clothesId.toString();
 
             return (
               <div key={clothesId} className={`${style['search-item']} ${isSelected && style.selected}`}>
@@ -42,14 +43,21 @@ const SearchResult = ({ onClick, clothesList }: SearchResultProps) => {
                   name="clothes"
                   id={clothesId.toString()}
                   value={clothesId.toString()}
-                  onChange={(e) => setSelected(e.target.value)}
+                  onChange={() => setSelected(clothes)}
                 />
               </div>
             );
           })}
       </div>
       <div className={style['modal-bottom']}>
-        <Button type="button" disabled={!selected} onClick={onClick}>
+        <Button
+          type="button"
+          disabled={!selected}
+          onClick={() => {
+            if (!selected) return;
+            onSelect(selected);
+          }}
+        >
           선택
         </Button>
       </div>
