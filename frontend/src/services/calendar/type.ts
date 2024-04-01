@@ -20,7 +20,7 @@ interface IFetchGetOotdImageResponse {
 }
 
 interface IFetchGetOotdImageRequest {
-  formData: FormData; // key: ootdImage
+  formData: FormData;
 }
 
 export type {

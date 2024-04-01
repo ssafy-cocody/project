@@ -2,10 +2,10 @@
 
 'use client';
 
-import { QueryKey, useQuery } from '@tanstack/react-query';
+import { QueryKey, useMutation, useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
-import Link from 'next/link';
-import { useCallback, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { LeftArrow, RightArrow } from '@/../public/svgs';
 import Button from '@/components/Button';
@@ -13,12 +13,18 @@ import ImageInput from '@/components/ImageInput';
 import styles from '@/containers/calendar/Calendar/Calendar.module.scss';
 import { ICalendar } from '@/containers/calendar/Calendar/type';
 import useModal from '@/hooks/useModal';
-import { fetchGetCalendar } from '@/services/calendar';
+import { fetchGetCalendar, fetchGetOotdImage } from '@/services/calendar';
 
 const Calendar = () => {
   const [year] = useState<number>(new Date().getFullYear());
   const [month] = useState<number>(new Date().getMonth() + 1);
   const [calendar, setCalendar] = useState<ICalendar[][]>([]);
+  const ootdImageRef = useRef<File>();
+  const ootdImageMutation = useMutation({
+    mutationFn: fetchGetOotdImage,
+  });
+
+  const router = useRouter();
 
   const { Modal, openModal } = useModal();
 
@@ -62,6 +68,27 @@ const Calendar = () => {
       setCalendar(newCalendar);
     }
   }, [getDayOfWeek, month, year, ootds]);
+
+  const handleImageChange = (file: File) => {
+    ootdImageRef.current = file;
+  };
+
+  const handleSubmit = async () => {
+    if (!ootdImageRef.current) return;
+    if (ootdImageMutation.isPending) return;
+
+    const formData = new FormData();
+    formData.append('ootdImage', ootdImageRef.current);
+
+    ootdImageMutation.mutate(
+      { formData },
+      {
+        onSuccess: () => {
+          router.push('/calendar/outfit');
+        },
+      },
+    );
+  };
 
   return (
     <div className={styles['main-container']}>
@@ -112,12 +139,10 @@ const Calendar = () => {
       </div>
       <div id="modal">
         <Modal title="내 코디 올리기" subTitle="오늘 입은 옷을 업로드해보세요!">
-          <ImageInput />
+          <ImageInput name="clotehs" id="clothes" onChange={handleImageChange} />
           <div className={styles['info-text']}>💡 옷이 잘 보이게 찍을수록 정확도가 높아집니다.</div>
           <div className={styles['button-container']}>
-            <Button>
-              <Link href="/calendar/outfit">다음</Link>
-            </Button>
+            <Button onClick={handleSubmit}>다음</Button>
           </div>
         </Modal>
       </div>
