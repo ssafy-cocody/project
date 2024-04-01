@@ -51,7 +51,10 @@ export const api = {
     return request<TResponse>(path, { method: HTTPMethods.POST, body });
   },
 
-  delete: <T>(path: string): Promise<T> => request<T>(path, { method: HTTPMethods.DELETE }),
+  delete: <TResponse, TBody>(path: string, bodyObject?: TBody): Promise<TResponse> => {
+    const body = JSON.stringify(bodyObject);
+    return request<TResponse>(path, { method: HTTPMethods.DELETE }, body);
+  },
 
   put: <T, U>(path: string, bodyObject?: U): Promise<T> => {
     const body = JSON.stringify(bodyObject);

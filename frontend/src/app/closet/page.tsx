@@ -2,9 +2,10 @@
 
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState } from 'react';
 
 import { PlusIcon, RightArrow } from '@/../public/svgs';
 import Background from '@/components/Background';
@@ -15,15 +16,30 @@ import Header from '@/components/Header';
 import Nav from '@/components/Nav';
 import styles from '@/containers/closet/Closet.module.scss';
 import useModal from '@/hooks/useModal';
+import { fetchDeleteClothes } from '@/services/closet';
 import { fetchGetCody } from '@/services/cody';
+import { IClothes } from '@/types/clothes';
 import { ICody } from '@/types/cody';
 
 const Page = () => {
-  const { Modal, openModal } = useModal();
-  const { data } = useQuery({
+  const { Modal, openModal, closeModal } = useModal();
+  const { data, refetch } = useQuery({
     queryKey: ['CodyQueryKey'],
     queryFn: () => fetchGetCody({}),
   });
+
+  const [deleteClothes, setDeleteClothes] = useState<IClothes>();
+  const mutation = useMutation({
+    mutationFn: () => fetchDeleteClothes({ clothesId: deleteClothes!.clothesId }),
+  });
+
+  const handleSelectClothes = (item: IClothes) => {
+    setDeleteClothes(item);
+  };
+  const handleClothesDelete = async () => {
+    await mutation.mutateAsync();
+    refetch();
+  };
 
   return (
     <>
@@ -64,7 +80,7 @@ const Page = () => {
           <ClothesTap />
         </div>
         <div className={styles['list-padding']}>
-          <ClothesList handleModal={openModal} />
+          <ClothesList handleModal={openModal} onSelectClothes={handleSelectClothes} />
         </div>
         <Link href="/clothes" className={styles['upload-button']}>
           <PlusIcon stroke="#EDEDED" />
@@ -75,13 +91,13 @@ const Page = () => {
         <Modal title="이 아이템을 삭제하시겠습니까?">
           <div className={styles['modal-container']}>
             <div className={styles['delete-clothes']}>
-              <Image src="/images/test1.jpg" alt="옷" fill />
+              <Image src={deleteClothes?.image || ''} alt={deleteClothes?.name || ''} fill />
             </div>
             <div className={styles['delete-button']}>
-              <Button>
+              <Button onClick={handleClothesDelete}>
                 <span className={styles['button-text']}>네</span>
               </Button>
-              <Button variant="white">
+              <Button variant="white" onClick={closeModal}>
                 <span className={styles['button-text']}>아니오</span>
               </Button>
             </div>
