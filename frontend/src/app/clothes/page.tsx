@@ -11,7 +11,7 @@ import styles from '@/containers/clothes/ClothesLayout.module.scss';
 import SearchWithCode from '@/containers/clothes/SearchWithCode';
 import SearchWithImage from '@/containers/clothes/SearchWithImage';
 import useClothesStep from '@/hooks/useClothesStep';
-import { fetchGetClothesTempImg, fetchPostSaveClothes } from '@/services/clothes';
+import { fetchGetClothesTempImg, fetchPostClothes, fetchPostSaveClothes } from '@/services/clothes';
 import { DONE, INewClothes, Step } from '@/types/clothes';
 
 const initClothes = {
@@ -22,11 +22,16 @@ const initClothes = {
 const Page = () => {
   const { step, goBackStep, goNextStep, initClothesStep, jumpStep } = useClothesStep();
   const [clothes, setClothes] = useState<INewClothes>(initClothes);
+  // 옷 등록 폼 뮤테이션
   const clothesMutation = useMutation({
     mutationFn: fetchPostSaveClothes,
     onSuccess: () => {
       // TODO closet 업데이트
     },
+  });
+  // 이미지 검색 후 등록 폼 뮤테이션
+  const clothesWithCameraSearchMutation = useMutation({
+    mutationFn: fetchPostClothes,
   });
 
   useEffect(() => {
@@ -41,6 +46,28 @@ const Page = () => {
     setClothes((prev) => ({ ...prev, [key]: value }));
   };
 
+  /**
+   * 사진으로 옷 검색 후 등록 핸들러
+   */
+  const handleSubmitSearchWithCamera = ({ success }: { success: () => void }) => {
+    if (clothesWithCameraSearchMutation.isPending) return;
+
+    const { clothesId } = clothes;
+    if (!clothesId) return;
+
+    clothesWithCameraSearchMutation.mutate(
+      { clothesId: Number(clothesId) },
+      {
+        onSuccess: () => {
+          success();
+        },
+      },
+    );
+  };
+
+  /**
+   * 옷 등록 핸들러
+   */
   const handleSumbit = ({ success }: { success: () => void }) => {
     if (clothesMutation.isPending) return;
 
@@ -76,8 +103,8 @@ const Page = () => {
       title: '사진 검색',
       renderStep: (nextStep: Step | '') => (
         <SearchWithImage
-          onSelectResult={({ uuid, category, name, color, brand, productNo, price, image }) => {
-            const newItem = { ...clothes, category, name, color, brand, productNo, price, image, uuid };
+          onSelectResult={({ clothesId, uuid, category, name, color, brand, productNo, price, image }) => {
+            const newItem = { ...clothes, category, name, color, brand, productNo, price, image, uuid, clothesId };
 
             setClothes(newItem);
             goNextStep(nextStep);
@@ -104,7 +131,7 @@ const Page = () => {
           readOnly
           onChange={handleChangeInput}
           onClickButton={() => {
-            handleSumbit({
+            handleSubmitSearchWithCamera({
               // 옷 성공 후 /closet 로 이동
               success: () => goNextStep(DONE),
             });
