@@ -60,7 +60,7 @@ public class AuthOotdController {
      * @return null
      */
     @PostMapping("/image")
-    public ResponseEntity<?> createOotdByImage(@RequestBody OotdImageRequest ootdCreateRequest,  @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public ResponseEntity<?> createOotdByImage(@RequestParam OotdImageRequest ootdCreateRequest,  @AuthenticationPrincipal PrincipalDetails principalDetails) {
         String imageUrl = s3Service.uploadDefault(ootdCreateRequest.ootdImage());
         ootdService.createOotdByImage(ootdCreateRequest, imageUrl, principalDetails.getMemberId());
         // 날짜 조회 해서 등록 or 수정

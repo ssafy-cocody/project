@@ -41,6 +41,12 @@
       border-radius: 20px;
       box-sizing: border-box;
       background-color: var(--color-white);
+      object-fit: cover;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   }
 }
@@ -61,6 +67,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
+
+    > img {
+      object-fit: cover;
+    }
   }
 
   .modal-button {
