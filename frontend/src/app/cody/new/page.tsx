@@ -14,7 +14,7 @@ import TostMessage from '@/components/TostMessage';
 import CodyBoard from '@/containers/cody/new/CodyBoard';
 import styles from '@/containers/cody/new/NewCody.module.scss';
 import useModal from '@/hooks/useModal';
-import { ClosetCategory, ClothesCategory, IClothes, ISelectedClothes } from '@/types/clothes';
+import { ClosetCategory, CLOTHES_TAB, ClothesCategory, IClothes, ISelectedClothes } from '@/types/clothes';
 
 const categoryOrder: (keyof typeof ClothesCategory)[] = [
   ClothesCategory.TOP,
@@ -28,7 +28,7 @@ const Page = () => {
   const [selectedClothes, setSelectedClothes] = useState<ISelectedClothes>({});
   const [deleteClothes, setDeleteClothes] = useState<IClothes>();
   const [duplicatedCategory, setDuplicatedCategory] = useState<string | null>(null);
-  const [currentCategory, setCurrentCategory] = useState<keyof typeof ClosetCategory>('ALL');
+  const [currentCategory, setCurrentCategory] = useState<keyof typeof ClosetCategory>(CLOTHES_TAB.ALL);
 
   const handleTostMessage = (category: string) => {
     setDuplicatedCategory(category);

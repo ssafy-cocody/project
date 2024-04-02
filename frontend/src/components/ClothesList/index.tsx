@@ -7,7 +7,7 @@ import styles from '@/components/ClothesList/ClothesList.module.scss';
 import { useInfinityScroll } from '@/hooks/useInfinityScroll';
 import { fetchGetClothes } from '@/services/closet';
 import { IFetchGetClosetResponse } from '@/services/closet/type';
-import { ClosetCategory, IClothes } from '@/types/clothes';
+import { CLOTHES_TAB, ClosetCategory, IClothes } from '@/types/clothes';
 
 interface Props {
   currentCategory?: keyof typeof ClosetCategory;
@@ -46,7 +46,7 @@ const ClothesList = ({ handleModal, className, onSelectClothes, currentCategory 
           {data?.pages.map(({ content }: { content: IClothes[] }) => {
             return content.map((item: IClothes) => {
               const { clothesId, image, category } = item;
-              if (currentCategory === 'ALL' || currentCategory === category) {
+              if (currentCategory === CLOTHES_TAB.ALL || currentCategory === category) {
                 return (
                   <button
                     type="button"

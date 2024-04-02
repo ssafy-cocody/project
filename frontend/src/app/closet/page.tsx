@@ -15,7 +15,7 @@ import Header from '@/components/Header';
 import Nav from '@/components/Nav';
 import styles from '@/containers/closet/Closet.module.scss';
 import useModal from '@/hooks/useModal';
-import { ClosetCategory } from '@/types/clothes';
+import { ClosetCategory, CLOTHES_TAB } from '@/types/clothes';
 
 interface ICody {
   codyUrl: string;
@@ -23,7 +23,7 @@ interface ICody {
 }
 
 const Page = () => {
-  const [currentCategory, setCurrentCategory] = useState<keyof typeof ClosetCategory>('ALL');
+  const [currentCategory, setCurrentCategory] = useState<keyof typeof ClosetCategory>(CLOTHES_TAB.ALL);
   const { Modal, openModal } = useModal();
   const [codies] = useState<ICody[]>([
     {
@@ -73,7 +73,7 @@ const Page = () => {
           </div>
         </div>
         <div className={styles['closet-tab-container']}>
-          <ClothesTap currentCategory={currentCategory || 'ALL'} setCurrentCategory={setCurrentCategory} />
+          <ClothesTap currentCategory={currentCategory || CLOTHES_TAB.ALL} setCurrentCategory={setCurrentCategory} />
         </div>
         <div className={styles['list-padding']}>
           <ClothesList handleModal={openModal} currentCategory={currentCategory} />

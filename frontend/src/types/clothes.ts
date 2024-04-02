@@ -61,6 +61,11 @@ const ClothesCategory = {
   SHOES: 'SHOES',
 } as const;
 
+const CLOTHES_TAB = {
+  ...ClothesCategory,
+  ALL: 'ALL',
+} as const;
+
 const ClosetCategory = {
   ALL: '전체',
   TOP: '상의',
@@ -92,5 +97,5 @@ type INewClothes = {
   image?: string;
 } & Pick<IClothes, 'category' | 'name' | 'color' | 'brand' | 'productNo' | 'price' | 'link'>;
 
-export { ClosetCategory, ClothesCategory, Color, DONE, Step };
+export { ClosetCategory, CLOTHES_TAB, ClothesCategory, Color, DONE, Step };
 export type { IClothes, INewClothes, ISelectedClothes };
