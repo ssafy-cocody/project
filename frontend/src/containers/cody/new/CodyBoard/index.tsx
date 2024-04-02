@@ -1,12 +1,12 @@
 'use client';
 
 import Image from 'next/image';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from 'react';
 
 import TextInputWithUnderLine from '@/components/TextInputWithUnderLine';
 import styles from '@/containers/cody/new/CodyBoard/Board.module.scss';
-import { ISelectedClothes } from '@/containers/cody/new/type';
-import { Category, IClothes } from '@/types/clothes';
+import { ClothesCategory, IClothes, ISelectedClothes } from '@/types/clothes';
+import { getValidCodyName } from '@/utils/getValidCodyName';
 
 interface Props {
   onClickDeleteClothes: () => void;
@@ -16,9 +16,15 @@ interface Props {
 
 const CodyBoard = ({ onClickDeleteClothes, selectedClothes, setDeleteClothes }: Props) => {
   const [classNameBySelectedCount, setClassNameBySelectedCount] = useState<string>();
+  const [codyName, setCodyName] = useState<string>('');
+
   const handleDeleteClothes = (category: string) => {
     onClickDeleteClothes();
-    setDeleteClothes(selectedClothes[category]);
+    setDeleteClothes(selectedClothes[category as keyof ISelectedClothes]);
+  };
+
+  const handleCodyNameChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setCodyName(getValidCodyName(e.target.value));
   };
 
   useEffect(() => {
@@ -26,7 +32,9 @@ const CodyBoard = ({ onClickDeleteClothes, selectedClothes, setDeleteClothes }: 
       setClassNameBySelectedCount('selectedOne');
     }
     if (Object.keys(selectedClothes).length === 2) {
-      if (JSON.stringify(Object.keys(selectedClothes)) === JSON.stringify([Category.TOP, Category.OUTER])) {
+      if (
+        JSON.stringify(Object.keys(selectedClothes)) === JSON.stringify([ClothesCategory.TOP, ClothesCategory.OUTER])
+      ) {
         setClassNameBySelectedCount('selectedTwoHorizon');
       } else {
         setClassNameBySelectedCount('selectedTwoVertical');
@@ -35,8 +43,9 @@ const CodyBoard = ({ onClickDeleteClothes, selectedClothes, setDeleteClothes }: 
     if (Object.keys(selectedClothes).length === 3) {
       if (
         JSON.stringify(Object.keys(selectedClothes)) ===
-          JSON.stringify([Category.TOP, Category.OUTER, Category.BOTTOM]) ||
-        JSON.stringify(Object.keys(selectedClothes)) === JSON.stringify([Category.TOP, Category.OUTER, Category.SHOES])
+          JSON.stringify([ClothesCategory.TOP, ClothesCategory.OUTER, ClothesCategory.BOTTOM]) ||
+        JSON.stringify(Object.keys(selectedClothes)) ===
+          JSON.stringify([ClothesCategory.TOP, ClothesCategory.OUTER, ClothesCategory.SHOES])
       ) {
         setClassNameBySelectedCount('selectedThreeHorizon');
       } else {
@@ -50,7 +59,7 @@ const CodyBoard = ({ onClickDeleteClothes, selectedClothes, setDeleteClothes }: 
 
   return (
     <div className={styles['board-container']}>
-      <TextInputWithUnderLine label="새로운 코디명" />
+      <TextInputWithUnderLine label="새로운 코디명" onChange={handleCodyNameChange} value={codyName} />
       <div className={`${styles.board} ${classNameBySelectedCount ? styles[classNameBySelectedCount] : ''}`}>
         {Object.keys(selectedClothes).map((category) => {
           return (
@@ -60,7 +69,12 @@ const CodyBoard = ({ onClickDeleteClothes, selectedClothes, setDeleteClothes }: 
               onClick={() => handleDeleteClothes(category)}
               className={styles['image-container']}
             >
-              <Image src={selectedClothes[category]?.clothesImage!} alt="" fill className={styles.clothes} />
+              <Image
+                src={selectedClothes[category as keyof ISelectedClothes]?.image!}
+                alt=""
+                fill
+                className={styles.clothes}
+              />
             </button>
           );
         })}

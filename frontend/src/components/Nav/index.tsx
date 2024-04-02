@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { CalendarIcon, ClosetIcon, HomeIcon, MypageIcon } from '@/../public/svgs';
+import { CalendarIcon, ClosetIcon, CodyIcon, HomeIcon, MypageIcon } from '@/../public/svgs';
 
 import styles from './Nav.module.scss';
 
@@ -12,17 +12,6 @@ const Nav = ({ className }: { className?: string }) => {
 
   return (
     <nav className={`${styles.container} ${className}`}>
-      <Link href="/" className={styles.navigation}>
-        <HomeIcon fill={path === '/' ? 'var(--color-main)' : 'black'} />
-        <span
-          style={{
-            color: path === '/' ? 'var(--color-main)' : 'black',
-          }}
-          className={styles['navigation-text']}
-        >
-          홈
-        </span>
-      </Link>
       <Link href="/closet" className={styles.navigation}>
         <ClosetIcon fill={path === '/closet' ? 'var(--color-main)' : 'black'} />
         <span
@@ -32,6 +21,28 @@ const Nav = ({ className }: { className?: string }) => {
           className={styles['navigation-text']}
         >
           옷장
+        </span>
+      </Link>
+      <Link href="/cody/new" className={styles.navigation}>
+        <CodyIcon fill={path === '/cody/new' ? 'var(--color-main)' : 'black'} />
+        <span
+          style={{
+            color: path === '/cody/new' ? 'var(--color-main)' : 'black',
+          }}
+          className={styles['navigation-text']}
+        >
+          코디
+        </span>
+      </Link>
+      <Link href="/" className={styles.navigation}>
+        <HomeIcon fill={path === '/' ? 'var(--color-main)' : 'black'} />
+        <span
+          style={{
+            color: path === '/' ? 'var(--color-main)' : 'black',
+          }}
+          className={styles['navigation-text']}
+        >
+          홈
         </span>
       </Link>
       <Link href="/calendar" className={styles.navigation}>

@@ -1,5 +1,7 @@
 package com.cocodi.member.presentation.request;
 
-public record MemberUpdateRequest(String gender, String birth, String nickname) {
+import org.springframework.web.multipart.MultipartFile;
+
+public record MemberUpdateRequest(String gender, String birth, String nickname, MultipartFile profile) {
 
 }

@@ -2,6 +2,7 @@ package com.cocodi.clothes.domain.model;
 
 import com.cocodi.member.domain.model.Member;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
+@AllArgsConstructor
 public class Closet {
 
     @Id

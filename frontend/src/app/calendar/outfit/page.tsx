@@ -11,32 +11,43 @@ import Background from '@/components/Background';
 import Button from '@/components/Button';
 import Header from '@/components/Header';
 import styles from '@/containers/calendar/Outfit/Outfit.module.scss';
-import { Category, IClothes, TCategory } from '@/types/clothes';
+import { ClosetCategory, ClothesCategory, IClothes, ISelectedClothes } from '@/types/clothes';
 
 const Page = () => {
-  const [clothesByCategory] = useState<Record<string, IClothes[]>>({
-    [Category.TOP]: [
-      { image: '/images/test1.jpg', id: 1 },
-      { image: '/images/test2.jpg', id: 2 },
-      { image: '/images/test3.jpg', id: 3 },
+  const [clothesByCategory] = useState({
+    [ClothesCategory.OUTER]: [
+      { image: '/images/test2.jpg', clothesId: 11, category: ClothesCategory.OUTER },
+      { image: '/images/test4.jpg', clothesId: 12, category: ClothesCategory.OUTER },
+      { image: '/images/test3.jpg', clothesId: 13, category: ClothesCategory.OUTER },
     ],
-    [Category.BOTTOM]: [
-      { image: '/images/test2.jpg', id: 4 },
-      { image: '/images/test4.jpg', id: 5 },
-      { image: '/images/test3.jpg', id: 6 },
+    [ClothesCategory.TOP]: [
+      { image: '/images/test1.jpg', clothesId: 1, category: ClothesCategory.TOP },
+      { image: '/images/test2.jpg', clothesId: 2, category: ClothesCategory.TOP },
+      { image: '/images/test3.jpg', clothesId: 3, category: ClothesCategory.TOP },
     ],
-    [Category.SHOES]: [
-      { image: '/images/test2.jpg', id: 8 },
-      { image: '/images/test4.jpg', id: 9 },
-      { image: '/images/test3.jpg', id: 10 },
+    [ClothesCategory.BOTTOM]: [
+      { image: '/images/test2.jpg', clothesId: 4, category: ClothesCategory.BOTTOM },
+      { image: '/images/test4.jpg', clothesId: 5, category: ClothesCategory.BOTTOM },
+      { image: '/images/test3.jpg', clothesId: 6, category: ClothesCategory.BOTTOM },
+    ],
+    [ClothesCategory.SHOES]: [
+      { image: '/images/test2.jpg', clothesId: 8, category: ClothesCategory.SHOES },
+      { image: '/images/test4.jpg', clothesId: 9, category: ClothesCategory.SHOES },
+      { image: '/images/test3.jpg', clothesId: 10, category: ClothesCategory.SHOES },
     ],
   });
-  const [categories] = useState<TCategory[]>([Category.TOP, Category.BOTTOM, Category.SHOES]);
-  const [selected, setSelected] = useState<Record<TCategory, IClothes>[]>(Object.keys(Category).map(category => category: {}));
+
+  const [categories] = useState([
+    ClothesCategory.OUTER,
+    ClothesCategory.TOP,
+    ClothesCategory.BOTTOM,
+    ClothesCategory.SHOES,
+  ]);
+
+  const [selected, setSelected] = useState<ISelectedClothes>({});
 
   const handleClickItem = (e: ChangeEvent<HTMLInputElement>) => {
-    const newSelected: number[] = [...selected];
-    newSelected[Number(e.target.value)] = Number(e.target.id);
+    const newSelected = { ...selected, [e.target.value]: { clothesId: Number(e.target.id) } };
     setSelected(newSelected);
   };
 
@@ -52,28 +63,33 @@ const Page = () => {
           {categories.map((category) => {
             return (
               <div key={category} className={styles['clothes-by-category']}>
-                <div className={styles.category}>{category}</div>
+                <div className={styles.category}>{ClosetCategory[category]}</div>
                 <div className={styles.clothes}>
-                  {clothesByCategory[category].map(({ image, id }: IClothes, index) => {
+                  {clothesByCategory[category].map(({ image, clothesId }: IClothes, index) => {
                     return (
-                      <div className={styles['clothes-image-container']} key={id}>
-                        <label htmlFor={id.toString()}>
-                          <Image src={image} alt={`${category}${index + 1}`} fill className={styles['clothes-image']} />
-                          <div
-                            className={`${styles['checked-icon-overlay']} ${selected[category] === id ? styles.visible : ''}`}
+                      <div className={styles['clothes-image-container']} key={clothesId}>
+                        <label htmlFor={clothesId.toString()}>
+                          <Image
+                            src={image!}
+                            alt={`${category}${index + 1}`}
+                            fill
+                            className={styles['clothes-image']}
                           />
                           <div
-                            className={`${styles['checked-icon']} ${selected[category] === id ? styles.visible : ''}`}
+                            className={`${styles['checked-icon-overlay']} ${selected[category]?.clothesId === clothesId ? styles.visible : ''}`}
+                          />
+                          <div
+                            className={`${styles['checked-icon']} ${selected[category]?.clothesId === clothesId ? styles.visible : ''}`}
                           >
                             <CheckIcon />
                           </div>
                         </label>
                         <input
                           type="radio"
-                          id={id.toString()}
-                          value={category.toString()}
-                          radioGroup={category.toString()}
-                          onChange={(e) => handleClickItem(e)}
+                          id={clothesId.toString()}
+                          value={category}
+                          radioGroup={category}
+                          onChange={handleClickItem}
                         />
                       </div>
                     );
