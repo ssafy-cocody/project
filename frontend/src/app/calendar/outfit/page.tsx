@@ -92,13 +92,20 @@ const Page = () => {
   };
   // (data as Record<string, IClothes[]>) || {};
 
+  const ootdImageSrc = outfit?.ootdImage ? URL.createObjectURL(outfit?.ootdImage) : '';
+
+  if (!outfit || Object.values(outfit).some((v) => v === '')) {
+    window.alert('잘못된 접근입니다.');
+    router.replace('/calendar');
+  }
+
   return (
     <>
       <Background $backgroundColor="skyBlue" />
       <Header title="내 코디 올리기" previousLink="/calendar" />
       <main className={styles['main-container']}>
         <div className={styles['taken-image-container']}>
-          <Image src="/images/test3.jpg" alt="내가 올린 코디 사진" fill className={styles['taken-image']} />
+          <Image src={ootdImageSrc} alt="내가 올린 코디 사진" fill className={styles['taken-image']} />
         </div>
 
         {/** TODO: 로딩 스피너 */}
