@@ -5,6 +5,7 @@
 import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState } from 'react';
 
 import { PlusIcon, RightArrow } from '@/../public/svgs';
 import Background from '@/components/Background';
@@ -16,9 +17,11 @@ import Nav from '@/components/Nav';
 import styles from '@/containers/closet/Closet.module.scss';
 import useModal from '@/hooks/useModal';
 import { fetchGetCody } from '@/services/cody';
+import { ClosetCategory, CLOTHES_TAB } from '@/types/clothes';
 import { ICody } from '@/types/cody';
 
 const Page = () => {
+  const [currentCategory, setCurrentCategory] = useState<keyof typeof ClosetCategory>(CLOTHES_TAB.ALL);
   const { Modal, openModal } = useModal();
   const { data } = useQuery({
     queryKey: ['CodyQueryKey'],
@@ -61,10 +64,10 @@ const Page = () => {
           </div>
         </div>
         <div className={styles['closet-tab-container']}>
-          <ClothesTap />
+          <ClothesTap currentCategory={currentCategory || CLOTHES_TAB.ALL} setCurrentCategory={setCurrentCategory} />
         </div>
         <div className={styles['list-padding']}>
-          <ClothesList handleModal={openModal} />
+          <ClothesList handleModal={openModal} currentCategory={currentCategory} />
         </div>
         <Link href="/clothes" className={styles['upload-button']}>
           <PlusIcon stroke="#EDEDED" />
