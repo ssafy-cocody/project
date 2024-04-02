@@ -38,26 +38,21 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
-                .sessionManagement(sessionManagement -> {
-                    sessionManagement
-                            .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-                })
-                .authorizeHttpRequests(authorizeRequests -> {
-                    authorizeRequests
-                            .requestMatchers("/public/**").permitAll()
-                            .requestMatchers("/swagger-ui/**").permitAll()
-                            .requestMatchers("/v3/**").permitAll()
-                            .requestMatchers("/auth/**").authenticated();
-                })
-                .oauth2Login(oauth2Login -> {
-                    oauth2Login
-                            .redirectionEndpoint(redirectionEndpoint ->
-                                    redirectionEndpoint.baseUri("/*/oauth2/code/*"))
-                            .userInfoEndpoint(userInfoEndpoint ->
-                                    userInfoEndpoint.userService(oAuth2UserService))
-                            .successHandler(oAuth2AuthenticationSuccessHandler)
-                            .failureHandler(oAuth2AuthenticationFailureHandler);
-                })
+                .sessionManagement(sessionManagement -> sessionManagement
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                        .requestMatchers("/public/**").permitAll()
+                        .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers("/v3/**").permitAll()
+                        .requestMatchers("/auth/**").authenticated()
+                        .anyRequest().permitAll())
+                .oauth2Login(oauth2Login -> oauth2Login
+                        .redirectionEndpoint(redirectionEndpoint ->
+                                redirectionEndpoint.baseUri("/*/oauth2/code/*"))
+                        .userInfoEndpoint(userInfoEndpoint ->
+                                userInfoEndpoint.userService(oAuth2UserService))
+                        .successHandler(oAuth2AuthenticationSuccessHandler)
+                        .failureHandler(oAuth2AuthenticationFailureHandler))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

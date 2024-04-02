@@ -1,9 +1,9 @@
 package com.cocodi.codi.presentation.request;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public record OotdCodyRequest(
-        LocalDateTime date,
+        LocalDate date,
         Long codyId
 ) {
 }
