@@ -67,6 +67,6 @@ export const api = {
 
   patch: <T>(path: string, bodyObject: T): Promise<T> => {
     const body = JSON.stringify(bodyObject);
-    return request<T>(path, { method: HTTPMethods.PATCH, body });
+    return request<T>(path, { method: HTTPMethods.PATCH }, body);
   },
 };
