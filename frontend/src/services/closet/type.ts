@@ -19,4 +19,8 @@ interface IFetchGetClosetResponse {
   pageable: IPageable;
 }
 
-export type { IFetchGetClosetRequest, IFetchGetClosetResponse };
+interface IFetchDeleteClosetRequest {
+  clothesId: number;
+}
+
+export type { IFetchDeleteClosetRequest, IFetchGetClosetRequest, IFetchGetClosetResponse };
