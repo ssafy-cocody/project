@@ -1,5 +1,10 @@
 import { api } from '@/services';
-import { IFetchGetCodyRequest, IFetchGetCodyResponse, IFetchPostCodyRequest } from '@/services/cody/type';
+import {
+  IFetchDeleteCodyRequest,
+  IFetchGetCodyRequest,
+  IFetchGetCodyResponse,
+  IFetchPostCodyRequest,
+} from '@/services/cody/type';
 
 const CODY_PATH = '/cody';
 
@@ -10,5 +15,10 @@ export const fetchGetCody = async ({ page = 0, size = 8 }: IFetchGetCodyRequest)
 
 export const fetchPostCody = async ({ clothesRequest, name }: IFetchPostCodyRequest) => {
   const data = await api.post(CODY_PATH, { clothesRequest, name });
+  return data;
+};
+
+export const fetchDeleteCody = async ({ codyId }: IFetchDeleteCodyRequest) => {
+  const data = await api.delete(`${CODY_PATH}/${codyId}`);
   return data;
 };

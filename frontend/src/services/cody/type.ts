@@ -23,4 +23,8 @@ interface IFetchPostCodyRequest {
   name: string;
 }
 
-export type { IFetchGetCodyRequest, IFetchGetCodyResponse, IFetchPostCodyRequest };
+interface IFetchDeleteCodyRequest {
+  codyId: number;
+}
+
+export type { IFetchDeleteCodyRequest, IFetchGetCodyRequest, IFetchGetCodyResponse, IFetchPostCodyRequest };

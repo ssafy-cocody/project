@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 @Service
@@ -26,8 +25,9 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final S3Service s3Service;
 
-    public boolean updateMember(MemberUpdateRequest memberUpdateRequest, MultipartFile profile, Long memberId) {
+    public boolean updateMember(MemberUpdateRequest memberUpdateRequest, Long memberId) {
         Member findMember = memberRepository.findById(memberId).orElseThrow(() -> new MemberFindException("can not find Member"));
+        MultipartFile profile = memberUpdateRequest.profile();
         String profileUrl;
         if (profile == null || profile.isEmpty()) {
             profileUrl = findMember.getProfile();

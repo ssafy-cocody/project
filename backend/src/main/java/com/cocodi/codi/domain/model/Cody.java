@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -19,6 +20,7 @@ public class Cody {
     @GeneratedValue(strategy = IDENTITY)
     private Long codiId;
 
+    @Setter
     private String image;
 
     @ManyToOne(fetch = LAZY)
@@ -45,4 +47,5 @@ public class Cody {
         this.onepiece = onepiece;
         this.shoes = shoes;
     }
+
 }

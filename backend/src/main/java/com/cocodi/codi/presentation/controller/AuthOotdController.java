@@ -60,8 +60,8 @@ public class AuthOotdController {
      * @return null
      */
     @PostMapping("/image")
-    public ResponseEntity<?> createOotdByImage(@RequestBody OotdImageRequest ootdCreateRequest, MultipartFile ootdImage, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        String imageUrl = s3Service.uploadDefault(ootdImage);
+    public ResponseEntity<?> createOotdByImage(@RequestParam OotdImageRequest ootdCreateRequest,  @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        String imageUrl = s3Service.uploadDefault(ootdCreateRequest.ootdImage());
         ootdService.createOotdByImage(ootdCreateRequest, imageUrl, principalDetails.getMemberId());
         // 날짜 조회 해서 등록 or 수정
         // Image에서 옷 정보 뽑아서 코디 검색
