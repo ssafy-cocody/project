@@ -2,7 +2,7 @@
 
 'use client';
 
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -24,30 +24,33 @@ import { ICody } from '@/types/cody';
 const Page = () => {
   const [currentCategory, setCurrentCategory] = useState<keyof typeof ClosetCategory>(CLOTHES_TAB.ALL);
   const { Modal, openModal, closeModal } = useModal();
+
   const [closet, setCloset] = useState<ICody[]>([]);
-  const { data, refetch } = useQuery({
+  const { data } = useQuery({
     queryKey: ['CodyQueryKey'],
     queryFn: () => fetchGetCody({}),
   });
-
-  const [deleteClothes, setDeleteClothes] = useState<IClothes>();
-  const mutation = useMutation({
-    mutationFn: () => fetchDeleteClothes({ clothesId: deleteClothes!.clothesId }),
-  });
-
-  const handleSelectClothes = (item: IClothes) => {
-    setDeleteClothes(item);
-  };
-  const handleClothesDelete = async () => {
-    await mutation.mutateAsync();
-    refetch();
-  };
 
   useEffect(() => {
     if (data?.content) {
       setCloset(data.content);
     }
   }, [data]);
+
+  const [deleteClothes, setDeleteClothes] = useState<IClothes>();
+
+  const queryClient = useQueryClient();
+  const closetMutation = useMutation({
+    mutationFn: () => fetchDeleteClothes({ clothesId: deleteClothes!.clothesId }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['ClothesQueryKey'] });
+    },
+  });
+
+  const handleDeleteClothes = () => {
+    closetMutation.mutate();
+    closeModal();
+  };
 
   return (
     <>
@@ -88,11 +91,7 @@ const Page = () => {
           <ClothesTap currentCategory={currentCategory || CLOTHES_TAB.ALL} setCurrentCategory={setCurrentCategory} />
         </div>
         <div className={styles['list-padding']}>
-          <ClothesList
-            handleModal={openModal}
-            onSelectClothes={handleSelectClothes}
-            currentCategory={currentCategory}
-          />
+          <ClothesList handleModal={openModal} onSelectClothes={setDeleteClothes} currentCategory={currentCategory} />
         </div>
         <Link href="/clothes" className={styles['upload-button']}>
           <PlusIcon stroke="#EDEDED" />
@@ -106,7 +105,7 @@ const Page = () => {
               <Image src={deleteClothes?.image || ''} alt={deleteClothes?.name || ''} fill />
             </div>
             <div className={styles['delete-button']}>
-              <Button onClick={handleClothesDelete}>
+              <Button onClick={handleDeleteClothes}>
                 <span className={styles['button-text']}>네</span>
               </Button>
               <Button variant="white" onClick={closeModal}>
