@@ -26,6 +26,7 @@ public class ClothesService {
     private final ClothesRepository clothesRepository;
     private final RabbitMQUtil rabbitMQUtil;
     private final ClothesTempRepository clothesTempRepository;
+    private final  ClosetService closetService;
 
     private Clothes mappingClothesRequest(ClothesCreateRequest clothesCreateRequest, String url, Long memberId) {
         return Clothes.builder()
@@ -54,9 +55,13 @@ public class ClothesService {
         ClothesTemp clothesTemp = clothesTempRepository.findById(uuid)
                 .orElseThrow(() -> new NoSuchElementException("해당 UUID를 가진 임시 의류가 존재하지 않습니다: " + uuid));
         String url = s3Service.uploadAI(uuid, Base64.decode(clothesTemp.getImg()));
-        Clothes clothes = mappingClothesRequest(createRequest, url, memberId);
+
+        Clothes clothes = clothesRepository.save(
+                mappingClothesRequest(createRequest, url, memberId));
+
+        closetService.createCloset(clothes.getClothesId(), memberId);
         clothesTempRepository.deleteById(uuid);
-        return clothesRepository.save(clothes);
+        return clothes;
     }
 
     public void imageConvert(MultipartFile multipartFile, String sseKey) {

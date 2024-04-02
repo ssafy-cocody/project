@@ -1,24 +1,10 @@
+import { IPageable, ISort } from '@/services/common';
 import { ClothesCategory, IClothes } from '@/types/clothes';
 
 interface IFetchGetClosetRequest {
   page: number;
   size: number;
   category?: keyof typeof ClothesCategory;
-}
-
-interface ISort {
-  unsorted: boolean;
-  sorted: boolean;
-  empty: boolean;
-}
-
-interface IPageable {
-  unpaged: boolean;
-  pageNumber: number;
-  pageSize: number;
-  paged: boolean;
-  offset: number;
-  sort: ISort;
 }
 
 interface IFetchGetClosetResponse {
