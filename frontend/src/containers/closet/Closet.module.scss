@@ -1,8 +1,6 @@
 .main-container {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding: 16px;
   box-sizing: border-box;
   position: relative;
 
@@ -11,6 +9,7 @@
     flex-direction: column;
     justify-content: flex-start;
     gap: 16px;
+    padding: 16px;
 
     .cody-title-container {
       display: flex;
@@ -126,4 +125,17 @@
       font-size: 18px;
     }
   }
+}
+
+.closet-tab-container {
+  position: sticky;
+  padding: 16px;
+  top: 0;
+  box-sizing: border-box;
+  z-index: var(--zIndex-above);
+  background-color: var(--color-white);
+}
+
+.list-padding {
+  padding: 0 16px;
 }

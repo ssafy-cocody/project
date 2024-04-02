@@ -1,19 +1,24 @@
-// TODO 애니메이션 개선
+$item-width: 150px;
+$item-gap: 16px;
+$item-count: 5;
+$slider-width: calc($item-width * $item-count + $item-gap * ($item-count - 1));
+$animation-time: 12s;
+
 @keyframes leftToRight {
   0% {
-    transform: translateX(300px);
+    transform: translateX(-$slider-width);
   }
   100% {
-    transform: translateX(-300px);
+    transform: translateX($item-gap);
   }
 }
 
 @keyframes rightToLeft {
   0% {
-    transform: translateX(-300px);
+    transform: translateX($item-gap);
   }
   100% {
-    transform: translateX(300px);
+    transform: translateX(-$slider-width);
   }
 }
 
@@ -70,27 +75,26 @@
   .row {
     position: absolute;
     display: flex;
-    gap: 16px;
+    left: 0;
+    gap: $item-gap;
 
     &:nth-child(1) {
-      animation: leftToRight 12s linear infinite;
-      animation-direction: alternate;
+      animation: leftToRight $animation-time linear infinite;
     }
 
     &:nth-child(2) {
       top: 166px;
 
-      animation: rightToLeft 12s linear infinite;
-      animation-direction: alternate;
+      animation: rightToLeft $animation-time linear infinite;
     }
   }
 
   .item {
     position: relative;
 
-    min-width: 150px;
-    width: 150px;
-    height: 150px;
+    min-width: $item-width;
+    width: $item-width;
+    height: $item-width;
 
     overflow: hidden;
 
@@ -105,40 +109,36 @@
 }
 
 .login-container {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-
   padding: 0 16px;
-
-  text-align: center;
 
   .button {
     display: flex;
+    justify-content: center;
     gap: 4px;
     align-items: center;
     align-self: center;
     justify-content: center;
 
+    margin: 0 auto;
     width: 100%;
     max-width: 358px;
     height: 48px;
     border-radius: 8px;
 
     color: var(--color-black);
-  }
 
-  .icon {
-    width: 26px;
-    height: 26px;
+    .icon {
+      width: 26px;
+      height: 26px;
 
-    background: no-repeat center;
-    background-size: cover;
-  }
+      background: no-repeat center;
+      background-size: cover;
+    }
 
-  .text {
-    font-size: 18px;
-    font-weight: 800;
+    .text {
+      font-size: 18px;
+      font-weight: 800;
+    }
   }
 
   .kakao {
@@ -160,6 +160,8 @@
   }
 
   .desc {
+    margin-top: 12px;
+    text-align: center;
     font-size: 12px;
     font-weight: 300;
   }

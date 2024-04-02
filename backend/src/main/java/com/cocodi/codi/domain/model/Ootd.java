@@ -2,10 +2,11 @@ package com.cocodi.codi.domain.model;
 
 import com.cocodi.member.domain.model.Member;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -21,7 +22,7 @@ public class Ootd {
     private Long ootdId;
 
     @Temporal(TemporalType.DATE)
-    private Date date;
+    private LocalDate date;
 
     private String snapShot;
 
@@ -30,4 +31,15 @@ public class Ootd {
 
     @ManyToOne(fetch = LAZY)
     private Member member;
+
+    @Builder
+    private Ootd(Long ootdId, LocalDate date, String snapShot, Cody cody, Member member) {
+        this.ootdId = ootdId;
+        this.date = date;
+        this.snapShot = snapShot;
+        this.cody = cody;
+        this.member = member;
+    }
+
 }
+

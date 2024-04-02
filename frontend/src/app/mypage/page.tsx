@@ -1,14 +1,16 @@
-import Background from '@/components/background';
+import Background from '@/components/Background';
 import Header from '@/components/Header';
-import Nav from '@/components/nav';
+import Nav from '@/components/Nav';
 import Menu from '@/containers/mypage/Menu';
 
 const Page = () => {
   return (
     <>
-      <Header title="마이페이지" />
-      <Menu />
       <Background $backgroundColor="skyBlue" />
+      <Header title="마이페이지" />
+      <main>
+        <Menu />
+      </main>
       <Nav />
     </>
   );

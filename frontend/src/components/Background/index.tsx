@@ -2,13 +2,13 @@
 
 import styled from 'styled-components';
 
-import { BackgroundProps } from '@/components/background/type';
+import { BackgroundProps } from '@/components/Background/type';
 
 const BackgroundDiv = styled.div<BackgroundProps>`
   position: absolute;
   top: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   z-index: var(--zIndex-background);
   background: linear-gradient(
     0deg,
