@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-expressions */
-import { RefetchOptions, useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import Image from 'next/image';
-import { useEffect } from 'react';
 
 import styles from '@/components/ClothesList/ClothesList.module.scss';
 import { useInfinityScroll } from '@/hooks/useInfinityScroll';
@@ -19,8 +18,8 @@ interface Props {
 const PAGE_SIZE = 9;
 
 const ClothesList = ({ handleModal, className, onSelectClothes, currentCategory }: Props) => {
-  const { data, fetchNextPage, hasNextPage, refetch } = useInfiniteQuery<IFetchGetClosetResponse>({
-    queryKey: ['ClothesQueryKey'],
+  const { data, fetchNextPage, hasNextPage } = useInfiniteQuery<IFetchGetClosetResponse>({
+    queryKey: ['ClothesQueryKey', currentCategory],
     queryFn: ({ pageParam }) =>
       fetchGetClothes({
         page: pageParam as number,
@@ -30,12 +29,6 @@ const ClothesList = ({ handleModal, className, onSelectClothes, currentCategory 
     initialPageParam: 0,
     getNextPageParam: (lastPage) => (lastPage.last ? undefined : lastPage.pageable.pageNumber + 1),
   });
-
-  useEffect(() => {
-    if (currentCategory) {
-      refetch({ refetchPage: (_: any, index: number) => index === 0 } as RefetchOptions);
-    }
-  }, [currentCategory]);
 
   const refLast = useInfinityScroll({ hasNextPage, fetchNextPage }).ref;
 
