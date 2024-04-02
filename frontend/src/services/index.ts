@@ -35,11 +35,15 @@ const request = async <TResponse>(path: string, config: RequestInit, body?: Body
   };
 
   const response = await fetch(`${BASE_URL}/auth/v1${path}`, { ...options, credentials: 'include' });
+
   if (!response.ok) {
     response.json().then((res) => console.log(res));
     handleError(response.status, response.statusText);
   }
 
+  if (config.method === HTTPMethods.DELETE) {
+    return {} as TResponse;
+  }
   return response.json().then((data) => data as TResponse);
 };
 
