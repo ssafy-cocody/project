@@ -2,7 +2,7 @@
 
 'use client';
 
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -74,9 +74,13 @@ const Page = () => {
     }, {});
   };
 
+  const queryClient = useQueryClient();
   const codyMutation = useMutation({
-    mutationFn: () => fetchPostCody({ clothesRequest: selectedClothesToClothesRequest(), name: codyName }),
-    onSuccess: () => router.push('/cody'),
+    mutationFn: () => fetchPostCody({ clothesPythonRequest: selectedClothesToClothesRequest(), name: codyName }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['CodyListQueryKey'] });
+      router.push('/cody');
+    },
   });
 
   const handleSaveButton = () => {
@@ -93,7 +97,11 @@ const Page = () => {
   return (
     <>
       <Background $backgroundColor="purple" />
-      <Header hasPreviousLink title="내 코디 만들기" RightComponent={<SaveButton />} />
+      <Header
+        hasPreviousLink
+        title="내 코디 만들기"
+        RightComponent={<SaveButton onClick={handleSaveButton}>저장</SaveButton>}
+      />
       <main className={styles['main-container']}>
         <CodyBoard
           onClickRemoveClothes={openModal}
