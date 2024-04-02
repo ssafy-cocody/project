@@ -9,18 +9,19 @@ import { ClothesCategory, IClothes, ISelectedClothes } from '@/types/clothes';
 import { getValidCodyName } from '@/utils/getValidCodyName';
 
 interface Props {
-  onClickDeleteClothes: () => void;
+  onClickRemoveClothes: () => void;
   selectedClothes: ISelectedClothes;
-  setDeleteClothes: Dispatch<SetStateAction<IClothes | undefined>>;
+  setRemoveClothes: Dispatch<SetStateAction<IClothes | undefined>>;
+  codyName: string;
+  setCodyName: Dispatch<SetStateAction<string>>;
 }
 
-const CodyBoard = ({ onClickDeleteClothes, selectedClothes, setDeleteClothes }: Props) => {
+const CodyBoard = ({ onClickRemoveClothes, selectedClothes, setRemoveClothes, codyName, setCodyName }: Props) => {
   const [classNameBySelectedCount, setClassNameBySelectedCount] = useState<string>();
-  const [codyName, setCodyName] = useState<string>('');
 
-  const handleDeleteClothes = (category: string) => {
-    onClickDeleteClothes();
-    setDeleteClothes(selectedClothes[category as keyof ISelectedClothes]);
+  const handleRemoveClothes = (category: string) => {
+    onClickRemoveClothes();
+    setRemoveClothes(selectedClothes[category as keyof ISelectedClothes]);
   };
 
   const handleCodyNameChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -66,7 +67,7 @@ const CodyBoard = ({ onClickDeleteClothes, selectedClothes, setDeleteClothes }: 
             <button
               key={category}
               type="button"
-              onClick={() => handleDeleteClothes(category)}
+              onClick={() => handleRemoveClothes(category)}
               className={styles['image-container']}
             >
               <Image
