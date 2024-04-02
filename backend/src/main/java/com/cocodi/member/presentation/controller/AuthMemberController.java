@@ -23,7 +23,7 @@ public class AuthMemberController {
      * @return
      */
     @PatchMapping
-    public ResponseEntity<String> updateMember(@RequestParam String gender, @RequestParam String birth, @RequestParam String nickname, @RequestParam MultipartFile profile, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public ResponseEntity<String> updateMember(@RequestParam(required = false) String gender, @RequestParam(required = false) String birth, @RequestParam(required = false) String nickname, @RequestParam(required = false) MultipartFile profile, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         MemberUpdateRequest memberUpdateRequest = new MemberUpdateRequest(gender, birth, nickname, profile);
         if(memberService.updateMember(memberUpdateRequest, principalDetails.getMemberId())) {
             return new ResponseEntity<>("success", HttpStatus.OK);
