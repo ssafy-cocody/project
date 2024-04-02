@@ -9,7 +9,8 @@ interface IUser {
   nickname?: string;
   role?: userRole;
   gender?: TGender;
-  birth?: string; // yyyyMMdd
+  birth?: string; // yyyy
+  profile?: string;
   accessToken?: string;
 }
 
