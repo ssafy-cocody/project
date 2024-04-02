@@ -30,7 +30,7 @@ const Page = () => {
   return (
     <>
       <Background $backgroundColor="purple" />
-      <Header title="나의 코디" previousLink="/closet" />
+      <Header title="나의 코디" hasPreviousLink />
       <main className={styles['main-container']}>
         <div className={styles['cody-container']}>
           <Link href="/cody/new" className={styles['new-cody']}>
