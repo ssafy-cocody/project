@@ -1,6 +1,6 @@
 import { api } from '@/services';
 
-import { IFetchGetClosetRequest, IFetchGetClosetResponse } from './type';
+import { IFetchDeleteClosetRequest, IFetchGetClosetRequest, IFetchGetClosetResponse } from './type';
 
 export const fetchGetClothes = async ({
   page,
@@ -10,5 +10,10 @@ export const fetchGetClothes = async ({
   const data: IFetchGetClosetResponse = await api.get<IFetchGetClosetResponse>(
     `/closet?page=${page}&size=${size}&category=${category || ''}`,
   );
+  return data;
+};
+
+export const fetchDeleteClothes = async ({ clothesId }: IFetchDeleteClosetRequest) => {
+  const data = await api.delete('/closet', { clothesId });
   return data;
 };

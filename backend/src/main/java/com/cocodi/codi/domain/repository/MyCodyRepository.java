@@ -18,4 +18,21 @@ public interface MyCodyRepository extends JpaRepository<MyCody, Long> {
     Optional<MyCody> findByMemberAndCody(Member member, Cody cody);
 
     Long countByMyCodiIdGreaterThan(Long myCodyId);
+
+    Optional<MyCody> findByMemberAndMyCodiId(Member member, Long myCodyId);
+
+//    @Query("SELECT m FROM MyCody m JOIN m.cody c WHERE m.member = :member " +
+//            "AND c.top.clothesId = :topId " +
+//            "AND c.bottom.clothesId = :bottomId " +
+//            "AND c.outer.clothesId = :outerId " +
+//            "AND c.onepiece.clothesId = :onepieceId " +
+//            "AND c.shoes.clothesId = :shoesId")
+//    Optional<MyCody> findByMemberWithCody(
+//            @Param("topId") Long topId,
+//            @Param("bottomId") Long bottomId,
+//            @Param("outerId") Long outerId,
+//            @Param("onepieceId") Long onepieceId,
+//            @Param("shoesId") Long shoesId,
+//            @Param("member") Member member
+//    );
 }

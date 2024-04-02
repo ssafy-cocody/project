@@ -73,7 +73,7 @@ const BasicForm = ({ onClickButton, onChange: handleChange, readOnly, image, ...
             onChange={(e) => handleFormChange({ key: 'name', value: e.target.value })}
           />
           <ColorSelect
-            color={formInput.color}
+            color={formInput.color as keyof typeof Color}
             disabled={readOnly}
             onChange={(color) => handleFormChange({ key: 'color', value: color })}
           />
