@@ -5,7 +5,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { PlusIcon, RightArrow } from '@/../public/svgs';
 import Background from '@/components/Background';
@@ -25,17 +25,10 @@ const Page = () => {
   const [currentCategory, setCurrentCategory] = useState<keyof typeof ClosetCategory>(CLOTHES_TAB.ALL);
   const { Modal, openModal, closeModal } = useModal();
 
-  const [closet, setCloset] = useState<ICody[]>([]);
-  const { data } = useQuery({
+  const { data: codyData } = useQuery({
     queryKey: ['CodyQueryKey'],
     queryFn: () => fetchGetCody({}),
   });
-
-  useEffect(() => {
-    if (data?.content) {
-      setCloset(data.content);
-    }
-  }, [data]);
 
   const [deleteClothes, setDeleteClothes] = useState<IClothes>();
 
@@ -68,8 +61,8 @@ const Page = () => {
             </Link>
           </div>
           <div className={styles['cody-scroll']}>
-            {closet.length &&
-              closet.map(({ image, name }: ICody) => {
+            {codyData?.content.length &&
+              codyData.content.map(({ image, name }: ICody) => {
                 return (
                   <div key={name} className={styles.cody}>
                     <div className={styles['cody-image-container']}>
@@ -79,7 +72,7 @@ const Page = () => {
                   </div>
                 );
               })}
-            {!closet.length && (
+            {!codyData?.content.length && (
               <Link href="/cody/new" className={styles['empty-cody']}>
                 코디 채우러 가기
                 <Image src="/images/magicWand.png" width={25} height={25} alt="코디채우러가기" />
