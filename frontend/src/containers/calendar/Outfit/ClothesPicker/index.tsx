@@ -3,7 +3,7 @@ import { ChangeEvent, useState } from 'react';
 
 import { CheckIcon } from '@/../../public/svgs';
 import styles from '@/containers/calendar/Outfit/ClothesPicker/ClothesPicker.module.scss';
-import { IClothes, ISelectedClothes } from '@/types/clothes';
+import { ClosetCategory, ClothesCategory, IClothes, ISelectedClothes } from '@/types/clothes';
 
 interface ClothesPickerProps {
   clothesByCategory: Record<string, IClothes[]>;
@@ -13,47 +13,50 @@ interface ClothesPickerProps {
 const ClothesPicker = ({ clothesByCategory, onSelectClothes }: ClothesPickerProps) => {
   const [selected, setSelected] = useState<ISelectedClothes>({});
 
-  const categories = Object.keys(clothesByCategory).map((category) => category);
-
   const handleClickItem = (e: ChangeEvent<HTMLInputElement>) => {
     const newSelected: ISelectedClothes = { ...selected };
-    newSelected[e.target.value] = { clothesId: Number(e.target.id) };
+    const selectedCategory = e.target.value as keyof ISelectedClothes;
+    newSelected[selectedCategory] = { clothesId: Number(e.target.id) };
+
     setSelected(newSelected);
     onSelectClothes(newSelected);
   };
+
+  const categories = Object.keys(clothesByCategory).map(
+    (category) => ClothesCategory[category as keyof typeof ClothesCategory],
+  );
 
   return (
     <div className={styles['clothes-picker']}>
       {categories.map((category) => {
         return (
           <div key={category} className={styles['clothes-by-category']}>
-            <div className={styles.category}>{category}</div>
+            <div className={styles.category}>{ClosetCategory[category]}</div>
             <div className={styles.clothes}>
-              {Object.hasOwn(clothesByCategory, category) &&
-                clothesByCategory[category].map(({ image, clothesId }: IClothes, index) => {
-                  return (
-                    <div className={styles['clothes-image-container']} key={clothesId}>
-                      <label htmlFor={clothesId.toString()}>
-                        <Image src={image!} alt={`${category}${index + 1}`} fill className={styles['clothes-image']} />
-                        <div
-                          className={`${styles['checked-icon-overlay']} ${selected[category]?.clothesId === clothesId ? styles.visible : ''}`}
-                        />
-                        <div
-                          className={`${styles['checked-icon']} ${selected[category]?.clothesId === clothesId ? styles.visible : ''}`}
-                        >
-                          <CheckIcon />
-                        </div>
-                      </label>
-                      <input
-                        type="radio"
-                        id={clothesId.toString()}
-                        value={category.toString()}
-                        radioGroup={category.toString()}
-                        onChange={handleClickItem}
+              {clothesByCategory[category].map(({ image, clothesId }: IClothes, index) => {
+                return (
+                  <div className={styles['clothes-image-container']} key={clothesId}>
+                    <label htmlFor={clothesId.toString()}>
+                      <Image src={image!} alt={`${category}${index + 1}`} fill className={styles['clothes-image']} />
+                      <div
+                        className={`${styles['checked-icon-overlay']} ${selected[category]?.clothesId === clothesId ? styles.visible : ''}`}
                       />
-                    </div>
-                  );
-                })}
+                      <div
+                        className={`${styles['checked-icon']} ${selected[category]?.clothesId === clothesId ? styles.visible : ''}`}
+                      >
+                        <CheckIcon />
+                      </div>
+                    </label>
+                    <input
+                      type="radio"
+                      id={clothesId.toString()}
+                      value={category}
+                      radioGroup={category}
+                      onChange={handleClickItem}
+                    />
+                  </div>
+                );
+              })}
             </div>
           </div>
         );
