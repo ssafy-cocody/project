@@ -19,10 +19,15 @@ interface IFetchPostSaveClothesRequest {
   uuid: string;
 }
 
+interface IFetchPostClothesRequest {
+  clothesId: number;
+}
+
 export type {
   IFetchGetClothesInfoRequest,
   IFetchGetClothesInfoResponse,
   IFetchPostClothesImageRequest,
   IFetchPostClothesImageResponse,
+  IFetchPostClothesRequest,
   IFetchPostSaveClothesRequest,
 };
