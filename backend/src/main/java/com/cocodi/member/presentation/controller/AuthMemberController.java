@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/auth/v1/member")
@@ -18,12 +19,12 @@ public class AuthMemberController {
 
     /**
      * 회원 정보 수정
-     * @param memberUpdateRequest
      * @param principalDetails
      * @return
      */
     @PatchMapping
-    public ResponseEntity<String> updateMember(@RequestParam MemberUpdateRequest memberUpdateRequest, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public ResponseEntity<String> updateMember(@RequestParam String gender, @RequestParam String birth, @RequestParam String nickname, @RequestParam MultipartFile profile, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        MemberUpdateRequest memberUpdateRequest = new MemberUpdateRequest(gender, birth, nickname, profile);
         if(memberService.updateMember(memberUpdateRequest, principalDetails.getMemberId())) {
             return new ResponseEntity<>("success", HttpStatus.OK);
         } else {
