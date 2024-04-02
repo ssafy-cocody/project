@@ -19,12 +19,11 @@ public class AuthMemberController {
     /**
      * 회원 정보 수정
      * @param memberUpdateRequest
-     * @param profile
      * @param principalDetails
      * @return
      */
     @PatchMapping
-    public ResponseEntity<String> updateMember(@RequestBody MemberUpdateRequest memberUpdateRequest, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public ResponseEntity<String> updateMember(@RequestParam MemberUpdateRequest memberUpdateRequest, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         if(memberService.updateMember(memberUpdateRequest, principalDetails.getMemberId())) {
             return new ResponseEntity<>("success", HttpStatus.OK);
         } else {
