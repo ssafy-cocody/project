@@ -54,7 +54,7 @@ const Page = () => {
     formdata.append('color', data.color!);
     formdata.append('brand', data.brand || '');
     formdata.append('productNo', data.productNo || '');
-    formdata.append('price', data.price ? data.price.toString() : '');
+    formdata.append('price', data.price && Number(data.price) > 0 ? data.price.toString() : '');
     formdata.append('link', data.link || '');
 
     clothesMutation.mutate(
