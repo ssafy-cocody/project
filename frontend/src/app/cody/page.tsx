@@ -95,7 +95,14 @@ const Page = () => {
                 className={styles['cody-container']}
               >
                 <div className={styles['cody-image-container']}>
-                  <Image src={image} alt={name} fill className={styles['cody-image']} />
+                  {image && <Image src={image || ''} alt={name} fill className={styles['cody-image']} />}
+                  {!image && (
+                    <div className={styles['cody-image']}>
+                      코디 이미지
+                      <br />
+                      생성 중 ₊⁺
+                    </div>
+                  )}
                 </div>
                 <div className={styles['cody-name']}>{name}</div>
               </button>
@@ -108,7 +115,14 @@ const Page = () => {
         <Modal>
           <div className={styles['modal-container']}>
             <div className={styles['selected-clothes']}>
-              <Image src={selectedCody?.image || ''} alt={selectedCody?.name || ''} fill />
+              {selectedCody?.image && <Image src={selectedCody.image} alt={selectedCody?.name || ''} fill />}
+              {!selectedCody?.image && (
+                <div>
+                  코디 이미지
+                  <br />
+                  생성 중 ₊⁺
+                </div>
+              )}
             </div>
             <div className={styles['modal-button']}>
               <Button onClick={handlePostOOTDCody}>
