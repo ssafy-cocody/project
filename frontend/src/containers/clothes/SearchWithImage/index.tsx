@@ -10,9 +10,14 @@ import style from '@/containers/clothes/SearchWithImage/SearchWithImage.module.s
 import useClothesStep from '@/hooks/useClothesStep';
 import useModal from '@/hooks/useModal';
 import { fetchGetClothesInfo, fetchPostClothesImage } from '@/services/clothes';
-import { Step } from '@/types/clothes';
+import { IClothes, Step } from '@/types/clothes';
 
-const SearchWithImage = ({ onClickButton }: { onClickButton: () => void }) => {
+interface SearchWithImageProps {
+  onSelectResult: (clothes: IClothes & { uuid: string }) => void;
+  onClickSelfBasicForm: ({ uuid }: { uuid: string }) => void;
+}
+
+const SearchWithImage = ({ onSelectResult, onClickSelfBasicForm }: SearchWithImageProps) => {
   const { Modal, openModal } = useModal();
   const { jumpStep } = useClothesStep();
   const [multipartFile, setMultipartFile] = useState<File>();
@@ -42,13 +47,25 @@ const SearchWithImage = ({ onClickButton }: { onClickButton: () => void }) => {
     return '옷을 찾는데에 실패했어요. 😥';
   };
 
+  // TODO 로딩 스피너
   const modalContent = () => {
     if (isSearching) return '';
-    if (isSuccess) return <SearchResult onClick={onClickButton} clothesList={clothesSearchItemQuery.data} />;
+    if (isSuccess)
+      return (
+        <SearchResult
+          onSelect={(clothes) => onSelectResult({ ...clothes, uuid: clothesUuid })}
+          clothesList={clothesSearchItemQuery.data}
+        />
+      );
     return (
       <>
         <Button onClick={() => jumpStep(Step.SEARCH_WITH_CODE)}>품번으로 검색하기</Button>
-        <Button variant="white" onClick={() => jumpStep(Step.SELF_BASIC_FORM)}>
+        <Button
+          variant="white"
+          onClick={() => {
+            onClickSelfBasicForm({ uuid: clothesUuid });
+          }}
+        >
           직접 등록하기
         </Button>
       </>

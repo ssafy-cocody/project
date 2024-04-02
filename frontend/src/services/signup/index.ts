@@ -5,7 +5,7 @@ import { IFetchCreateMemberRequest } from '@/services/signup/type';
  * 회원가입
  */
 const fetchCreateMember = async (params: IFetchCreateMemberRequest) => {
-  const response = await api.patch<IFetchCreateMemberRequest>('/auth/v1/member', {
+  const response = await api.patch<IFetchCreateMemberRequest>('/member', {
     ...params,
   });
 

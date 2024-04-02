@@ -2,9 +2,9 @@
 
 'use client';
 
+import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
 
 import { PlusIcon, RightArrow } from '@/../public/svgs';
 import Background from '@/components/Background';
@@ -15,32 +15,15 @@ import Header from '@/components/Header';
 import Nav from '@/components/Nav';
 import styles from '@/containers/closet/Closet.module.scss';
 import useModal from '@/hooks/useModal';
-
-interface ICody {
-  codyUrl: string;
-  codyName: string;
-}
+import { fetchGetCody } from '@/services/cody';
+import { ICody } from '@/types/cody';
 
 const Page = () => {
   const { Modal, openModal } = useModal();
-  const [codies] = useState<ICody[]>([
-    {
-      codyUrl: '/images/test1.jpg',
-      codyName: '데이트룩1',
-    },
-    {
-      codyUrl: '/images/test2.jpg',
-      codyName: '데이트룩2',
-    },
-    {
-      codyUrl: '/images/test3.jpg',
-      codyName: '출근룩1',
-    },
-    {
-      codyUrl: '/images/test4.jpg',
-      codyName: '집앞마실룩1',
-    },
-  ]);
+  const { data } = useQuery({
+    queryKey: ['CodyQueryKey'],
+    queryFn: () => fetchGetCody({}),
+  });
 
   return (
     <>
@@ -58,16 +41,23 @@ const Page = () => {
             </Link>
           </div>
           <div className={styles['cody-scroll']}>
-            {codies.map(({ codyUrl, codyName }: ICody) => {
-              return (
-                <div key={codyName} className={styles.cody}>
-                  <div className={styles['cody-image-container']}>
-                    <Image src={codyUrl} alt={codyName} fill className={styles['cody-image']} />
+            {data?.content.length ? (
+              data?.content.map(({ image, name }: ICody) => {
+                return (
+                  <div key={name} className={styles.cody}>
+                    <div className={styles['cody-image-container']}>
+                      <Image src={image} alt={name} fill className={styles['cody-image']} />
+                    </div>
+                    <div className={styles['cody-name']}>{name}</div>
                   </div>
-                  <div className={styles['cody-name']}>{codyName}</div>
-                </div>
-              );
-            })}
+                );
+              })
+            ) : (
+              <Link href="/cody/new" className={styles['empty-cody']}>
+                코디 채우러 가기
+                <Image src="/images/magicWand.png" width={25} height={25} alt="코디채우러가기" />
+              </Link>
+            )}
           </div>
         </div>
         <div className={styles['closet-tab-container']}>
@@ -80,7 +70,6 @@ const Page = () => {
           <PlusIcon stroke="#EDEDED" />
         </Link>
       </main>
-      {/* TODO: ClothesList 스크롤 시 Navigation 숨기기 */}
       <Nav />
       <div id="modal">
         <Modal title="이 아이템을 삭제하시겠습니까?">

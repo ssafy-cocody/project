@@ -44,9 +44,8 @@ const fetchPostClothesImage = async ({
       break;
     }
 
-    const dataMatchResult = res[1].match(/[^data: ].+/);
-    const data = dataMatchResult ? dataMatchResult[0] : '';
-    uuid = data;
+    const dataMatchResult = res[1].split(':')[1];
+    uuid = dataMatchResult;
   }
 
   if (uuid) return { uuid };
@@ -65,9 +64,39 @@ const fetchGetClothesInfo = async ({ uuid }: IFetchGetClothesInfoRequest) => {
 /**
  * 옷 등록
  */
-const fetchPostSaveClothes = async ({ uuid, ...clothes }: IFetchPostSaveClothesRequest) => {
-  const response = await api.post(`/clothes/temp/save/${uuid}`, { ...clothes });
-  return response;
+const fetchPostSaveClothes = async ({ uuid, clothes }: IFetchPostSaveClothesRequest) => {
+  const response = await fetch(`${BASE_URL}/auth/v1/clothes/temp/save/${uuid}`, {
+    method: 'POST',
+    body: clothes,
+    headers: {
+      Authorization: `Bearer ${getAccessToken()}`,
+    },
+  });
+
+  if (!response.ok) throw new Error(response.status.toString());
+
+  return response.json;
 };
 
-export { fetchGetClothesInfo, fetchPostClothesImage, fetchPostSaveClothes };
+/**
+ * 누끼딴 옷 이미지 조회
+ */
+const fetchGetClothesTempImg = async (uuid: string) => {
+  const response = await fetch(`${BASE_URL}/auth/v1/clothes/temp/img/${uuid}`, {
+    headers: {
+      Authorization: `Bearer ${getAccessToken()}`,
+    },
+  });
+
+  const blob = await response.blob();
+  const reader = new FileReader();
+  await new Promise((resolve, reject) => {
+    reader.onload = resolve;
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+
+  return reader.result;
+};
+
+export { fetchGetClothesInfo, fetchGetClothesTempImg, fetchPostClothesImage, fetchPostSaveClothes };

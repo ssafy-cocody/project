@@ -5,13 +5,14 @@ import styles from '@/components/SelectInput/SelectInput.module.scss';
 
 interface SelectInputProps extends SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;
+  disabled?: boolean;
   options?: {
     value: string;
     text: string;
   }[];
 }
 
-const SelectInput = ({ label, options, value: initValue = '', onChange, ...props }: SelectInputProps) => {
+const SelectInput = ({ disabled, label, options, value: initValue = '', onChange, ...props }: SelectInputProps) => {
   const [selectedValue, setSelectedValue] = useState(initValue);
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
     if (onChange) {
@@ -23,7 +24,7 @@ const SelectInput = ({ label, options, value: initValue = '', onChange, ...props
   return (
     <>
       {label && <Label label={label} />}
-      <select className={styles.select} value={selectedValue} {...props} onChange={handleChange}>
+      <select disabled={disabled} className={styles.select} value={selectedValue} {...props} onChange={handleChange}>
         <option value="">카테고리를 선택하세요.</option>
         {options?.length &&
           options.map(({ value, text }) => {
