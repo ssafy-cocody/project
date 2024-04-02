@@ -22,10 +22,10 @@ const AdditionalForm = ({
   link: initLink,
 }: AdditionalFormProps) => {
   const [input, setInput] = useState({
-    brand: initBrand,
-    productNo: initProductNo,
+    brand: initBrand || '',
+    productNo: initProductNo || '',
     price: initPrice?.toString(),
-    link: initLink,
+    link: initLink || '',
   });
 
   const additionalFormInput = [

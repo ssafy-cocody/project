@@ -6,9 +6,9 @@ import styles from '@/containers/clothes/BasicForm/ColorSelect/ColorSelect.modul
 import { Color } from '@/types/clothes';
 
 const ColorBox = styled.label<{ color?: string; $isSelected?: boolean }>`
-  min-width: 48px;
-  width: 48px;
-  aspect-ratio: 1;
+  min-width: 36px;
+  width: 36px;
+  height: 100%;
   border: 1px solid var(--color-lightGray);
   box-sizing: border-box;
   border-radius: 4px;
@@ -30,6 +30,7 @@ const ColorSelect = ({
 }) => {
   const [color, setColor] = useState(initColor);
 
+  // TODO 선택한 색깔 더 잘보이게 ui 개선
   return (
     <div className={styles['picker-container']}>
       <Label required label="색상" />
