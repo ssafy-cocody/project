@@ -1,8 +1,9 @@
 'use client';
 
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState } from 'react';
 
 import { PlusIcon } from '@/../public/svgs';
 import Background from '@/components/Background';
@@ -11,19 +12,34 @@ import Header from '@/components/Header';
 import styles from '@/containers/cody/Cody.module.scss';
 import { useInfinityScroll } from '@/hooks/useInfinityScroll';
 import useModal from '@/hooks/useModal';
-import { fetchGetCody } from '@/services/cody';
+import { fetchDeleteCody, fetchGetCody } from '@/services/cody';
 import { ICody } from '@/types/cody';
 
 const PAGE_SIZE = 7;
 
 const Page = () => {
+  const [selectedCody, setSelectedCody] = useState<ICody>();
   const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
     queryKey: ['CodyListQueryKey'],
     queryFn: ({ pageParam }) => fetchGetCody({ page: pageParam as number, size: PAGE_SIZE }),
     initialPageParam: 0,
     getNextPageParam: (lastPage) => (lastPage.last ? undefined : lastPage.pageable.pageNumber + 1),
   });
-  const { Modal, openModal } = useModal();
+
+  const queryClient = useQueryClient();
+  const codyMutation = useMutation({
+    mutationFn: () => fetchDeleteCody({ codyId: selectedCody?.myCodyId! }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['CodyListQueryKey'] });
+    },
+  });
+
+  const { Modal, openModal, closeModal } = useModal();
+
+  const handleDeleteCody = () => {
+    codyMutation.mutate();
+    closeModal();
+  };
 
   const refLast = useInfinityScroll({ hasNextPage, fetchNextPage }).ref;
 
@@ -39,9 +55,18 @@ const Page = () => {
           <div className={styles['cody-name']}>새 코디 등록</div>
         </div>
         {data?.pages.map(({ content }: { content: ICody[] }) => {
-          return content.map(({ codiId, name, image }) => {
+          return content.map((cody) => {
+            const { codiId, name, image } = cody;
             return (
-              <button type="button" onClick={openModal} key={codiId} className={styles['cody-container']}>
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedCody(cody);
+                  openModal();
+                }}
+                key={codiId}
+                className={styles['cody-container']}
+              >
                 <div className={styles['cody-image-container']}>
                   <Image src={image} alt={name} fill className={styles['cody-image']} />
                 </div>
@@ -56,13 +81,13 @@ const Page = () => {
         <Modal>
           <div className={styles['modal-container']}>
             <div className={styles['selected-clothes']}>
-              <Image src="/images/test1.jpg" alt="옷" fill />
+              <Image src={selectedCody?.image || ''} alt={selectedCody?.name || ''} fill />
             </div>
             <div className={styles['modal-button']}>
               <Button>
                 <span className={styles['button-text']}>내일의 OOTD로 등록</span>
               </Button>
-              <Button variant="white">
+              <Button variant="white" onClick={handleDeleteCody}>
                 <span className={styles['button-text']}>코디 삭제</span>
               </Button>
             </div>
