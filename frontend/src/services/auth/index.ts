@@ -12,8 +12,7 @@ const fetchUserInfo = async (): Promise<IFetchUserInfoResponse> => {
   });
 
   if (!response.ok) {
-    // TODO error 처리
-    const error = new Error('error');
+    const error = new Error(`${response.status} headers${response.headers}`);
     return Promise.reject(error);
   }
 
