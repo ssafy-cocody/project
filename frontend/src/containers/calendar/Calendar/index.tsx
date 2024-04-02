@@ -53,7 +53,7 @@ const Calendar = () => {
           newCalendar[getWeek(i, dayOfWeekOfDay1) - 1][getDayOfWeek(i)] = ootdOfDay[0];
         } else {
           newCalendar[getWeek(i, dayOfWeekOfDay1) - 1][getDayOfWeek(i)] = {
-            ootdId: i,
+            ootdId: -i,
             day: i,
             image: '',
           };
