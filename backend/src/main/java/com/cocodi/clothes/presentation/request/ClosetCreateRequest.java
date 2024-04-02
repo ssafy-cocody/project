@@ -1,4 +1,4 @@
 package com.cocodi.clothes.presentation.request;
 
-public record ClosetCreateRequest(Long clothesId, Long memberId) {
+public record ClosetCreateRequest(Long clothesId) {
 }
