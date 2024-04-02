@@ -53,13 +53,21 @@ const Page = () => {
       date: yearMonthDateFormatter(Number(year), Number(month), Number(date)),
     };
 
-    // outfitMutation.mutate();
-    // router.replace('/calendar'); // 뒤로가기시 /outfit으로 이동하지 않도록 replace
+    outfitMutation.mutate(params, {
+      onSuccess: () => {
+        router.replace('/calendar'); // 뒤로가기시 /outfit으로 이동하지 않도록 replace
+      },
+    });
   };
 
   const isLoading = false;
 
   const clothesByCategory = {
+    [ClothesCategory.OUTER]: [
+      { image: '/images/test2.jpg', clothesId: 11, category: ClothesCategory.OUTER },
+      { image: '/images/test4.jpg', clothesId: 12, category: ClothesCategory.OUTER },
+      { image: '/images/test3.jpg', clothesId: 13, category: ClothesCategory.OUTER },
+    ],
     [ClothesCategory.TOP]: [
       { image: '/images/test1.jpg', clothesId: 1, category: ClothesCategory.TOP },
       { image: '/images/test2.jpg', clothesId: 2, category: ClothesCategory.TOP },
@@ -75,7 +83,8 @@ const Page = () => {
       { image: '/images/test4.jpg', clothesId: 9, category: ClothesCategory.SHOES },
       { image: '/images/test3.jpg', clothesId: 10, category: ClothesCategory.SHOES },
     ],
-  }; // (data as Record<string, IClothes[]>) || {};
+  };
+  // (data as Record<string, IClothes[]>) || {};
 
   return (
     <>
