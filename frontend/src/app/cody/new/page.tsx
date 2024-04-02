@@ -64,7 +64,7 @@ const Page = () => {
   return (
     <>
       <Background $backgroundColor="purple" />
-      <Header previousLink="/cody" title="내 코디 만들기" RightComponent={<SaveButton />} />
+      <Header hasPreviousLink title="내 코디 만들기" RightComponent={<SaveButton />} />
       <main className={styles['main-container']}>
         <CodyBoard
           onClickDeleteClothes={openModal}

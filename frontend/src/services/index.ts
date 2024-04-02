@@ -41,9 +41,10 @@ const request = async <TResponse>(path: string, config: RequestInit, body?: Body
     handleError(response.status, response.statusText);
   }
 
-  if (config.method === HTTPMethods.DELETE) {
+  if (config.method === HTTPMethods.DELETE || config.method === HTTPMethods.POST) {
     return {} as TResponse;
   }
+
   return response.json().then((data) => data as TResponse);
 };
 
@@ -52,7 +53,7 @@ export const api = {
 
   post: <TResponse, TBody>(path: string, bodyObject?: TBody): Promise<TResponse> => {
     const body = JSON.stringify(bodyObject);
-    return request<TResponse>(path, { method: HTTPMethods.POST, body });
+    return request<TResponse>(path, { method: HTTPMethods.POST }, body);
   },
 
   delete: <TResponse, TBody>(path: string, bodyObject?: TBody): Promise<TResponse> => {
