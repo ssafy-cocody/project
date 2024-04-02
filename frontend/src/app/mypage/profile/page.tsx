@@ -65,7 +65,11 @@ const Page = () => {
 
   return (
     <>
-      <Header hasPreviousLink title="내 정보 수정" RightComponent={<SaveButton onClick={handleSubmit} />} />
+      <Header
+        hasPreviousLink
+        title="내 정보 수정"
+        RightComponent={<SaveButton onClick={handleSubmit}>저장</SaveButton>}
+      />
       <div className={styles.container}>
         <ProfileCard
           onChange={handleChange}

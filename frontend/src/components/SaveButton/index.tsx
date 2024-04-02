@@ -1,9 +1,15 @@
+import { ButtonHTMLAttributes } from 'react';
+
 import styles from './SaveButton.module.scss';
 
-const SaveButton = ({ onClick }: { onClick: () => void }) => {
+interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
+  children?: React.ReactNode;
+}
+
+const SaveButton = ({ children, ...props }: Props) => {
   return (
-    <button onClick={onClick} className={styles['save-button']} type="button">
-      저장
+    <button className={styles['save-button']} type="button" {...props}>
+      {children}
     </button>
   );
 };

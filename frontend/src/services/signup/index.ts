@@ -1,4 +1,4 @@
-import { api, BASE_URL, getAccessToken } from '@/services';
+import { BASE_URL, getAccessToken } from '@/services';
 import { IFetchCreateMemberRequest, IFetchUpdateMemberRequest } from '@/services/signup/type';
 
 /**
