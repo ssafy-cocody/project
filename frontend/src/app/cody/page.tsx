@@ -3,6 +3,7 @@
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { PlusIcon } from '@/../public/svgs';
@@ -12,12 +13,13 @@ import Header from '@/components/Header';
 import styles from '@/containers/cody/Cody.module.scss';
 import { useInfinityScroll } from '@/hooks/useInfinityScroll';
 import useModal from '@/hooks/useModal';
-import { fetchDeleteCody, fetchGetCody } from '@/services/cody';
+import { fetchDeleteCody, fetchGetCody, fetchPostOOTDCody } from '@/services/cody';
 import { ICody } from '@/types/cody';
 
 const PAGE_SIZE = 7;
 
 const Page = () => {
+  const router = useRouter();
   const [selectedCody, setSelectedCody] = useState<ICody>();
   const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
     queryKey: ['CodyListQueryKey'],
@@ -34,10 +36,35 @@ const Page = () => {
     },
   });
 
+  const getTomorrowDate = () => {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+
+    const year = tomorrow.getFullYear();
+    const month = String(tomorrow.getMonth() + 1).padStart(2, '0');
+    const day = String(tomorrow.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
+    return formattedDate;
+  };
+
+  const ootdMutation = useMutation({
+    mutationFn: () => fetchPostOOTDCody({ date: getTomorrowDate(), codyId: selectedCody?.codiId! }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['CalendarQueryKey'] });
+      router.push('/calendar');
+    },
+  });
+
   const { Modal, openModal, closeModal } = useModal();
 
   const handleDeleteCody = () => {
     codyMutation.mutate();
+    closeModal();
+  };
+
+  const handlePostOOTDCody = () => {
+    ootdMutation.mutate();
     closeModal();
   };
 
@@ -84,7 +111,7 @@ const Page = () => {
               <Image src={selectedCody?.image || ''} alt={selectedCody?.name || ''} fill />
             </div>
             <div className={styles['modal-button']}>
-              <Button>
+              <Button onClick={handlePostOOTDCody}>
                 <span className={styles['button-text']}>내일의 OOTD로 등록</span>
               </Button>
               <Button variant="white" onClick={handleDeleteCody}>
