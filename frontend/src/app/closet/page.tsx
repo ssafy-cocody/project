@@ -2,10 +2,10 @@
 
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { PlusIcon, RightArrow } from '@/../public/svgs';
 import Background from '@/components/Background';
@@ -16,24 +16,34 @@ import Header from '@/components/Header';
 import Nav from '@/components/Nav';
 import styles from '@/containers/closet/Closet.module.scss';
 import useModal from '@/hooks/useModal';
+import { fetchDeleteClothes } from '@/services/closet';
 import { fetchGetCody } from '@/services/cody';
-import { ClosetCategory, CLOTHES_TAB } from '@/types/clothes';
+import { ClosetCategory, CLOTHES_TAB, IClothes } from '@/types/clothes';
 import { ICody } from '@/types/cody';
 
 const Page = () => {
   const [currentCategory, setCurrentCategory] = useState<keyof typeof ClosetCategory>(CLOTHES_TAB.ALL);
-  const { Modal, openModal } = useModal();
-  const [closet, setCloset] = useState<ICody[]>([]);
-  const { data } = useQuery({
+  const { Modal, openModal, closeModal } = useModal();
+
+  const { data: codyData } = useQuery({
     queryKey: ['CodyQueryKey'],
     queryFn: () => fetchGetCody({}),
   });
 
-  useEffect(() => {
-    if (data?.content) {
-      setCloset(data.content);
-    }
-  }, [data]);
+  const [deleteClothes, setDeleteClothes] = useState<IClothes>();
+
+  const queryClient = useQueryClient();
+  const closetMutation = useMutation({
+    mutationFn: () => fetchDeleteClothes({ clothesId: deleteClothes!.clothesId }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['ClothesQueryKey'] });
+    },
+  });
+
+  const handleDeleteClothes = () => {
+    closetMutation.mutate();
+    closeModal();
+  };
 
   return (
     <>
@@ -51,8 +61,8 @@ const Page = () => {
             </Link>
           </div>
           <div className={styles['cody-scroll']}>
-            {closet.length &&
-              closet.map(({ image, name }: ICody) => {
+            {codyData?.content.length &&
+              codyData.content.map(({ image, name }: ICody) => {
                 return (
                   <div key={name} className={styles.cody}>
                     <div className={styles['cody-image-container']}>
@@ -62,7 +72,7 @@ const Page = () => {
                   </div>
                 );
               })}
-            {!closet.length && (
+            {!codyData?.content.length && (
               <Link href="/cody/new" className={styles['empty-cody']}>
                 코디 채우러 가기
                 <Image src="/images/magicWand.png" width={25} height={25} alt="코디채우러가기" />
@@ -74,7 +84,7 @@ const Page = () => {
           <ClothesTap currentCategory={currentCategory || CLOTHES_TAB.ALL} setCurrentCategory={setCurrentCategory} />
         </div>
         <div className={styles['list-padding']}>
-          <ClothesList handleModal={openModal} currentCategory={currentCategory} />
+          <ClothesList handleModal={openModal} onSelectClothes={setDeleteClothes} currentCategory={currentCategory} />
         </div>
         <Link href="/clothes" className={styles['upload-button']}>
           <PlusIcon stroke="#EDEDED" />
@@ -85,13 +95,13 @@ const Page = () => {
         <Modal title="이 아이템을 삭제하시겠습니까?">
           <div className={styles['modal-container']}>
             <div className={styles['delete-clothes']}>
-              <Image src="/images/test1.jpg" alt="옷" fill />
+              <Image src={deleteClothes?.image || ''} alt={deleteClothes?.name || ''} fill />
             </div>
             <div className={styles['delete-button']}>
-              <Button>
+              <Button onClick={handleDeleteClothes}>
                 <span className={styles['button-text']}>네</span>
               </Button>
-              <Button variant="white">
+              <Button variant="white" onClick={closeModal}>
                 <span className={styles['button-text']}>아니오</span>
               </Button>
             </div>
