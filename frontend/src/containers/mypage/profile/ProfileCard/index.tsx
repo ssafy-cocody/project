@@ -1,7 +1,6 @@
 'use client';
 
-import Image from 'next/image';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent } from 'react';
 
 import { PencilIcon } from '@/../public/svgs';
 import TextInputWithUnderLine from '@/components/TextInputWithUnderLine';
@@ -9,32 +8,27 @@ import styles from '@/containers/mypage/profile/ProfileCard/ProfileCard.module.s
 import { TGender } from '@/types/user';
 
 interface ProfileCardProps {
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   nickname: string;
   birth: string;
   gender: TGender;
   profile: string;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onProfileChange: (file: File) => void;
 }
 
-const ProfileCard = ({ onChange: handleChange, ...defaultValue }: ProfileCardProps) => {
-  const [imgUrl, setImgUrl] = useState('/images/test3.jpg');
-
+const ProfileCard = ({ onChange: handleChange, onProfileChange, ...defaultValue }: ProfileCardProps) => {
   const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
-      URL.revokeObjectURL(imgUrl);
-      setImgUrl(URL.createObjectURL(file));
+      onProfileChange(file);
+      // URL.revokeObjectURL(imgUrl); TODO:
     }
   };
 
   return (
     <div className={styles.container}>
       <div className={styles['profile-image-block']}>
-        {imgUrl && (
-          <div className={styles.profile}>
-            <Image src={imgUrl} alt="" fill />
-          </div>
-        )}
+        <div className={styles.profile}>{defaultValue.profile && <img src={defaultValue.profile} alt="profile" />}</div>
         <label htmlFor="profile" className={styles['upload-button']}>
           <PencilIcon />
           <input type="file" name="profile" accept="image/*" id="profile" onChange={handleProfileChange} />

@@ -20,6 +20,7 @@ const Page = () => {
     nickname: '',
     profile: '',
   });
+  const [profileImage, setProfileImage] = useState<File>();
 
   useEffect(() => {
     if (session) {
@@ -27,7 +28,7 @@ const Page = () => {
         birth: session?.birth!,
         gender: session?.gender!,
         nickname: session?.nickname!,
-        profile: '', // session?.profile ,
+        profile: session?.profile!,
       });
     }
   }, [session]);
@@ -41,13 +42,14 @@ const Page = () => {
   });
 
   const handleSubmit = () => {
+    if (!profileImage || !input.birth || !input.nickname || !input.gender) return;
     if (updateUserMutation.isPending) return;
 
     const formData = new FormData();
     formData.append('birth', input?.birth);
     formData.append('gender', input?.gender);
     formData.append('nickname', input?.nickname);
-    formData.append('profile', input?.profile);
+    formData.append('profile', profileImage);
 
     updateUserMutation.mutate({ formData });
   };
@@ -56,6 +58,10 @@ const Page = () => {
     const { name, value } = e.target;
     setInput((prev) => ({ ...prev, [name]: value }));
   };
+  const handleProfileChange = (file: File) => {
+    setProfileImage(file);
+    setInput((prev) => ({ ...prev, profile: URL.createObjectURL(file) }));
+  };
 
   return (
     <>
@@ -63,6 +69,7 @@ const Page = () => {
       <div className={styles.container}>
         <ProfileCard
           onChange={handleChange}
+          onProfileChange={handleProfileChange}
           nickname={input.nickname}
           birth={input.birth}
           gender={input.gender as TGender}
