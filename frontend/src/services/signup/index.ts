@@ -16,11 +16,9 @@ async function fetchCreateMember({ formData }: IFetchCreateMemberRequest) {
     },
   });
 
-  if (!response.ok) return new Error(response.statusText);
+  if (!response.ok) throw new Error(response.statusText);
 
-  const data = await response.json();
-
-  return data;
+  return response;
 }
 
 /**
@@ -39,11 +37,9 @@ const fetchUpdateMember = async ({ formData }: IFetchUpdateMemberRequest) => {
     },
   });
 
-  if (!response.ok) return new Error(response.statusText);
+  if (!response.ok) throw new Error(response.statusText);
 
-  const data = await response.json();
-
-  return data;
+  return response;
 };
 
 export { fetchCreateMember, fetchUpdateMember };
