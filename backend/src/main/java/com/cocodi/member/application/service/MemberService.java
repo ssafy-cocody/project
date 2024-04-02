@@ -1,5 +1,6 @@
 package com.cocodi.member.application.service;
 
+import com.cocodi.aws.application.service.S3Service;
 import com.cocodi.member.domain.enums.Authority;
 import com.cocodi.member.domain.enums.Gender;
 import com.cocodi.member.domain.model.Member;
@@ -23,6 +24,7 @@ public class MemberService {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberRepository memberRepository;
+    private final S3Service s3Service;
 
     public boolean updateMember(MemberUpdateRequest memberUpdateRequest, MultipartFile profile, Long memberId) {
         Member findMember = memberRepository.findById(memberId).orElseThrow(() -> new MemberFindException("can not find Member"));
@@ -31,10 +33,10 @@ public class MemberService {
             profileUrl = findMember.getProfile();
         } else {
             // s3 upload 처리
-            profileUrl = "s3 url";
+            profileUrl = s3Service.uploadDefault(profile);
         }
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy");
-        LocalDate birth = LocalDate.parse(memberUpdateRequest.birth(), formatter);
+        int year = Integer.parseInt(memberUpdateRequest.birth());
+        LocalDate birth = LocalDate.of(year, 1, 1);
         Member member = Member.builder()
                 .memberId(memberId)
                 .email(findMember.getEmail())
