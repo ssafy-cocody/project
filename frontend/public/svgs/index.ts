@@ -9,12 +9,14 @@ import PencilIcon from './pencilIcon.svg';
 import PlusIcon from './plus.svg';
 import ReloadIcon from './reload.svg';
 import RightArrow from './rightArrow.svg';
+import CodyIcon from './star.svg';
 
 export {
   CalendarIcon,
   CameraIcon,
   CheckIcon,
   ClosetIcon,
+  CodyIcon,
   HomeIcon,
   LeftArrow,
   MypageIcon,

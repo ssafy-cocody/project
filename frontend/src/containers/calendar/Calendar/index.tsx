@@ -2,6 +2,7 @@
 
 'use client';
 
+import { QueryKey, useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
@@ -10,18 +11,15 @@ import { LeftArrow, RightArrow } from '@/../public/svgs';
 import Button from '@/components/Button';
 import ImageInput from '@/components/ImageInput';
 import styles from '@/containers/calendar/Calendar/Calendar.module.scss';
+import { ICalendar } from '@/containers/calendar/Calendar/type';
 import useModal from '@/hooks/useModal';
-
-interface ICalendar {
-  date: number;
-  dayOfWeek: number;
-  image?: string;
-}
+import { fetchGetCalendar } from '@/services/calendar';
 
 const Calendar = () => {
-  const [year, setYear] = useState<number>(0);
-  const [month, setMonth] = useState<number>(0);
-  const [ootds, setOOTD] = useState<ICalendar[][]>([]);
+  const [year] = useState<number>(new Date().getFullYear());
+  const [month] = useState<number>(new Date().getMonth() + 1);
+  const [calendar, setCalendar] = useState<ICalendar[][]>([]);
+
   const { Modal, openModal } = useModal();
 
   // currentDate가 몇 주차인지 구하는 함수
@@ -34,32 +32,36 @@ const Calendar = () => {
     [year, month],
   );
 
-  useEffect(() => {
-    if (year && month) {
-      const lastDay = new Date(year, month, 0).getDate();
-      const dayOfWeekOfDay1 = getDayOfWeek(1);
-      const week = getWeek(lastDay, dayOfWeekOfDay1);
-      const ootd = Array.from({ length: week }, () =>
-        Array.from({ length: 7 }, () => {
-          return { date: 0, dayOfWeek: 0, image: '' };
-        }),
-      );
-      for (let i = 1; i <= lastDay; i++) {
-        ootd[getWeek(i, dayOfWeekOfDay1) - 1][getDayOfWeek(i)] = {
-          date: i,
-          dayOfWeek: getDayOfWeek(i),
-          image: '/images/test1.jpg',
-        };
-      }
-      setOOTD(ootd);
-    }
-  }, [getDayOfWeek, month, year]);
+  const { data: ootds } = useQuery<ICalendar[], QueryKey>({
+    queryKey: ['CalendarQueryKey'],
+    queryFn: () => fetchGetCalendar({ year: year.toString(), month: paddingMonth(month) }),
+  });
 
   useEffect(() => {
-    const date = new Date();
-    setYear(date.getFullYear());
-    setMonth(date.getMonth() + 1);
-  }, []);
+    if (year && month) {
+      const dateOfLastDay = new Date(year, month, 0).getDate();
+      const dayOfWeekOfDay1 = getDayOfWeek(1);
+      const weeks = getWeek(dateOfLastDay, dayOfWeekOfDay1);
+      const newCalendar = Array.from({ length: weeks }, (_, j) =>
+        Array.from({ length: 7 }, (__, i) => {
+          return { ootdId: -(j * 7 + i), day: 0, image: '' };
+        }),
+      );
+      for (let i = 1; i <= dateOfLastDay; i++) {
+        const ootdOfDay = ootds?.filter((item) => item.day === i) || [];
+        if (ootdOfDay.length) {
+          newCalendar[getWeek(i, dayOfWeekOfDay1) - 1][getDayOfWeek(i)] = ootdOfDay[0];
+        } else {
+          newCalendar[getWeek(i, dayOfWeekOfDay1) - 1][getDayOfWeek(i)] = {
+            ootdId: i,
+            day: i,
+            image: '',
+          };
+        }
+      }
+      setCalendar(newCalendar);
+    }
+  }, [getDayOfWeek, month, year, ootds]);
 
   return (
     <div className={styles['main-container']}>
@@ -79,19 +81,19 @@ const Calendar = () => {
           <div className={styles['day-of-week']}>SAT</div>
         </div>
         <div className={styles['ootd-container']}>
-          {ootds.map((week: ICalendar[], index) => {
+          {calendar.map((week: ICalendar[], index) => {
             return (
-              <div className={styles.week} key={week[index].dayOfWeek}>
-                {week.map(({ date, dayOfWeek, image }: ICalendar) => {
+              <div className={styles.week} key={week[index].ootdId}>
+                {week.map(({ ootdId, day, image }: ICalendar) => {
                   return (
-                    <button type="button" onClick={openModal} className={styles.ootd} key={`${date}${dayOfWeek}`}>
-                      {!!date && (
+                    <button type="button" onClick={openModal} className={styles.ootd} key={ootdId}>
+                      {!!day && (
                         <>
                           <div
                             // eslint-disable-next-line no-nested-ternary
-                            className={`${styles.day} ${dayOfWeek === 6 ? styles.sat : dayOfWeek === 0 ? styles.sun : ''}`}
+                            className={`${styles.day} ${getDayOfWeek(day) === 6 ? styles.sat : getDayOfWeek(day) === 0 ? styles.sun : ''}`}
                           >
-                            {date}
+                            {day}
                           </div>
                           {image && (
                             <div className={styles['image-container']}>

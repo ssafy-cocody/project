@@ -1,8 +1,11 @@
 /** @type {import('next').NextConfig} */
-const isProduction = process.env.NODE_ENV === 'production';
-
 import TerserPlugin from 'terser-webpack-plugin';
+
+const isProduction = process.env.NODE_ENV === 'production';
 const nextConfig = {
+  images: {
+    domains: [process.env.NEXT_PUBLIC_S3_URI],
+  },
   webpack: (config) => {
     config.module.rules.push({
       test: /\.svg$/,

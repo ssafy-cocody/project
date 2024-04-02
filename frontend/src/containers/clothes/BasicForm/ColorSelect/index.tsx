@@ -3,11 +3,12 @@ import styled from 'styled-components';
 
 import Label from '@/components/Label';
 import styles from '@/containers/clothes/BasicForm/ColorSelect/ColorSelect.module.scss';
-import ColorPicker from '@/containers/clothes/ColorPicker';
+import { Color } from '@/types/clothes';
 
-const ColorBox = styled.label<{ color: string; $isSelected?: boolean }>`
-  width: 48px;
-  height: 48px;
+const ColorBox = styled.label<{ color?: string; $isSelected?: boolean }>`
+  min-width: 36px;
+  width: 36px;
+  height: 100%;
   border: 1px solid var(--color-lightGray);
   box-sizing: border-box;
   border-radius: 4px;
@@ -16,37 +17,47 @@ const ColorBox = styled.label<{ color: string; $isSelected?: boolean }>`
   background: ${({ color }) => color};
 `;
 
-const MOCK_COLORS = [
-  { color: '#fff', id: '#fff' },
-  {
-    color: '#000',
-    id: '#000',
-  },
-];
+const ColorOptions = Object.entries(Color).map(([name, colorCode]) => ({ value: name, colorCode }));
 
-const ColorSelect = () => {
-  const [color, setColor] = useState('');
+const ColorSelect = ({
+  color: initColor,
+  disabled,
+  onChange: handleChange,
+}: {
+  color?: keyof typeof Color;
+  disabled?: boolean;
+  onChange: (color: string) => void;
+}) => {
+  const [color, setColor] = useState(initColor);
 
+  // TODO 선택한 색깔 더 잘보이게 ui 개선
   return (
     <div className={styles['picker-container']}>
       <Label required label="색상" />
       <div className={styles.picker}>
-        {MOCK_COLORS.map(({ color: backgroundColor, id }) => {
-          const isSelected = color === backgroundColor.toString();
+        {disabled && <ColorBox color={color} $isSelected />}
+        {!disabled &&
+          ColorOptions.map(({ colorCode: backgroundColor, value }) => {
+            const id = value;
+            const isSelected = color === value;
 
-          return (
-            <ColorBox htmlFor={id} key={id} color={backgroundColor} $isSelected={isSelected}>
-              <input
-                type="radio"
-                name="color"
-                id={id}
-                value={backgroundColor.toString()}
-                onChange={(e) => setColor(e.target.value.toString())}
-              />
-            </ColorBox>
-          );
-        })}
-        <ColorPicker />
+            return (
+              <ColorBox htmlFor={id} key={id} color={backgroundColor} $isSelected={isSelected}>
+                <input
+                  type="radio"
+                  name="color"
+                  id={id}
+                  value={value}
+                  onChange={(e) => {
+                    const newcolor = e.target.value.toString() as keyof typeof Color;
+                    setColor(newcolor);
+                    handleChange(newcolor);
+                  }}
+                />
+              </ColorBox>
+            );
+          })}
+        {/* <ColorPicker /> */}
       </div>
       <span className={styles.desc}>색상을 선택해 주세요.</span>
     </div>

@@ -1,30 +1,58 @@
 'use client';
 
-import Image from 'next/image';
+import { useState } from 'react';
 
 import Button from '@/components/Button';
 import SelectInput from '@/components/SelectInput';
 import TextInput from '@/components/TextInput';
 import styles from '@/containers/clothes/BasicForm/BasicForm.module.scss';
 import ColorSelect from '@/containers/clothes/BasicForm/ColorSelect';
+import { ClothesCategory, Color } from '@/types/clothes';
 
-const CLOTHES_CATEGORIES = [
+interface BasicFormProps {
+  onClickButton: () => void;
+  onChange: ({ key, value }: { key: string; value: string }) => void;
+  category?: string;
+  name?: string;
+  color?: keyof typeof Color;
+  image?: string;
+  readOnly?: boolean;
+}
+
+const CLOTHES_OPTIONS = [
   {
     text: '상의',
+    value: ClothesCategory.TOP,
   },
-  { text: '하의' },
-  { text: '원피스' },
-  { text: '아우터' },
-  { text: '신발' },
+  { text: '하의', value: ClothesCategory.BOTTOM },
+  { text: '원피스', value: ClothesCategory.ONEPIECE },
+  { text: '아우터', value: ClothesCategory.OUTER },
+  { text: '신발', value: ClothesCategory.SHOES },
 ];
 
-const CLOTHES_OPTIONS = CLOTHES_CATEGORIES.map(({ text }) => ({ value: text, text }));
+const BasicForm = ({ onClickButton, onChange: handleChange, readOnly, image, ...initValue }: BasicFormProps) => {
+  const [formInput, setFormInput] = useState({
+    category: initValue.category || '',
+    name: initValue.name || '',
+    color: initValue.color || '',
+  });
+  const [isValid, setIsValid] = useState(!Object.values(formInput).some((v) => v === ''));
 
-const BasicForm = ({ onClickButton }: { onClickButton: () => void }) => {
+  const handleFormChange = ({ key, value }: { key: string; value: string }) => {
+    const newValue = {
+      ...formInput,
+      [key]: value,
+    };
+    setFormInput(newValue);
+    handleChange({ key, value });
+
+    setIsValid(!Object.values(newValue).some((v) => v === ''));
+  };
+
   return (
     <>
       <div className={styles.clothes}>
-        <Image src="/images/test1.jpg" fill alt="" />
+        <img src={image} alt="" />
       </div>
 
       <div className={styles['form-container']}>
@@ -33,13 +61,25 @@ const BasicForm = ({ onClickButton }: { onClickButton: () => void }) => {
             required
             label="카테고리"
             options={CLOTHES_OPTIONS}
-            value="상의"
-            onChange={(e) => console.log(e.target.value)}
+            disabled={readOnly}
+            value={formInput.category}
+            onChange={(e) => handleFormChange({ key: 'category', value: e.target.value })}
           />
-          <TextInput required label="상품명" />
-          {/* TODO: 색상은 1개만 선택 가능 */}
-          <ColorSelect />
-          <Button onClick={onClickButton}>다음</Button>
+          <TextInput
+            required
+            label="상품명"
+            readOnly={readOnly}
+            value={formInput.name}
+            onChange={(e) => handleFormChange({ key: 'name', value: e.target.value })}
+          />
+          <ColorSelect
+            color={formInput.color as keyof typeof Color}
+            disabled={readOnly}
+            onChange={(color) => handleFormChange({ key: 'color', value: color })}
+          />
+          <Button onClick={onClickButton} disabled={!isValid}>
+            다음
+          </Button>
         </form>
       </div>
     </>
