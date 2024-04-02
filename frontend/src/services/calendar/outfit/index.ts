@@ -1,10 +1,5 @@
-import { api, BASE_URL, getAccessToken } from '@/services';
-import {
-  IFetchGetOotdImageRequest,
-  IFetchGetOotdImageResponse,
-  IFetchPostOotdImageRequest,
-  IFetchPostOotdImageResponse,
-} from '@/services/calendar/outfit/type';
+import { BASE_URL, getAccessToken } from '@/services';
+import { IFetchGetOotdImageRequest, IFetchGetOotdImageResponse } from '@/services/calendar/outfit/type';
 
 /**
  * 내 코디 올리기
@@ -54,13 +49,19 @@ export const fetchGetOotdImage = async ({
 
 /**
  * 내 코디 등록
- * TODO: 파라미터 넘기기
  */
-export const fetchPostOotdImage = async ({ formData, clothesRequest, date }: IFetchGetOotdImageRequest) => {
+export const fetchPostOotdImage = async ({ formData }: IFetchGetOotdImageRequest) => {
   const response = await fetch(`${BASE_URL}/v1/auth/ootd/image`, {
     method: 'POST',
-    body: JSON.stringify({}),
+    body: formData,
+    headers: {
+      Authorization: `Bearer ${getAccessToken()}`,
+    },
   });
 
-  return response;
+  if (!response.ok) return new Error(response.statusText);
+
+  const data = await response.json();
+
+  return data;
 };

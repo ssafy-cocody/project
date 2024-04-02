@@ -3,6 +3,7 @@
 'use client';
 
 import { QueryKey, useMutation, useQuery } from '@tanstack/react-query';
+import { useSetAtom } from 'jotai';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -15,6 +16,7 @@ import { ICalendar } from '@/containers/calendar/Calendar/type';
 import useModal from '@/hooks/useModal';
 import { fetchGetCalendar } from '@/services/calendar';
 import { fetchGetOotdImage } from '@/services/calendar/outfit';
+import { outfitAtom } from '@/stores/outfit';
 import { paddingMonth } from '@/utils/date';
 import { queryClient } from '@/utils/Provider';
 
@@ -29,12 +31,19 @@ const Calendar = () => {
   const [calendar, setCalendar] = useState<ICalendar[][]>([]);
   const ootdImageRef = useRef<File>();
   const { Modal, openModal } = useModal();
+  const setOutfit = useSetAtom(outfitAtom);
 
   const ootdImageMutation = useMutation({
     mutationFn: fetchGetOotdImage,
     onSuccess: (result) => {
       queryClient.setQueryData(OUTFIT_QUERY_KEY, () => result);
-      router.push(`/calendar/outfit?year=${year}&month=${month}&date=${date}`);
+      setOutfit({
+        year,
+        month,
+        date: date!,
+        ootdImage: ootdImageRef.current!,
+      });
+      router.push('/calendar/outfit');
     },
   });
 
@@ -83,6 +92,7 @@ const Calendar = () => {
    */
   const handleClickDate = (date_: number) => {
     setDate(date_);
+    setOutfit(undefined); // 등록할 outfit 데이터 초기화
     openModal();
   };
 

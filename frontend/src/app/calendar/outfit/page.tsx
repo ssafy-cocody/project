@@ -3,8 +3,9 @@
 'use client';
 
 import { useMutation } from '@tanstack/react-query';
+import { useAtom } from 'jotai';
 import Image from 'next/image';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import Background from '@/components/Background';
@@ -14,6 +15,7 @@ import { OUTFIT_QUERY_KEY } from '@/containers/calendar/Calendar';
 import ClothesPicker from '@/containers/calendar/Outfit/ClothesPicker';
 import styles from '@/containers/calendar/Outfit/Outfit.module.scss';
 import { fetchPostOotdImage } from '@/services/calendar/outfit';
+import { outfitAtom } from '@/stores/outfit';
 import { ClothesCategory, ISelectedClothes } from '@/types/clothes';
 import { yearMonthDateFormatter } from '@/utils/date';
 import { queryClient } from '@/utils/Provider';
@@ -28,9 +30,7 @@ const clothesRequestKey = {
 
 const Page = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const [year, month, date] = [searchParams.get('year'), searchParams.get('month'), searchParams.get('date')]; // TODO: year, month, date 모두 있어야 함
-
+  const [outfit, setOutfit] = useAtom(outfitAtom);
   const data = queryClient.getQueryData(OUTFIT_QUERY_KEY);
   const outfitMutation = useMutation({
     mutationFn: fetchPostOotdImage,
@@ -48,16 +48,22 @@ const Page = () => {
       Object.assign(clothesRequest, mappedData);
     });
 
-    const params = {
-      clothesRequest,
-      date: yearMonthDateFormatter(Number(year), Number(month), Number(date)),
-    };
+    const { year, month, date, ootdImage } = outfit!;
 
-    outfitMutation.mutate(params, {
-      onSuccess: () => {
-        router.replace('/calendar'); // 뒤로가기시 /outfit으로 이동하지 않도록 replace
+    const formData = new FormData();
+    formData.append('clothesRequest', JSON.stringify(clothesRequest));
+    formData.append('date', yearMonthDateFormatter(year, month, date));
+    formData.append('ootdImage', ootdImage);
+
+    outfitMutation.mutate(
+      { formData },
+      {
+        onSuccess: () => {
+          setOutfit(undefined); // 등록 완료 후 데이터 초기화
+          router.replace('/calendar'); // 뒤로가기시 /outfit으로 이동하지 않도록 replace
+        },
       },
-    });
+    );
   };
 
   const isLoading = false;
