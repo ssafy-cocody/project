@@ -1,19 +1,27 @@
 'use client';
 
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 import { LeftArrow } from '@/../public/svgs';
 import styles from '@/components/Header/Header.module.scss';
 import { HeaderProps } from '@/components/Header/type';
 
-const Header = ({ previousLink, title, RightComponent, onClickPreviousButton }: HeaderProps) => {
+const Header = ({ title, RightComponent, onClickPreviousButton, hasPreviousLink }: HeaderProps) => {
+  const router = useRouter();
+
   return (
     <header className={styles.header}>
-      {previousLink ? (
-        <Link href={previousLink} className={styles['previous-button']}>
+      {hasPreviousLink && (
+        <button
+          type="button"
+          onClick={() => {
+            router.back();
+          }}
+          className={styles['previous-button']}
+        >
           <LeftArrow />
-        </Link>
-      ) : null}
+        </button>
+      )}
       {onClickPreviousButton ? (
         <button className={styles['previous-button']} type="button" onClick={onClickPreviousButton}>
           <LeftArrow />
