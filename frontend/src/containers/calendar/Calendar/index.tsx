@@ -82,7 +82,6 @@ const Calendar = () => {
         </button>
         {year.toString()}.{paddingMonth(month)}
         <button type="button" onClick={nextMonth}>
-          {' '}
           <RightArrow />
         </button>
       </div>
