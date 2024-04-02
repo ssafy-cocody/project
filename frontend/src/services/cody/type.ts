@@ -19,7 +19,7 @@ interface IFetchGetCodyResponse {
 }
 
 interface IFetchPostCodyRequest {
-  clothesRequest: INewCody;
+  clothesPythonRequest: INewCody;
   name: string;
 }
 

@@ -1,17 +1,17 @@
 const NewCodyKey = {
-  TOP: 'topId',
-  BOTTOM: 'bottomId',
-  OUTER: 'outerId',
-  SHOES: 'shoesId',
-  ONEPIECE: 'onepieceId',
+  TOP: 'top',
+  BOTTOM: 'bottom',
+  OUTER: 'outer',
+  SHOES: 'shoes',
+  ONEPIECE: 'onepiece',
 } as const;
 
 interface INewCody {
-  topId?: number;
-  bottomId?: number;
-  outerId?: number;
-  shoesId?: number;
-  onepieceId?: number;
+  top?: number;
+  bottom?: number;
+  outer?: number;
+  shoes?: number;
+  onepiece?: number;
 }
 
 interface ICody {

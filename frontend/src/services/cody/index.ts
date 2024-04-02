@@ -14,8 +14,8 @@ export const fetchGetCody = async ({ page = 0, size = 8 }: IFetchGetCodyRequest)
   return data;
 };
 
-export const fetchPostCody = async ({ clothesRequest, name }: IFetchPostCodyRequest) => {
-  const data = await api.post(CODY_PATH, { clothesRequest, name });
+export const fetchPostCody = async ({ clothesPythonRequest, name }: IFetchPostCodyRequest) => {
+  const data = await api.post(CODY_PATH, { clothesPythonRequest, name });
   return data;
 };
 
