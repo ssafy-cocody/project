@@ -14,5 +14,5 @@ public interface OotdRepository extends JpaRepository<Ootd, Long> {
 
     List<Ootd> findByMemberAndDateBetween(Member member, LocalDate startDate, LocalDate endDate);
 
-    Optional<Ootd> findByDate(LocalDate date);
+    Optional<Ootd> findByMemberAndDate(Member member, LocalDate date);
 }
