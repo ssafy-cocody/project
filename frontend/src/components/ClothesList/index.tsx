@@ -7,7 +7,7 @@ import styles from '@/components/ClothesList/ClothesList.module.scss';
 import { useInfinityScroll } from '@/hooks/useInfinityScroll';
 import { fetchGetClothes } from '@/services/closet';
 import { IFetchGetClosetResponse } from '@/services/closet/type';
-import { CLOTHES_TAB, ClosetCategory, IClothes } from '@/types/clothes';
+import { ClosetCategory, CLOTHES_TAB, IClothes } from '@/types/clothes';
 
 interface Props {
   currentCategory?: keyof typeof ClosetCategory;

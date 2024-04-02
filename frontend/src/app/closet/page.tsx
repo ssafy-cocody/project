@@ -5,6 +5,7 @@
 import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState } from 'react';
 
 import { PlusIcon, RightArrow } from '@/../public/svgs';
 import Background from '@/components/Background';
@@ -15,8 +16,8 @@ import Header from '@/components/Header';
 import Nav from '@/components/Nav';
 import styles from '@/containers/closet/Closet.module.scss';
 import useModal from '@/hooks/useModal';
-import { ClosetCategory, CLOTHES_TAB } from '@/types/clothes';
 import { fetchGetCody } from '@/services/cody';
+import { ClosetCategory, CLOTHES_TAB } from '@/types/clothes';
 import { ICody } from '@/types/cody';
 
 const Page = () => {
