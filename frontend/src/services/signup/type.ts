@@ -1,6 +1,6 @@
-import { IUser } from '@/types/user';
-
-type IFetchCreateMemberRequest = Pick<IUser, 'birth' | 'gender' | 'nickname'>;
+type IFetchCreateMemberRequest = {
+  formData: FormData; // birth, gender, nickname
+};
 
 interface IFetchUpdateMemberRequest {
   formData: FormData; // birth, gender, nickname, profile

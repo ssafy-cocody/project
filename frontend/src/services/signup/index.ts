@@ -1,17 +1,27 @@
-import { api } from '@/services';
+import { api, BASE_URL, getAccessToken } from '@/services';
 import { IFetchCreateMemberRequest, IFetchUpdateMemberRequest } from '@/services/signup/type';
 
 /**
  * 회원가입
- * TODO formdata
+ * @param birth string,
+ * @param gender, TGender
+ * @param nickname, string
  */
-const fetchCreateMember = async (params: IFetchCreateMemberRequest) => {
-  const response = await api.patch('/member', {
-    ...params,
+async function fetchCreateMember({ formData }: IFetchCreateMemberRequest) {
+  const response = await fetch(`${BASE_URL}/auth/v1/member`, {
+    method: 'PATCH',
+    body: formData,
+    headers: {
+      Authorization: `Bearer ${getAccessToken()}`,
+    },
   });
 
-  return response;
-};
+  if (!response.ok) return new Error(response.statusText);
+
+  const data = await response.json();
+
+  return data;
+}
 
 /**
  * 회원 정보 수정
@@ -20,12 +30,20 @@ const fetchCreateMember = async (params: IFetchCreateMemberRequest) => {
  * @param nickname, string
  * @param profile, string
  */
-const fetchUpdateMember = async (params: IFetchUpdateMemberRequest) => {
-  const response = await api.patch('/member', {
-    ...params,
+const fetchUpdateMember = async ({ formData }: IFetchUpdateMemberRequest) => {
+  const response = await fetch(`${BASE_URL}/auth/v1/member`, {
+    method: 'PATCH',
+    body: formData,
+    headers: {
+      Authorization: `Bearer ${getAccessToken()}`,
+    },
   });
 
-  return response;
+  if (!response.ok) return new Error(response.statusText);
+
+  const data = await response.json();
+
+  return data;
 };
 
 export { fetchCreateMember, fetchUpdateMember };
