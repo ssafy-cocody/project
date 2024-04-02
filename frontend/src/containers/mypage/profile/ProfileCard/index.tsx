@@ -43,13 +43,14 @@ const ProfileCard = ({ onChange: handleChange, ...defaultValue }: ProfileCardPro
       <div className={styles['user-info']}>
         <TextInputWithUnderLine
           name="nickname"
-          className={styles.nickname}
+          className={styles['align-right']}
           label="닉네임"
           onChange={handleChange}
           defaultValue={defaultValue.nickname}
         />
         <TextInputWithUnderLine
           name="year"
+          className={styles['align-right']}
           label="태어난 연도"
           readOnly
           onChange={handleChange}
@@ -57,6 +58,7 @@ const ProfileCard = ({ onChange: handleChange, ...defaultValue }: ProfileCardPro
         />
         <TextInputWithUnderLine
           name="gender"
+          className={styles['align-right']}
           label="성별"
           readOnly
           onChange={handleChange}
