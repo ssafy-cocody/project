@@ -58,7 +58,7 @@ public class CodyService {
     public Slice<CodyResponse> findCody(Pageable pageable, Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberFindException("Cannot find Member"));
-        Slice<MyCody> myCodies = myCodyRepository.findMyCodiesByMember(member, pageable);
+        Slice<MyCody> myCodies = myCodyRepository.findMyCodiesByMemberOrderByMyCodiIdDesc(member, pageable);
         List<CodyResponse> codyResponses = myCodies.stream()
                 .map(myCody -> new CodyResponse(myCody.getMyCodiId(), myCody.getCody().getCodiId(), myCody.getName(), myCody.getCody().getImage()))
                 .toList();
@@ -166,6 +166,7 @@ public class CodyService {
                 new RecommendCodyRequest(memberCloset, temp, 6);
 
         try {
+            log.info("사용자 옷장 정보 전달");
             SseObject sseObject = new SseObject(sseKey, request);
             rabbitMQUtil.convertAndSend("closet_cody_recommend", "order_direct_exchange", "closet_cody_recommend", sseObject);
         } catch (Exception e) {
