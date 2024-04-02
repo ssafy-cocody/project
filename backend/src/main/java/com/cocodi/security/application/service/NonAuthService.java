@@ -29,7 +29,7 @@ public class NonAuthService {
         return new MemberInfo(
                 member.getNickname(),
                 member.getRole(),
-                String.valueOf(member.getBirth().getYear()),
+                String.valueOf(member.getBirth()!= null ? member.getBirth().getYear() : null),
                 member.getGender(),
                 member.getProfile());
     }

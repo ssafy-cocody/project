@@ -27,4 +27,15 @@ interface IFetchDeleteCodyRequest {
   codyId: number;
 }
 
-export type { IFetchDeleteCodyRequest, IFetchGetCodyRequest, IFetchGetCodyResponse, IFetchPostCodyRequest };
+interface IFetchPostOOTDCodyRequest {
+  date: string;
+  codyId: number;
+}
+
+export type {
+  IFetchDeleteCodyRequest,
+  IFetchGetCodyRequest,
+  IFetchGetCodyResponse,
+  IFetchPostCodyRequest,
+  IFetchPostOOTDCodyRequest,
+};
