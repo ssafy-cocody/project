@@ -35,8 +35,8 @@ public class MemberService {
             // s3 upload 처리
             profileUrl = s3Service.uploadDefault(profile);
         }
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy");
-        LocalDate birth = LocalDate.parse(memberUpdateRequest.birth(), formatter);
+        int year = Integer.parseInt(memberUpdateRequest.birth());
+        LocalDate birth = LocalDate.of(year, 1, 1);
         Member member = Member.builder()
                 .memberId(memberId)
                 .email(findMember.getEmail())
