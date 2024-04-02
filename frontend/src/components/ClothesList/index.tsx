@@ -1,30 +1,41 @@
 /* eslint-disable no-unused-expressions */
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { RefetchOptions, useInfiniteQuery } from '@tanstack/react-query';
 import Image from 'next/image';
+import { useEffect } from 'react';
 
 import styles from '@/components/ClothesList/ClothesList.module.scss';
 import { useInfinityScroll } from '@/hooks/useInfinityScroll';
 import { fetchGetClothes } from '@/services/closet';
 import { IFetchGetClosetResponse } from '@/services/closet/type';
-import { ClothesCategory, IClothes } from '@/types/clothes';
+import { ClosetCategory, CLOTHES_TAB, IClothes } from '@/types/clothes';
 
 interface Props {
-  handleModal?: () => void;
+  currentCategory?: keyof typeof ClosetCategory;
   className?: string;
+  handleModal?: () => void;
   onSelectClothes?: (newlyClickedClothes: IClothes) => void;
-  currentCategory?: keyof typeof ClothesCategory;
 }
 
 const PAGE_SIZE = 9;
 
 const ClothesList = ({ handleModal, className, onSelectClothes, currentCategory }: Props) => {
-  const { data, fetchNextPage, hasNextPage } = useInfiniteQuery<IFetchGetClosetResponse>({
+  const { data, fetchNextPage, hasNextPage, refetch } = useInfiniteQuery<IFetchGetClosetResponse>({
     queryKey: ['ClothesQueryKey'],
     queryFn: ({ pageParam }) =>
-      fetchGetClothes({ page: pageParam as number, size: PAGE_SIZE, category: currentCategory }),
+      fetchGetClothes({
+        page: pageParam as number,
+        size: PAGE_SIZE,
+        category: currentCategory === 'ALL' ? undefined : currentCategory,
+      }),
     initialPageParam: 0,
     getNextPageParam: (lastPage) => (lastPage.last ? undefined : lastPage.pageable.pageNumber + 1),
   });
+
+  useEffect(() => {
+    if (currentCategory) {
+      refetch({ refetchPage: (_: any, index: number) => index === 0 } as RefetchOptions);
+    }
+  }, [currentCategory]);
 
   const refLast = useInfinityScroll({ hasNextPage, fetchNextPage }).ref;
 
@@ -35,7 +46,7 @@ const ClothesList = ({ handleModal, className, onSelectClothes, currentCategory 
           {data?.pages.map(({ content }: { content: IClothes[] }) => {
             return content.map((item: IClothes) => {
               const { clothesId, image, category } = item;
-              if (!currentCategory || currentCategory === category) {
+              if (currentCategory === CLOTHES_TAB.ALL || currentCategory === category) {
                 return (
                   <button
                     type="button"
