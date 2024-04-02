@@ -32,14 +32,14 @@ public class AuthClosetController {
     }
 
     @DeleteMapping
-    public ResponseEntity<?> deleteCloset(@RequestBody ClosetCreateRequest createRequest) {
-        closetService.deleteCloset(createRequest.clothesId(), createRequest.memberId());
+    public ResponseEntity<?> deleteCloset(@RequestBody ClosetCreateRequest createRequest, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        closetService.deleteCloset(createRequest.clothesId(), principalDetails.getMemberId());
         return ResponseEntity.ok().build();
     }
 
     @PostMapping
-    public ResponseEntity<ClosetResponse> createCloset(@RequestBody ClosetCreateRequest createRequest) {
-        Closet closet = closetService.createCloset(createRequest.clothesId(), createRequest.memberId());
+    public ResponseEntity<ClosetResponse> createCloset(@RequestBody ClosetCreateRequest createRequest, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        Closet closet = closetService.createCloset(createRequest.clothesId(), principalDetails.getMemberId());
         ClosetResponse closetResponse = new ClosetResponse(closet.getClosetId(), closet.getMember().getMemberId(), closet.getClothes().getClothesId());
         return ResponseEntity.ok(closetResponse);
     }
