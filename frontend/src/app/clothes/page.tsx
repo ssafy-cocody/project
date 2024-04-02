@@ -99,20 +99,14 @@ const Page = () => {
     },
     [Step.SEARCH_WITH_CAMERA_BASIC_FORM]: {
       title: '기본 정보 입력',
-      renderStep: (nextStep: Step | '') => (
-        <BasicForm readOnly onChange={handleChangeInput} onClickButton={() => goNextStep(nextStep)} {...clothes} />
-      ),
-      nextStep: Step.SEARCH_WITH_CAMERA_ADDITIONAL_FORM,
-    },
-    [Step.SEARCH_WITH_CAMERA_ADDITIONAL_FORM]: {
-      title: '추가 정보 입력',
-      renderStep: (nextStep: Step | '') => (
-        <AdditionalForm
+      renderStep: () => (
+        <BasicForm
+          readOnly
           onChange={handleChangeInput}
           onClickButton={() => {
             handleSumbit({
               // 옷 성공 후 /closet 로 이동
-              success: () => goNextStep(nextStep),
+              success: () => goNextStep(DONE),
             });
           }}
           {...clothes}
