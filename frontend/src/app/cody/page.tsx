@@ -1,20 +1,31 @@
 'use client';
 
+import { useInfiniteQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
 
+import { PlusIcon } from '@/../public/svgs';
 import Background from '@/components/Background';
 import Button from '@/components/Button';
 import Header from '@/components/Header';
 import styles from '@/containers/cody/Cody.module.scss';
+import { useInfinityScroll } from '@/hooks/useInfinityScroll';
 import useModal from '@/hooks/useModal';
+import { fetchGetCody } from '@/services/cody';
+import { ICody } from '@/types/cody';
 
-import { PlusIcon } from '../../../public/svgs';
+const PAGE_SIZE = 7;
 
 const Page = () => {
-  const [codies] = useState(['/images/test1.jpg', '/images/test2.jpg', '/images/test3.jpg', '/images/test4.jpg']);
+  const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
+    queryKey: ['CodyListQueryKey'],
+    queryFn: ({ pageParam }) => fetchGetCody({ page: pageParam as number, size: PAGE_SIZE }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => (lastPage.last ? undefined : lastPage.pageable.pageNumber + 1),
+  });
   const { Modal, openModal } = useModal();
+
+  const refLast = useInfinityScroll({ hasNextPage, fetchNextPage }).ref;
 
   return (
     <>
@@ -27,16 +38,19 @@ const Page = () => {
           </Link>
           <div className={styles['cody-name']}>새 코디 등록</div>
         </div>
-        {codies.map((cody) => {
-          return (
-            <button type="button" onClick={openModal} key={cody} className={styles['cody-container']}>
-              <div className={styles['cody-image-container']}>
-                <Image src={cody} alt="코디" fill className={styles['cody-image']} />
-              </div>
-              <div className={styles['cody-name']}>새 코디 등록</div>
-            </button>
-          );
+        {data?.pages.map(({ content }: { content: ICody[] }) => {
+          return content.map(({ codiId, name, image }) => {
+            return (
+              <button type="button" onClick={openModal} key={codiId} className={styles['cody-container']}>
+                <div className={styles['cody-image-container']}>
+                  <Image src={image} alt={name} fill className={styles['cody-image']} />
+                </div>
+                <div className={styles['cody-name']}>{name}</div>
+              </button>
+            );
+          });
         })}
+        {hasNextPage && <div ref={refLast} className={styles['page-end']} />}
       </main>
       <div id="modal">
         <Modal>

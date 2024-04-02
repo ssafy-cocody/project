@@ -3,8 +3,6 @@
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
-import { setAccessToken } from '@/services';
-import * as auth from '@/services/auth';
 import { userRole } from '@/types/user';
 
 const Page = () => {
@@ -12,11 +10,8 @@ const Page = () => {
 
   const signin = async () => {
     try {
-      const data = await auth.fetchUserInfo();
-      const role = data.role!;
-      const accessToken = data.accessToken!;
-
-      setAccessToken(accessToken);
+      const response = await fetch('/front/api/auth/cookie', { cache: 'no-store' });
+      const { role } = await response.json();
 
       if (role === userRole.GUEST) {
         router.push('/signup');
