@@ -1,5 +1,6 @@
 package com.cocodi.clothes.application.service;
 
+import com.cocodi.member.domain.repository.MemberRepository;
 import com.cocodi.clothes.domain.model.Category;
 import com.cocodi.clothes.domain.model.Closet;
 import com.cocodi.clothes.domain.model.Clothes;
@@ -17,6 +18,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ClosetService {
+
+    private final MemberRepository memberRepository;
     private final ClosetCustomRepository closetCustomRepository;
     private final ClosetRepository closetRepository;
     private final EntityManager entityManager;
@@ -36,5 +39,9 @@ public class ClosetService {
 
     public List<Clothes> findClothesBy_MemberAndCategory(Long memberId, Category category, Pageable pageable) {
         return closetCustomRepository.findClothesBy_MemberAndCategory(memberId, category, pageable);
+    }
+
+    public List<Long> findClothesListByMember(Long memberId) {
+        return closetRepository.findClothesClothesIdByMemberMemberId(memberId);
     }
 }
