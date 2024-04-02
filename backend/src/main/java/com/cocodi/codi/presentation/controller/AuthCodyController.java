@@ -2,10 +2,8 @@ package com.cocodi.codi.presentation.controller;
 
 import com.cocodi.clothes.application.service.ClosetService;
 import com.cocodi.codi.application.service.CodyService;
-import com.cocodi.clothes.presentation.request.ClothesRequest;
 import com.cocodi.codi.presentation.request.CodyCreateRequest;
 import com.cocodi.codi.presentation.response.CodyResponse;
-import com.cocodi.codi.presentation.response.RecommendCodyResponse;
 import com.cocodi.security.domain.model.PrincipalDetails;
 import com.cocodi.sse.application.service.SseService;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -46,7 +43,6 @@ public class AuthCodyController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "8") int size,
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        // todo 페이지네이션 수정
         Pageable pageable = PageRequest.of(page, size);
         Slice<CodyResponse> codys = codyService.findCody(pageable, principalDetails.getMemberId());
         return new ResponseEntity<>(codys, HttpStatus.OK);
@@ -59,11 +55,11 @@ public class AuthCodyController {
      * @return null
      */
     @PostMapping
-    public SseEmitter createCody(@RequestBody CodyCreateRequest codyCreateRequest, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        if (codyService.createCody(codyCreateRequest, principalDetails.getMemberId())) {
-            String sseKey = sseService.createInstance();
-            codyService.createCodyImage(codyCreateRequest.clothesRequest(), sseKey);
-            return sseService.getInstance(sseKey);
+    public ResponseEntity<?> createCody(@RequestBody CodyCreateRequest codyCreateRequest, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        String sseKey = sseService.createInstance();
+        if (codyService.createCody(codyCreateRequest, principalDetails.getMemberId(), sseKey)) {
+            codyService.createCodyImage(codyCreateRequest.clothesPythonRequest(), sseKey);
+            return ResponseEntity.ok().build();
         }
         throw new RuntimeException("already exist cody :" + "AuthCodyController.createCody");
     }
@@ -73,9 +69,9 @@ public class AuthCodyController {
      *
      * @return null
      */
-    @DeleteMapping("/{codyId}")
-    public ResponseEntity<?> deleteMyCody(@PathVariable Long codyId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        codyService.deleteMyCody(codyId, principalDetails.getMemberId());
+    @DeleteMapping("/{myCodyId}")
+    public ResponseEntity<?> deleteMyCody(@PathVariable Long myCodyId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        codyService.deleteMyCody(myCodyId, principalDetails.getMemberId());
         return new ResponseEntity<>("success", HttpStatus.NO_CONTENT);
     }
 
@@ -84,40 +80,47 @@ public class AuthCodyController {
      * @return
      */
     @GetMapping("/recommend/cody")
-    public ResponseEntity<?> getRecommendCodyList(@RequestParam LocalDate date, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public SseEmitter getRecommendCodyList(@RequestParam Integer temp, @RequestParam LocalDate date, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         Long memberId = principalDetails.getMemberId();
         // 추천 코디 갯수가 여러개(3~6개)
-        // todo 파이썬에 사용자 옷장 정보 넘기기(clothesId)
+        // 파이썬에 사용자 옷장 정보 넘기기(clothesId)
         List<Long> memberCloset = closetService.findClothesListByMember(memberId);
-        // todo 옷 Id 리스트 받기
-        List<ClothesRequest> recommendCodyIds = new ArrayList<>();
-        recommendCodyIds.add(new ClothesRequest(34L, 35L, 36L, 37L, null));
-        recommendCodyIds.add(new ClothesRequest(35L, 36L, 37L, 38L, null));
-        recommendCodyIds.add(new ClothesRequest(36L, 37L, 38L, 39L, null));
-        recommendCodyIds.add(new ClothesRequest(37L, 38L, 39L, 40L, null));
-        // todo 코디 이미지 받기
-        List<String> codyImages = new ArrayList<>();
-        codyImages.add("image1");
-        codyImages.add("image2");
-        codyImages.add("image3");
-        codyImages.add("image4");
+        String sseKey = sseService.createInstance();
+        codyService.getRecommendCodyList(temp, memberCloset, sseKey);
+        // redis 에 사용자의 id와 날짜 저장
+        codyService.saveIdAndDate(memberId, date, sseKey);
 
-        List<RecommendCodyResponse> recommendCodyResponses
-                = codyService.getRecommendCodyList(recommendCodyIds, codyImages, date, memberId);
-        return new ResponseEntity<>(recommendCodyResponses, HttpStatus.OK);
+        return sseService.getInstance(sseKey);
     }
 
     /**
      * @return
      */
     @GetMapping("/recommend/item")
-    public ResponseEntity<?> getRecommendItemList(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public ResponseEntity<?> getRecommendItemList(@RequestParam Integer temp, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         Long memberId = principalDetails.getMemberId();
-        // todo 파이썬에 사용자 옷장 정보 넘기기(clothesId)
+        String sseKey = sseService.createInstance();
+        // 파이썬에 사용자 옷장 정보 넘기기(clothesId)
         List<Long> memberCloset = closetService.findClothesListByMember(memberId);
-        // todo 파이썬에서 추천 아이템 clothesId, 코디 clothesId 3개 받아오기
+        codyService.getRecommendItemList(memberCloset, memberId, temp, sseKey);
 
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
+
+//    @GetMapping("/home")
+//    public ResponseEntity<?> getHomeInfo(@RequestParam Integer temp, @RequestParam LocalDate date, @RequestParam(defaultValue = "0") int page,
+//                                         @RequestParam(defaultValue = "8") int size, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+//        // 추천받은 코디 리스트
+//
+//        // 추천받은 아이템 리스트
+//
+//        // 사용자 코디 리스트
+//        Pageable pageable = PageRequest.of(page, size);
+//        Slice<CodyResponse> codys = codyService.findCody(pageable, principalDetails.getMemberId());
+//
+//        HomeResponse homeResponse = new HomeResponse(null, null, codys);
+//
+//        return new ResponseEntity<>(homeResponse, HttpStatus.OK);
+//    }
 
 }
