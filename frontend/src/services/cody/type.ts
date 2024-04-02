@@ -18,4 +18,8 @@ interface IFetchGetCodyResponse {
   empty: boolean;
 }
 
-export type { IFetchGetCodyRequest, IFetchGetCodyResponse };
+interface IFetchDeleteCodyRequest {
+  codyId: number;
+}
+
+export type { IFetchDeleteCodyRequest, IFetchGetCodyRequest, IFetchGetCodyResponse };
