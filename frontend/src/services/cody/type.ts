@@ -1,5 +1,5 @@
 import { IPageable, ISort } from '@/services/common';
-import { ICody } from '@/types/cody';
+import { ICody, INewCody } from '@/types/cody';
 
 interface IFetchGetCodyRequest {
   page?: number;
@@ -18,6 +18,11 @@ interface IFetchGetCodyResponse {
   empty: boolean;
 }
 
+interface IFetchPostCodyRequest {
+  clothesPythonRequest: INewCody;
+  name: string;
+}
+
 interface IFetchDeleteCodyRequest {
   codyId: number;
 }
@@ -27,4 +32,10 @@ interface IFetchPostOOTDCodyRequest {
   codyId: number;
 }
 
-export type { IFetchDeleteCodyRequest, IFetchGetCodyRequest, IFetchGetCodyResponse, IFetchPostOOTDCodyRequest };
+export type {
+  IFetchDeleteCodyRequest,
+  IFetchGetCodyRequest,
+  IFetchGetCodyResponse,
+  IFetchPostCodyRequest,
+  IFetchPostOOTDCodyRequest,
+};
