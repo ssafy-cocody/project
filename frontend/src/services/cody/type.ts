@@ -18,9 +18,13 @@ interface IFetchGetCodyResponse {
   empty: boolean;
 }
 
+interface IFetchDeleteCodyRequest {
+  codyId: number;
+}
+
 interface IFetchPostOOTDCodyRequest {
   date: string;
   codyId: number;
 }
 
-export type { IFetchGetCodyRequest, IFetchGetCodyResponse, IFetchPostOOTDCodyRequest };
+export type { IFetchDeleteCodyRequest, IFetchGetCodyRequest, IFetchGetCodyResponse, IFetchPostOOTDCodyRequest };
