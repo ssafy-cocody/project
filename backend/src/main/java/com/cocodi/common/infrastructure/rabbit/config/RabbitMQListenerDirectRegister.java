@@ -68,14 +68,22 @@ public class RabbitMQListenerDirectRegister {
         rabbitAdmin.declareBinding(binding);
     }
 
+    private void addDeadLetter(Map<String, Object> args) {
+        args.put("x-dead-letter-exchange", "your_dead_letter_exchange");
+        args.put("x-dead-letter-routing-key", "your_dead_letter_routing_key");
+    }
+
     private Queue createQueue(String queueName, RabbitMQDirectListener workflow) {
-        return new Queue(queueName, workflow.durable());
+        Map<String, Object> args = new HashMap<>();
+        addDeadLetter(args);
+        return new Queue(queueName, workflow.durable(), true, true, args);
     }
 
     private Queue createLazyQueue(String queueName, RabbitMQDirectListener workflow) {
         Map<String, Object> args = new HashMap<>();
+        addDeadLetter(args);
         args.put("x-queue-mode", "lazy");
-        return new Queue(queueName, workflow.durable(), false, false, args);
+        return new Queue(queueName, workflow.durable(), true, true, args);
     }
 
     private void registerDirectListener(Object bean, Method method, RabbitMQDirectListener workflow) {
