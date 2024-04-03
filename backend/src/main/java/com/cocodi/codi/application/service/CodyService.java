@@ -204,4 +204,14 @@ public class CodyService {
         redisTemplate.opsForValue().set("cody:" + sseKey, codyId);
     }
 
+    public void createCodyById(Long codyId, String name, Long memberId) {
+        Cody cody = codyRepository.findById(codyId).orElseThrow(() -> new RuntimeException("cody can't find"));
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new RuntimeException("member find error"));
+        MyCody myCody = MyCody.builder()
+                .name(name)
+                .cody(cody)
+                .member(member)
+                .build();
+        myCodyRepository.save(myCody);
+    }
 }
