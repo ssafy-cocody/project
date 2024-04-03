@@ -7,7 +7,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
-import { CLOSET_QUERY_KEY } from '@/app/closet/page';
 // import { RightArrow } from '@/../public/svgs';
 import Button from '@/components/Button';
 import styles from '@/containers/home/RecommendItems/Items.module.scss';
@@ -29,7 +28,7 @@ const RecommendItems = () => {
     mutationFn: fetchPostClothes,
     onSuccess: () => {
       closeModal();
-      queryClient.invalidateQueries({ queryKey: CLOSET_QUERY_KEY }); // 아이템 구매 후 옷장 업데이트
+      queryClient.invalidateQueries({ queryKey: ['ClothesQueryKey'] }); // 아이템 구매 후 옷장 업데이트
     },
   });
 

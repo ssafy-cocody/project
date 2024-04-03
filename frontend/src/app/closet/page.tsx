@@ -21,8 +21,6 @@ import { fetchGetCody } from '@/services/cody';
 import { ClosetCategory, CLOTHES_TAB, IClothes } from '@/types/clothes';
 import { ICody } from '@/types/cody';
 
-export const CLOSET_QUERY_KEY = ['ClothesQueryKey'];
-
 const Page = () => {
   const [currentCategory, setCurrentCategory] = useState<keyof typeof ClosetCategory>(CLOTHES_TAB.ALL);
   const { Modal, openModal, closeModal } = useModal();
@@ -38,7 +36,7 @@ const Page = () => {
   const closetMutation = useMutation({
     mutationFn: () => fetchDeleteClothes({ clothesId: deleteClothes!.clothesId! }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: CLOSET_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: ['ClothesQueryKey'] });
     },
   });
 
