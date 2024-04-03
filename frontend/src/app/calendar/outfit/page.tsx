@@ -64,7 +64,6 @@ const Page = () => {
   const ootdImageSrc = outfit?.ootdImage ? URL.createObjectURL(outfit?.ootdImage) : '';
 
   // TODO 새로고침시 등록을 취소하겠습니까?
-  // TODO
   // useEffect(() => {
   //   if (!outfit || Object.values(outfit).some((v) => v === '')) {
   //     window.alert('잘못된 접근입니다.');
