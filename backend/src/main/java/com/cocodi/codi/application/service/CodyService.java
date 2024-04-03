@@ -181,9 +181,9 @@ public class CodyService {
                 .orElseThrow(() -> new MemberFindException("Cannot find Member"));
         String gender;
         if (member.getGender() == Gender.FEMALE) {
-            gender = "여자";
+            gender = "여성";
         } else {
-            gender = "남자";
+            gender = "남성";
         }
         RecommendItemRequest request =
                 new RecommendItemRequest(memberCloset, gender, temp);

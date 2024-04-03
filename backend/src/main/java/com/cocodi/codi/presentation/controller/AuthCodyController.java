@@ -97,14 +97,14 @@ public class AuthCodyController {
      * @return
      */
     @GetMapping("/recommend/item")
-    public ResponseEntity<?> getRecommendItemList(@RequestParam Integer temp, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public SseEmitter getRecommendItemList(@RequestParam Integer temp, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         Long memberId = principalDetails.getMemberId();
         String sseKey = sseService.createInstance();
         // 파이썬에 사용자 옷장 정보 넘기기(clothesId)
         List<Long> memberCloset = closetService.findClothesListByMember(memberId);
         codyService.getRecommendItemList(memberCloset, memberId, temp, sseKey);
 
-        return new ResponseEntity<>(null, HttpStatus.OK);
+        return sseService.getInstance(sseKey);
     }
 
 //    @GetMapping("/home")
