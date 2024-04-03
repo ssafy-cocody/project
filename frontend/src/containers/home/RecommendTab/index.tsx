@@ -191,7 +191,7 @@ const RecommendTab = ({ selectedCody, setSelectedCody }: Props) => {
           )}
         </div>
         <div className={styles['cody-area']}>
-          {recommendCody.length &&
+          {recommendCody.length > 0 &&
             recommendCody.map((cody: IRecommendCody) => {
               const { codyId, codyImage, isMyOotd } = cody;
               return (
@@ -208,7 +208,7 @@ const RecommendTab = ({ selectedCody, setSelectedCody }: Props) => {
                 </button>
               );
             })}
-          {!recommendCody.length &&
+          {recommendCody.length === 0 &&
             Array.from({ length: ITEM_CNT }, (_, i) => i).map((i) => {
               return (
                 <button type="button" key={i} className={styles['cody-container']}>
