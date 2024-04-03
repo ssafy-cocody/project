@@ -7,4 +7,9 @@ interface IFetchPostOOTDCodyRequest {
   codyId: number;
 }
 
-export type { IFetchGetMyCodyResponse, IFetchPostOOTDCodyRequest };
+interface IFetchCreateCodyRequest {
+  codyId: number;
+  name: string;
+}
+
+export type { IFetchCreateCodyRequest, IFetchGetMyCodyResponse, IFetchPostOOTDCodyRequest };

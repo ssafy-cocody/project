@@ -7,7 +7,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import styles from '@/containers/home/RecommendTab/Tab.module.scss';
 import { BASE_URL, getAccessToken } from '@/services';
 import { fetchWeatherInfo } from '@/services/weather';
-import { dateDiffAtom } from '@/stores/home';
+import { dateDiffAtom, recommendCodyAtom } from '@/stores/home';
 import { userAtom } from '@/stores/user';
 import { IRecommendCody } from '@/types/recommend';
 import { DATE_DIFF_VALUES, DATE_TEXT, ILatLon, ILocXY, IWeatherInfo, IWeatherResponse } from '@/types/weather';
@@ -95,7 +95,7 @@ const RecommendTab = ({ selectedCody, setSelectedCody }: Props) => {
   };
 
   // 추천 코디 fetch
-  const [recommendCodies, SetRecommendCodies] = useState<IRecommendCody[]>();
+  const [recommendCody, SetRecommendCodies] = useAtom(recommendCodyAtom);
 
   useEffect(() => {
     if (weatherInfo) {
@@ -115,7 +115,7 @@ const RecommendTab = ({ selectedCody, setSelectedCody }: Props) => {
 
     let eventSource: EventSourcePolyfill;
     if (weatherInfo) {
-      SetRecommendCodies(undefined);
+      SetRecommendCodies([]);
 
       const YYYYMMDD = getDate({ dateDiff });
       const dateRequestFormat = `${YYYYMMDD.slice(0, 4)}-${YYYYMMDD.slice(4, 6)}-${YYYYMMDD.slice(4, 6)}`;
@@ -146,10 +146,10 @@ const RecommendTab = ({ selectedCody, setSelectedCody }: Props) => {
   }, [weatherInfo, dateDiff]);
 
   useEffect(() => {
-    if (recommendCodies) {
-      setSelectedCody(recommendCodies[0]);
+    if (recommendCody.length) {
+      setSelectedCody(recommendCody[0]);
     }
-  }, [recommendCodies]);
+  }, [recommendCody]);
 
   return (
     <div className={styles['recommendbox-container']}>
@@ -188,8 +188,8 @@ const RecommendTab = ({ selectedCody, setSelectedCody }: Props) => {
           )}
         </div>
         <div className={styles['cody-area']}>
-          {recommendCodies &&
-            recommendCodies.map((cody: IRecommendCody) => {
+          {recommendCody.length &&
+            recommendCody.map((cody: IRecommendCody) => {
               const { codyId, codyImage, isMyOotd } = cody;
               return (
                 <button
@@ -205,7 +205,7 @@ const RecommendTab = ({ selectedCody, setSelectedCody }: Props) => {
                 </button>
               );
             })}
-          {!recommendCodies &&
+          {!recommendCody.length &&
             Array.from({ length: ITEM_CNT }, (_, i) => i).map((i) => {
               return (
                 <button type="button" key={i} className={styles['cody-container']}>

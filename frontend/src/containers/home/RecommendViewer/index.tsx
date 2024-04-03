@@ -1,16 +1,17 @@
-import { useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import Image from 'next/image';
-import { useState } from 'react';
+import { ChangeEvent, useRef, useState } from 'react';
 
 import Button from '@/components/Button';
 import TextInput from '@/components/TextInput';
 import TostMessage from '@/components/TostMessage';
 import styles from '@/containers/home/RecommendViewer/Viewer.module.scss';
 import useModal from '@/hooks/useModal';
-import { fetchPostRecommendCodyToOOTD } from '@/services/home';
-import { dateDiffAtom } from '@/stores/home';
+import { fetchPostCreateCody, fetchPostRecommendCodyToOOTD } from '@/services/home';
+import { dateDiffAtom, recommendCodyAtom } from '@/stores/home';
 import { IRecommendCody } from '@/types/recommend';
 import { getDate } from '@/utils/getDate';
+import { getValidCodyName } from '@/utils/getValidCodyName';
 
 interface Props {
   selectedCody: IRecommendCody;
@@ -19,12 +20,32 @@ interface Props {
 const RecommendViewer = ({ selectedCody }: Props) => {
   const [title] = useState<string>('New 코디');
   const [description] = useState<string>(`코코디가 추천하는\n당신의 옷장 속\n새로운 코디`);
-  const [codyname] = useState<string>('');
-  const { Modal, openModal } = useModal();
+  const codyName = useRef<string>('');
+  const { Modal, openModal, closeModal } = useModal();
   const dateDiff = useAtomValue(dateDiffAtom);
-  const [isOOTDRegisted, setIsOOTDRegistered] = useState(false);
+  const [tostMessage, setTostMessage] = useState('');
+  const [recommendCody, setRecommendCody] = useAtom(recommendCodyAtom);
 
-  const handleSaveCody = () => {};
+  const handleSaveCody = () => {
+    if (!getValidCodyName(codyName.current)) {
+      setTostMessage('코디 이름은 20글자 이하의 숫자, 한글, 영어만 가능합니다.');
+      setTimeout(() => setTostMessage(''), 1000);
+    } else {
+      try {
+        fetchPostCreateCody({ codyId: selectedCody.codyId, name: codyName.current });
+        setTostMessage('코디로 등록되었습니다.');
+        setTimeout(() => setTostMessage(''), 1000);
+        closeModal();
+      } catch (error) {
+        alert('코디 등록에 실패했습니다.');
+      }
+    }
+  };
+
+  const handleCodyNameChange = (e: ChangeEvent<HTMLInputElement>) => {
+    // codyName.current = getValidCodyName(e.target.value);
+    codyName.current = e.target.value;
+  };
 
   const handleRegistOOTD = () => {
     const YYYYMMDD = getDate({ dateDiff });
@@ -32,8 +53,20 @@ const RecommendViewer = ({ selectedCody }: Props) => {
 
     try {
       fetchPostRecommendCodyToOOTD({ date: dateRequestFormat, codyId: selectedCody.codyId });
-      setIsOOTDRegistered(true);
-      setTimeout(() => setIsOOTDRegistered(false), 1000);
+      setTostMessage('OOTD로 등록되었습니다.');
+      setTimeout(() => setTostMessage(''), 1000);
+      setRecommendCody(
+        recommendCody.map((cody) => {
+          const { codyId, isMyOotd } = cody;
+          if (codyId === selectedCody.codyId) {
+            return { ...cody, isMyOotd: true };
+          }
+          if (isMyOotd) {
+            return { ...cody, isMyOotd: false };
+          }
+          return { ...cody };
+        }),
+      );
     } catch (error) {
       alert('OOTD 등록에 실패했습니다.');
     }
@@ -67,7 +100,7 @@ const RecommendViewer = ({ selectedCody }: Props) => {
               <Image src={selectedCody.codyImage} alt={title} fill />
             </div>
             <div className={styles['input-container']}>
-              <TextInput label={codyname} placeholder="코디 이름" />
+              <TextInput placeholder="코디명을 입력하세요" onChange={handleCodyNameChange} label="" />
             </div>
             <div className={styles['button-container']}>
               <Button onClick={handleSaveCody}>
@@ -77,7 +110,7 @@ const RecommendViewer = ({ selectedCody }: Props) => {
           </div>
         </Modal>
       </div>
-      {isOOTDRegisted && <TostMessage tostMessage="OOTD로 등록되었습니다." />}
+      {tostMessage && <TostMessage tostMessage={tostMessage} />}
     </>
   );
 };
