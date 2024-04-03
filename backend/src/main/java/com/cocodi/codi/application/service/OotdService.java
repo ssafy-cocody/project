@@ -1,6 +1,7 @@
 package com.cocodi.codi.application.service;
 
 import com.amazonaws.util.Base64;
+import com.cocodi.clothes.presentation.request.ClothesPythonRequest;
 import com.cocodi.codi.domain.model.Cody;
 import com.cocodi.codi.domain.model.Ootd;
 import com.cocodi.codi.domain.repository.CodyRepository;
@@ -42,7 +43,7 @@ public class OotdService {
         LocalDate endDate = yearMonth.atEndOfMonth();
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new MemberFindException("can not find Member"));
         return ootdRepository.findByMemberAndDateBetween(member, startDate, endDate).stream()
-                .map(ootd -> new OotdResponse(ootd.getOotdId(), ootd.getDate().getDayOfMonth(), ootd.getCody().getImage()))
+                .map(ootd -> new OotdResponse(ootd.getOotdId(), ootd.getDate().getDayOfMonth(), ootd.getSnapShot() == null ? ootd.getCody().getImage() : ootd.getSnapShot()))
                 .toList();
     }
 
@@ -64,10 +65,18 @@ public class OotdService {
     }
 
     public void createOotdByImage(OotdImageRequest ootdCreateRequest, String ootdImage, Long memberId) {
+        ClothesPythonRequest clothesPythonRequest =
+                new ClothesPythonRequest(
+                        ootdCreateRequest.top(),
+                        ootdCreateRequest.bottom(),
+                        ootdCreateRequest.outer(),
+                        ootdCreateRequest.shoes(),
+                        ootdCreateRequest.onepiece()
+                );
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberFindException("Cannot find Member"));
 
-        Cody cody = codyService.getCodyFromRequest(ootdCreateRequest.clothesRequest(), null);
+        Cody cody = codyService.getCodyFromRequest(clothesPythonRequest, null);
 
         Optional<Ootd> byMemberAndDate = ootdRepository.findByMemberAndDate(member, ootdCreateRequest.date());
         Ootd ootd;
@@ -96,7 +105,7 @@ public class OotdService {
         try {
             CodyClothesSearchResponse codyClothesSearchResponse = new CodyClothesSearchResponse(memberCloset, Base64.encodeAsString(ootdImage.getBytes()));
             SseObject sseObject = new SseObject(sseKey, codyClothesSearchResponse);
-            rabbitMQUtil.convertAndSend("cody_clothes_search", "order_direct_exchange", "cody_clothes_search", sseObject);
+            rabbitMQUtil.convertAndSend("dhdhxlelzb", "order_direct_exchange", "dhdhxlelzb", sseObject);
         } catch (IOException e) {
             log.info(e.getMessage());
 

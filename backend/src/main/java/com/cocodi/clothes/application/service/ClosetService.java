@@ -1,6 +1,5 @@
 package com.cocodi.clothes.application.service;
 
-import com.cocodi.member.domain.repository.MemberRepository;
 import com.cocodi.clothes.domain.model.Category;
 import com.cocodi.clothes.domain.model.Closet;
 import com.cocodi.clothes.domain.model.Clothes;
@@ -41,6 +40,6 @@ public class ClosetService {
     }
 
     public List<Long> findClothesListByMember(Long memberId) {
-        return closetRepository.findClothesClothesIdByMemberMemberId(memberId);
+        return closetRepository.findCloset_Clothes_ClothesIdByMember_MemberId(memberId);
     }
 }

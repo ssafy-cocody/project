@@ -57,8 +57,9 @@ public class AuthCodyController {
     @PostMapping
     public ResponseEntity<?> createCody(@RequestBody CodyCreateRequest codyCreateRequest, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         String sseKey = sseService.createInstance();
-        if (codyService.createCody(codyCreateRequest, principalDetails.getMemberId(), sseKey)) {
-            codyService.createCodyImage(codyCreateRequest.clothesPythonRequest(), sseKey);
+        Long codyId = codyService.createCody(codyCreateRequest, principalDetails.getMemberId(), sseKey);
+        if (codyId != -1L) {
+            codyService.createCodyImage(codyCreateRequest.clothesPythonRequest(), sseKey, codyId);
             return ResponseEntity.ok().build();
         }
         throw new RuntimeException("already exist cody :" + "AuthCodyController.createCody");
@@ -97,14 +98,14 @@ public class AuthCodyController {
      * @return
      */
     @GetMapping("/recommend/item")
-    public ResponseEntity<?> getRecommendItemList(@RequestParam Integer temp, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public SseEmitter getRecommendItemList(@RequestParam Integer temp, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         Long memberId = principalDetails.getMemberId();
         String sseKey = sseService.createInstance();
         // 파이썬에 사용자 옷장 정보 넘기기(clothesId)
         List<Long> memberCloset = closetService.findClothesListByMember(memberId);
         codyService.getRecommendItemList(memberCloset, memberId, temp, sseKey);
 
-        return new ResponseEntity<>(null, HttpStatus.OK);
+        return sseService.getInstance(sseKey);
     }
 
 //    @GetMapping("/home")
