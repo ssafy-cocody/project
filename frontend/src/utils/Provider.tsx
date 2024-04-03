@@ -17,3 +17,4 @@ const Provider = ({ children }: { children: React.ReactNode }) => {
 };
 
 export default Provider;
+export { queryClient };
