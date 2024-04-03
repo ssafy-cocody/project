@@ -1,0 +1,43 @@
+@keyframes textGradation {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.container {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: var(--zIndex-overlay);
+
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 100svh;
+
+  background: var(--color-black);
+  opacity: 0.5;
+
+  color: var(--color-white);
+
+  pointer-events: none;
+
+  .text-container {
+    position: relative;
+    top: 40%;
+    height: fit-content;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    animation: textGradation 1.5s linear alternate-reverse infinite;
+    .text {
+      text-align: center;
+      line-height: 24px;
+    }
+  }
+}

@@ -1,10 +1,11 @@
 'use client';
 
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Button from '@/components/Button';
 import ImageInput from '@/components/ImageInput';
+import LoadingFullScreen from '@/containers/clothes/LoadingFullScreen';
 import SearchResult from '@/containers/clothes/SearchResult';
 import style from '@/containers/clothes/SearchWithImage/SearchWithImage.module.scss';
 import useClothesStep from '@/hooks/useClothesStep';
@@ -16,6 +17,17 @@ interface SearchWithImageProps {
   onSelectResult: (clothes: IClothes & { uuid: string }) => void;
   onClickSelfBasicForm: ({ uuid }: { uuid: string }) => void;
 }
+
+const getLoadingText = ({ isSearching, isPreparing }: { isSearching: boolean; isPreparing: boolean }) => {
+  if (isPreparing || isSearching)
+    return (
+      <>
+        옷 검색 중입니다. <br /> 잠시만 기다려주세요.
+      </>
+    );
+  // eslint-disable-next-line react/jsx-no-useless-fragment
+  return <></>;
+};
 
 const SearchWithImage = ({ onSelectResult, onClickSelfBasicForm }: SearchWithImageProps) => {
   const { Modal, openModal } = useModal();
@@ -39,17 +51,18 @@ const SearchWithImage = ({ onSelectResult, onClickSelfBasicForm }: SearchWithIma
   });
 
   const isSuccess = clothesSearchItemQuery.isSuccess && !!clothesSearchItemQuery.data.length;
-  const isSearching = postClothesImage.isPending || clothesSearchItemQuery.isPending; // 유사한 옷 검색 중
+  const isPreparing = postClothesImage.isPending; // 옷 uuid 생성 중
+  const isSearching = clothesSearchItemQuery.isLoading; // 유사한 옷 검색 중
+  const isLoading = isPreparing || isSearching;
+  const isFailSearching = isSearching && !isSuccess;
 
   const modalTitle = () => {
-    if (isSearching) return '검색 중 입니다.';
     if (isSuccess) return '옷을 선택해 주세요.';
-    return '옷을 찾는데에 실패했어요. 😥';
+    if (isFailSearching) return '옷을 찾는데에 실패했어요. 😥';
+    return '';
   };
 
-  // TODO 로딩 스피너
   const modalContent = () => {
-    if (isSearching) return '';
     if (isSuccess)
       return (
         <SearchResult
@@ -58,23 +71,26 @@ const SearchWithImage = ({ onSelectResult, onClickSelfBasicForm }: SearchWithIma
           clothesList={clothesSearchItemQuery.data}
         />
       );
-    return (
-      <>
-        <Button onClick={() => jumpStep(Step.SEARCH_WITH_CODE)}>품번으로 검색하기</Button>
-        <Button
-          variant="white"
-          onClick={() => {
-            onClickSelfBasicForm({ uuid: clothesUuid });
-          }}
-        >
-          직접 등록하기
-        </Button>
-      </>
-    );
+    if (isFailSearching)
+      return (
+        <>
+          <Button onClick={() => jumpStep(Step.SEARCH_WITH_CODE)}>품번으로 검색하기</Button>
+          <Button
+            variant="white"
+            onClick={() => {
+              onClickSelfBasicForm({ uuid: clothesUuid });
+            }}
+          >
+            직접 등록하기
+          </Button>
+        </>
+      );
+    // eslint-disable-next-line react/jsx-no-useless-fragment
+    return <></>;
   };
 
   const handleImageChange = (file: File) => {
-    setIsFormValid((prev) => !prev);
+    setIsFormValid(true);
     setMultipartFile(file);
   };
 
@@ -85,11 +101,18 @@ const SearchWithImage = ({ onSelectResult, onClickSelfBasicForm }: SearchWithIma
     formData.append('multipartFile', multipartFile);
 
     postClothesImage.mutate({ formData });
-    openModal();
   };
+
+  useEffect(() => {
+    if (isSuccess || isFailSearching) {
+      openModal();
+    }
+  }, [isSuccess, isFailSearching]);
 
   return (
     <>
+      <LoadingFullScreen isLoading={isLoading} text={getLoadingText({ isSearching, isPreparing })} />
+
       <form className={style.form}>
         <ImageInput name="clotehs" id="clothes" onChange={handleImageChange} />
         <div className={style['tip-wrapper']}>
