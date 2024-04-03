@@ -47,15 +47,16 @@ public class OotdService {
     }
 
     public void createOotdByCody(OotdCodyRequest ootdCreateRequest, Long memberId) {
+        LocalDate date = LocalDate.parse(ootdCreateRequest.date());
         Cody cody = codyRepository.findById(ootdCreateRequest.codyId())
                 .orElseThrow(() -> new RuntimeException("Cody not found"));
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberFindException("can not find Member"));
-        Optional<Ootd> findOotd = ootdRepository.findByMemberAndDate(member, ootdCreateRequest.date());
+        Optional<Ootd> findOotd = ootdRepository.findByMemberAndDate(member, date);
         Long ootdId = findOotd.map(Ootd::getOotdId).orElse(null);
         Ootd ootd = Ootd.builder()
                 .ootdId(ootdId)
-                .date(ootdCreateRequest.date())
+                .date(date)
                 .cody(cody)
                 .member(member)
                 .build();
@@ -95,7 +96,7 @@ public class OotdService {
         try {
             CodyClothesSearchResponse codyClothesSearchResponse = new CodyClothesSearchResponse(memberCloset, Base64.encodeAsString(ootdImage.getBytes()));
             SseObject sseObject = new SseObject(sseKey, codyClothesSearchResponse);
-            rabbitMQUtil.convertAndSend("cody_clothes_search", "order_direct_exchange", "cody_clothes_search", sseObject);
+            rabbitMQUtil.convertAndSend("dhdhxlelzb", "order_direct_exchange", "dhdhxlelzb", sseObject);
         } catch (IOException e) {
             log.info(e.getMessage());
 

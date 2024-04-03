@@ -7,10 +7,8 @@ import com.cocodi.clothes.presentation.request.ClothesImageRequest;
 import com.cocodi.clothes.presentation.request.ClothesPythonRequest;
 import com.cocodi.codi.domain.model.Cody;
 import com.cocodi.codi.domain.model.MyCody;
-import com.cocodi.codi.domain.model.RecommendCodyKey;
 import com.cocodi.codi.domain.repository.CodyRepository;
 import com.cocodi.codi.domain.repository.MyCodyRepository;
-import com.cocodi.codi.domain.repository.OotdRepository;
 import com.cocodi.codi.domain.repository.RecommendCodyKeyRepository;
 import com.cocodi.codi.presentation.request.ClothesImageListRequest;
 import com.cocodi.codi.presentation.request.CodyCreateRequest;
@@ -48,7 +46,6 @@ public class CodyService {
     private final MyCodyRepository myCodyRepository;
     private final CodyRepository codyRepository;
     private final MemberRepository memberRepository;
-    private final OotdRepository ootdRepository;
     private final EntityManager entityManager;
     private final ClothesRepository clothesRepository;
     private final RabbitMQUtil rabbitMQUtil;
@@ -58,7 +55,7 @@ public class CodyService {
     public Slice<CodyResponse> findCody(Pageable pageable, Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberFindException("Cannot find Member"));
-        Slice<MyCody> myCodies = myCodyRepository.findMyCodiesByMember(member, pageable);
+        Slice<MyCody> myCodies = myCodyRepository.findMyCodiesByMemberOrderByMyCodiIdDesc(member, pageable);
         List<CodyResponse> codyResponses = myCodies.stream()
                 .map(myCody -> new CodyResponse(myCody.getMyCodiId(), myCody.getCody().getCodiId(), myCody.getName(), myCody.getCody().getImage()))
                 .toList();
@@ -68,22 +65,22 @@ public class CodyService {
 
     }
 
-    public boolean createCody(CodyCreateRequest codyCreateRequest, Long memberId, String sseKey) {
+    public Long createCody(CodyCreateRequest codyCreateRequest, Long memberId, String sseKey) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberFindException("Cannot find Member"));
         Cody cody = getCodyFromRequest(codyCreateRequest.clothesPythonRequest(), null);
         Optional<MyCody> findMyCody = myCodyRepository.findByMemberAndCody(member, cody);
         if (findMyCody.isPresent()) {
-            return false;
+            return -1L;
         }
         MyCody myCody = MyCody.builder()
                 .name(codyCreateRequest.name())
                 .cody(cody)
                 .member(member)
                 .build();
-        myCodyRepository.save(myCody);
+        MyCody save = myCodyRepository.save(myCody);
         saveCodyIdToRedis(sseKey, cody.getCodiId().toString());
-        return true;
+        return save.getMyCodiId();
     }
 
     public void deleteMyCody(Long myCodyId, Long memberId) {
@@ -122,7 +119,7 @@ public class CodyService {
         }
     }
 
-    public void createCodyImage(ClothesPythonRequest clothesPythonRequest, String sseKey) {
+    public void createCodyImage(ClothesPythonRequest clothesPythonRequest, String sseKey, Long codyId) {
         List<Long> clothesIdList = getClothesIdList(clothesPythonRequest);
         List<Clothes> clothesList = clothesRepository.findByClothesIdIn(clothesIdList);
 
@@ -136,7 +133,8 @@ public class CodyService {
                 topImage != null ? topImage : onePieceImage,
                 imageMap.getOrDefault(Category.BOTTOM, null),
                 imageMap.getOrDefault(Category.OUTER, null),
-                imageMap.getOrDefault(Category.SHOES, null)
+                imageMap.getOrDefault(Category.SHOES, null),
+                codyId
         );
         List<ClothesImageRequest> clothesImageRequests = new ArrayList<>();
         clothesImageRequests.add(clothesImageRequest);
@@ -166,6 +164,7 @@ public class CodyService {
                 new RecommendCodyRequest(memberCloset, temp, 6);
 
         try {
+            log.info("사용자 옷장 정보 전달");
             SseObject sseObject = new SseObject(sseKey, request);
             rabbitMQUtil.convertAndSend("closet_cody_recommend", "order_direct_exchange", "closet_cody_recommend", sseObject);
         } catch (Exception e) {
@@ -180,9 +179,9 @@ public class CodyService {
                 .orElseThrow(() -> new MemberFindException("Cannot find Member"));
         String gender;
         if (member.getGender() == Gender.FEMALE) {
-            gender = "여자";
+            gender = "여성";
         } else {
-            gender = "남자";
+            gender = "남성";
         }
         RecommendItemRequest request =
                 new RecommendItemRequest(memberCloset, gender, temp);
@@ -197,8 +196,7 @@ public class CodyService {
     }
 
     public void saveIdAndDate(Long memberId, LocalDate date, String sseKey) {
-        RecommendCodyKey recommendCodyKey = new RecommendCodyKey(sseKey, memberId, date);
-        recommendCodyKeyRepository.save(recommendCodyKey);
+        redisTemplate.opsForValue().set("idAndDate:" + sseKey, memberId + " " + date);
     }
 
     public void saveCodyIdToRedis(String sseKey, String codyId) {

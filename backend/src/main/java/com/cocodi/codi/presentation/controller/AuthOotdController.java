@@ -43,7 +43,7 @@ public class AuthOotdController {
      * Ootd 사진으로 옷 검색
      * @return
      */
-    @GetMapping("/image")
+    @PostMapping("/imageSearch")
     public SseEmitter uploadOotdImage(MultipartFile ootdImage, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         Long memberId = principalDetails.getMemberId();
         // 파이썬한테 이미지 전달
@@ -60,7 +60,7 @@ public class AuthOotdController {
      * @return null
      */
     @PostMapping("/image")
-    public ResponseEntity<?> createOotdByImage(@RequestBody OotdImageRequest ootdCreateRequest,  @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public ResponseEntity<?> createOotdByImage(@ModelAttribute OotdImageRequest ootdCreateRequest, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         String imageUrl = s3Service.uploadDefault(ootdCreateRequest.ootdImage());
         ootdService.createOotdByImage(ootdCreateRequest, imageUrl, principalDetails.getMemberId());
         // 날짜 조회 해서 등록 or 수정

@@ -6,5 +6,5 @@ public record ClothesPythonRequest(
         Long outer,
         Long shoes,
         Long onepiece
-) {
+){
 }

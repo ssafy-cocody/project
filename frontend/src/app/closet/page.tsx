@@ -34,7 +34,7 @@ const Page = () => {
 
   const queryClient = useQueryClient();
   const closetMutation = useMutation({
-    mutationFn: () => fetchDeleteClothes({ clothesId: deleteClothes!.clothesId }),
+    mutationFn: () => fetchDeleteClothes({ clothesId: deleteClothes!.clothesId! }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['ClothesQueryKey'] });
     },
@@ -66,7 +66,14 @@ const Page = () => {
                 return (
                   <div key={name} className={styles.cody}>
                     <div className={styles['cody-image-container']}>
-                      <Image src={image} alt={name} fill className={styles['cody-image']} />
+                      {image && <Image src={image} alt={name} fill className={styles['cody-image']} />}
+                      {!image && (
+                        <div className={styles['cody-image']}>
+                          코디 이미지
+                          <br />
+                          생성 중 ₊⁺
+                        </div>
+                      )}
                     </div>
                     <div className={styles['cody-name']}>{name}</div>
                   </div>
