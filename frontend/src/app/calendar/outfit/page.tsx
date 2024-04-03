@@ -6,7 +6,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useAtom } from 'jotai';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Background from '@/components/Background';
 import Button from '@/components/Button';
@@ -16,22 +16,23 @@ import ClothesPicker from '@/containers/calendar/Outfit/ClothesPicker';
 import styles from '@/containers/calendar/Outfit/Outfit.module.scss';
 import { fetchPostOotdImage } from '@/services/calendar/outfit';
 import { outfitAtom } from '@/stores/outfit';
-import { ClothesCategory, ISelectedClothes } from '@/types/clothes';
+import { ClothesCategory, IClothes, ISelectedClothes } from '@/types/clothes';
 import { yearMonthDateFormatter } from '@/utils/date';
 import { queryClient } from '@/utils/Provider';
 
 const clothesRequestKey = {
-  [ClothesCategory.TOP]: 'topId',
-  [ClothesCategory.BOTTOM]: 'bottomId',
-  [ClothesCategory.OUTER]: 'outerId',
-  [ClothesCategory.SHOES]: 'shoesId',
-  [ClothesCategory.ONEPIECE]: 'onepieceId',
+  [ClothesCategory.TOP]: 'top',
+  [ClothesCategory.BOTTOM]: 'bottom',
+  [ClothesCategory.OUTER]: 'outer',
+  [ClothesCategory.SHOES]: 'shoes',
+  [ClothesCategory.ONEPIECE]: 'onepiece',
 };
 
 const Page = () => {
   const router = useRouter();
   const [outfit, setOutfit] = useAtom(outfitAtom);
-  const data = queryClient.getQueryData(OUTFIT_QUERY_KEY);
+  const data = queryClient.getQueryData(OUTFIT_QUERY_KEY) as { data: Record<string, IClothes[]> };
+
   const outfitMutation = useMutation({
     mutationFn: fetchPostOotdImage,
   });
@@ -41,17 +42,13 @@ const Page = () => {
   const handleSubmit = () => {
     if (outfitMutation.isPending) return;
 
-    const clothesRequest = {};
+    const formData = new FormData();
+
     Object.entries(selected).forEach(([category, clothes]) => {
       const categoryKey = category as keyof typeof ClothesCategory;
-      const mappedData = { [clothesRequestKey[categoryKey]]: clothes?.clothesId };
-      Object.assign(clothesRequest, mappedData);
+      formData.append(`${clothesRequestKey[categoryKey]}`, clothes?.clothesId!.toString());
     });
-
     const { year, month, date, ootdImage } = outfit!;
-
-    const formData = new FormData();
-    formData.append('clothesRequest', JSON.stringify(clothesRequest));
     formData.append('date', yearMonthDateFormatter(year, month, date));
     formData.append('ootdImage', ootdImage);
 
@@ -66,38 +63,17 @@ const Page = () => {
     );
   };
 
-  const isLoading = false;
-
-  const clothesByCategory = {
-    [ClothesCategory.OUTER]: [
-      { image: '/images/test2.jpg', clothesId: 11, category: ClothesCategory.OUTER },
-      { image: '/images/test4.jpg', clothesId: 12, category: ClothesCategory.OUTER },
-      { image: '/images/test3.jpg', clothesId: 13, category: ClothesCategory.OUTER },
-    ],
-    [ClothesCategory.TOP]: [
-      { image: '/images/test1.jpg', clothesId: 1, category: ClothesCategory.TOP },
-      { image: '/images/test2.jpg', clothesId: 2, category: ClothesCategory.TOP },
-      { image: '/images/test3.jpg', clothesId: 3, category: ClothesCategory.TOP },
-    ],
-    [ClothesCategory.BOTTOM]: [
-      { image: '/images/test2.jpg', clothesId: 4, category: ClothesCategory.BOTTOM },
-      { image: '/images/test4.jpg', clothesId: 5, category: ClothesCategory.BOTTOM },
-      { image: '/images/test3.jpg', clothesId: 6, category: ClothesCategory.BOTTOM },
-    ],
-    [ClothesCategory.SHOES]: [
-      { image: '/images/test2.jpg', clothesId: 8, category: ClothesCategory.SHOES },
-      { image: '/images/test4.jpg', clothesId: 9, category: ClothesCategory.SHOES },
-      { image: '/images/test3.jpg', clothesId: 10, category: ClothesCategory.SHOES },
-    ],
-  };
-  // (data as Record<string, IClothes[]>) || {};
-
+  const isLoading = !data?.data;
+  const clothesByCategory = (data?.data || {}) as Record<string, IClothes[]>;
   const ootdImageSrc = outfit?.ootdImage ? URL.createObjectURL(outfit?.ootdImage) : '';
 
-  if (!outfit || Object.values(outfit).some((v) => v === '')) {
-    window.alert('잘못된 접근입니다.');
-    router.replace('/calendar');
-  }
+  // TODO 새로고침시 등록을 취소하겠습니까?
+  useEffect(() => {
+    if (!outfit || Object.values(outfit).some((v) => v === '')) {
+      window.alert('잘못된 접근입니다.');
+      router.replace('/calendar');
+    }
+  }, [outfit]);
 
   return (
     <>
