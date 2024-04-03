@@ -41,8 +41,8 @@ public class RabbitMQListenerDirectRegister {
 
     private void ensureQueueAndExchange(RabbitMQListenerEnable domain, RabbitMQDirectListener workflow) {
         String exchangeName = domain.domainName();
-        String routingKey = rabbitMQUtil.getServerNamingRouteStrategy(workflow.name(), workflow.isolatedQueue());
-        String queueName = rabbitMQUtil.getServerNamingQueueStrategy(workflow.name(), workflow.isolatedQueue());
+        String routingKey = rabbitMQUtil.getServerNamingStrategy(workflow.name(), workflow.isolatedQueue());
+        String queueName = rabbitMQUtil.getServerNamingStrategy(workflow.name(), workflow.isolatedQueue());
 
         rabbitMQStore.create(exchangeName, routingKey, workflow.name());
         DirectExchange exchange = new DirectExchange(exchangeName);
@@ -79,7 +79,7 @@ public class RabbitMQListenerDirectRegister {
     }
 
     private void registerDirectListener(Object bean, Method method, RabbitMQDirectListener workflow) {
-        String queueName = rabbitMQUtil.getServerNamingQueueStrategy(workflow.name(), workflow.isolatedQueue());
+        String queueName = rabbitMQUtil.getServerNamingStrategy(workflow.name(), workflow.isolatedQueue());
         if (listenerContainers.containsKey(queueName)) {
             log.info("ListenerContainer for queue {} already exists, skipping registration.", queueName);
             return;

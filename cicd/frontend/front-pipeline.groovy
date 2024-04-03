@@ -46,6 +46,13 @@ pipeline {
                         sh 'cp -r ./ ../../front/source/'
                     }
                     dir('../front') {
+                        sh '''
+                        echo "NEXT_PUBLIC_API_BASE_URL=https://j10a307.p.ssafy.io/api" > ./source/.env
+                        echo "NEXT_PUBLIC_API_PUBLIC_ENDPOINT=public" >> ./source/.env
+                        echo "NEXT_PUBLIC_KAKAO_SIGNIN_URL=https://j10a307.p.ssafy.io/api/oauth2/authorization/kakao" >> ./source/.env
+                        echo "NEXT_PUBLIC_S3_URI=jmg-portfolio.kr.object.ncloudstorage.com" >> ./source/.env
+                        '''
+
                         def buildTag = "build-${env.BUILD_NUMBER}"
                         sh "docker build -t frontend:${buildTag} ."
                     }
@@ -79,7 +86,7 @@ pipeline {
                         while (!success && retries < maxRetries) {
                             try {
                                 response = sh(script: "curl -s -o /dev/null -w '%{http_code}' -k http://frontend:3000", returnStdout: true).trim()
-                                if (response == '200') {
+                                if (response == '200' || response == '307') {
                                     success = true
                                     echo "Service is up and running"
                                     writeFile file: DEPLOY_STATE_FILE, text: NEXT_ENV

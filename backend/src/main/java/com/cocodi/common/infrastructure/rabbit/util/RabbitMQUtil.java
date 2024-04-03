@@ -23,15 +23,7 @@ public class RabbitMQUtil {
         else return key;
     }
 
-    public String getServerNamingQueueStrategy(String key, boolean isIsolate) {
-        return "route_" + getStrategy(key,isIsolate);
-    }
-
-    public String getServerNamingExchangeStrategy(String key, boolean isIsolate) {
-        return "route_" + getStrategy(key,isIsolate);
-    }
-
-    public String getServerNamingRouteStrategy(String key, boolean isIsolate) {
+    public String getServerNamingStrategy(String key, boolean isIsolate) {
         return "route_" + getStrategy(key,isIsolate);
     }
 
