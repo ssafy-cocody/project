@@ -66,27 +66,32 @@ $border-radius: 10px;
 
     .text-area {
       display: flex;
-      flex-direction: column;
-      gap: 8px;
       font-weight: 700;
-      justify-content: flex-start;
+      justify-content: space-between;
       width: 100%;
+      align-items: flex-start;
+
+      .welcome-text {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        .greeting-text {
+          font-size: 18px;
+        }
+
+        .weather-description {
+          font-size: 12px;
+        }
+      }
 
       .temperature-container {
         display: flex;
         flex-direction: row;
         align-items: center;
         justify-content: flex-start;
-        gap: 8px;
+        gap: 4px;
         font-size: 20px;
-      }
-
-      .greeting-text {
-        font-size: 18px;
-      }
-
-      .weather-description {
-        font-size: 12px;
       }
     }
 
