@@ -43,7 +43,7 @@ public class OotdService {
         LocalDate endDate = yearMonth.atEndOfMonth();
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new MemberFindException("can not find Member"));
         return ootdRepository.findByMemberAndDateBetween(member, startDate, endDate).stream()
-                .map(ootd -> new OotdResponse(ootd.getOotdId(), ootd.getDate().getDayOfMonth(), ootd.getCody().getImage()))
+                .map(ootd -> new OotdResponse(ootd.getOotdId(), ootd.getDate().getDayOfMonth(), ootd.getSnapShot() == null ? ootd.getCody().getImage() : ootd.getSnapShot()))
                 .toList();
     }
 
