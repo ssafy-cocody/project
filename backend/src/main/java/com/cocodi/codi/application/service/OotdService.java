@@ -96,7 +96,7 @@ public class OotdService {
         try {
             CodyClothesSearchResponse codyClothesSearchResponse = new CodyClothesSearchResponse(memberCloset, Base64.encodeAsString(ootdImage.getBytes()));
             SseObject sseObject = new SseObject(sseKey, codyClothesSearchResponse);
-            rabbitMQUtil.convertAndSend("cody_clothes_search", "order_direct_exchange", "cody_clothes_search", sseObject);
+            rabbitMQUtil.convertAndSend("dhdhxlelzb", "order_direct_exchange", "dhdhxlelzb", sseObject);
         } catch (IOException e) {
             log.info(e.getMessage());
 
