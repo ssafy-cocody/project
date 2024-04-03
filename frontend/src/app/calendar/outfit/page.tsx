@@ -6,7 +6,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useAtom } from 'jotai';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import Background from '@/components/Background';
 import Button from '@/components/Button';
@@ -64,6 +64,7 @@ const Page = () => {
   const ootdImageSrc = outfit?.ootdImage ? URL.createObjectURL(outfit?.ootdImage) : '';
 
   // TODO 새로고침시 등록을 취소하겠습니까?
+  // TODO
   // useEffect(() => {
   //   if (!outfit || Object.values(outfit).some((v) => v === '')) {
   //     window.alert('잘못된 접근입니다.');
