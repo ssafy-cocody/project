@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { EventSourcePolyfill } from 'event-source-polyfill';
-import { useAtomValue } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import Image from 'next/image';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
@@ -8,6 +8,7 @@ import { ReloadIcon } from '@/../public/svgs';
 import styles from '@/containers/home/RecommendTab/Tab.module.scss';
 import { BASE_URL, getAccessToken } from '@/services';
 import { fetchWeatherInfo } from '@/services/weather';
+import { todayTempAtom } from '@/stores/home';
 import { userAtom } from '@/stores/user';
 import { IRecommendCody } from '@/types/recommend';
 import { DATE_DIFF_VALUES, DATE_TEXT, ILatLon, ILocXY, IWeatherInfo, IWeatherResponse } from '@/types/weather';
@@ -38,6 +39,8 @@ const RecommendTab = ({ selectedCody, setSelectedCody }: Props) => {
   const [weatherInfo, setWeatherInfo] = useState<IWeatherInfo>();
   const [readyToFetchWeatherInfo, SetReadyToFetchWeatherInfo] = useState(false);
 
+  const setTodayTempAtom = useSetAtom(todayTempAtom); // 오늘 온도를 저장
+
   const { data: weatherData } = useQuery({
     queryKey: ['WeatherQueryKey', locXY],
     queryFn: () => fetchWeatherInfo(getDate({ dateDiff: DATE_DIFF_VALUES.TODAY }), locXY!),
@@ -66,6 +69,7 @@ const RecommendTab = ({ selectedCody, setSelectedCody }: Props) => {
         });
       });
       setWeatherInfo(newWeatherInfo);
+      setTodayTempAtom(Number(newWeatherInfo[DATE_DIFF_VALUES.TODAY].TMP));
     }
   }, [weatherData]);
 
