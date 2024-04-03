@@ -238,8 +238,8 @@ public class CodyRabbitListener {
         return new ImageSearchResponse(
                 categoryMap.get(Category.TOP),
                 categoryMap.get(Category.BOTTOM),
-                categoryMap.get(Category.SHOES),
                 categoryMap.get(Category.OUTER),
+                categoryMap.get(Category.SHOES),
                 categoryMap.get(Category.ONEPIECE)
         );
     }
