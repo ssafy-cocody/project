@@ -40,7 +40,7 @@ const ClothesPicker = ({ clothesByCategory, onSelectClothes }: ClothesPickerProp
               {clothesByCategory[category].map(({ imageUrl: image, clothesId }: IClothes, index) => {
                 return (
                   <div className={styles['clothes-image-container']} key={clothesId}>
-                    <label htmlFor={clothesId.toString()}>
+                    <label htmlFor={clothesId!.toString()}>
                       <Image src={image!} alt={`${category}${index + 1}`} fill className={styles['clothes-image']} />
                       <div
                         className={`${styles['checked-icon-overlay']} ${selected[category]?.clothesId === clothesId ? styles.visible : ''}`}
@@ -53,7 +53,7 @@ const ClothesPicker = ({ clothesByCategory, onSelectClothes }: ClothesPickerProp
                     </label>
                     <input
                       type="radio"
-                      id={clothesId.toString()}
+                      id={clothesId!.toString()}
                       value={category}
                       radioGroup={category}
                       onChange={handleClickItem}

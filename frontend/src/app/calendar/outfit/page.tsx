@@ -35,6 +35,10 @@ const Page = () => {
 
   const outfitMutation = useMutation({
     mutationFn: fetchPostOotdImage,
+    onSuccess: () => {
+      router.replace('/calendar'); // 뒤로가기시 /outfit으로 이동하지 않도록 replace
+      setOutfit(undefined); // 등록 완료 후 데이터 초기화
+    },
   });
 
   const [selected, setSelected] = useState<ISelectedClothes>({});
@@ -52,15 +56,7 @@ const Page = () => {
     formData.append('date', yearMonthDateFormatter(year, month, date));
     formData.append('ootdImage', ootdImage);
 
-    outfitMutation.mutate(
-      { formData },
-      {
-        onSuccess: () => {
-          setOutfit(undefined); // 등록 완료 후 데이터 초기화
-          router.replace('/calendar'); // 뒤로가기시 /outfit으로 이동하지 않도록 replace
-        },
-      },
-    );
+    outfitMutation.mutate({ formData });
   };
 
   const isLoading = !data?.data;

@@ -71,7 +71,5 @@ export const fetchPostOotdImage = async ({ formData }: IFetchGetOotdImageRequest
 
   if (!response.ok) return new Error(response.statusText);
 
-  const data = await response.json();
-
-  return data;
+  return response;
 };
