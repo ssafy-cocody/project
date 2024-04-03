@@ -34,7 +34,7 @@ const Page = () => {
 
   const queryClient = useQueryClient();
   const closetMutation = useMutation({
-    mutationFn: () => fetchDeleteClothes({ clothesId: deleteClothes!.clothesId }),
+    mutationFn: () => fetchDeleteClothes({ clothesId: deleteClothes!.clothesId! }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['ClothesQueryKey'] });
     },

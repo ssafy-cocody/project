@@ -1,7 +1,6 @@
 enum Step {
   SEARCH_WITH_CAMERA,
   SEARCH_WITH_CAMERA_BASIC_FORM,
-  SEARCH_WITH_CAMERA_ADDITIONAL_FORM,
   SEARCH_WITH_CODE,
   SEARCH_WITH_CODE_BASIC_FORM,
   SEARCH_WITH_CODE_ADDITIONAL_FORM,
@@ -76,7 +75,7 @@ const ClosetCategory = {
 } as const;
 
 interface IClothes {
-  clothesId: number;
+  clothesId?: number;
   category?: keyof typeof ClothesCategory;
   name?: string;
   color?: keyof typeof Color;
@@ -95,7 +94,7 @@ type ISelectedClothes = {
 type INewClothes = {
   uuid?: string;
   image?: string;
-} & Pick<IClothes, 'category' | 'name' | 'color' | 'brand' | 'productNo' | 'price' | 'link'>;
+} & Pick<IClothes, 'clothesId' | 'category' | 'name' | 'color' | 'brand' | 'productNo' | 'price' | 'link'>;
 
 export { ClosetCategory, CLOTHES_TAB, ClothesCategory, Color, DONE, Step };
 export type { IClothes, INewClothes, ISelectedClothes };

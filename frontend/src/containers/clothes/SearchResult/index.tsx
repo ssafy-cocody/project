@@ -7,10 +7,11 @@ import { IClothes } from '@/types/clothes';
 
 interface SearchResultProps {
   onSelect: (clothes: IClothes) => void;
+  onClickSelfBasicForm: () => void;
   clothesList?: IClothes[];
 }
 
-const SearchResult = ({ onSelect, clothesList }: SearchResultProps) => {
+const SearchResult = ({ onSelect, onClickSelfBasicForm, clothesList }: SearchResultProps) => {
   const [selected, setSelected] = useState<IClothes>();
 
   return (
@@ -18,8 +19,9 @@ const SearchResult = ({ onSelect, clothesList }: SearchResultProps) => {
       <div className={style['search-result']}>
         {clothesList?.length &&
           clothesList.map((clothes) => {
-            const { image, clothesId, name, brand } = clothes;
-            const isSelected = clothesId.toString() === selected?.clothesId.toString();
+            const { image, name, brand } = clothes;
+            const clothesId = clothes.clothesId!;
+            const isSelected = clothesId.toString() === selected?.clothesId!.toString();
 
             return (
               <div key={clothesId} className={`${style['search-item']} ${isSelected && style.selected}`}>
@@ -50,6 +52,15 @@ const SearchResult = ({ onSelect, clothesList }: SearchResultProps) => {
           })}
       </div>
       <div className={style['modal-bottom']}>
+        <Button
+          type="button"
+          onClick={() => {
+            onClickSelfBasicForm();
+          }}
+          variant="white"
+        >
+          직접 등록하기
+        </Button>
         <Button
           type="button"
           disabled={!selected}
