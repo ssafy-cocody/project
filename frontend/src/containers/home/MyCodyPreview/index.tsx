@@ -5,6 +5,8 @@ import { useState } from 'react';
 import Button from '@/components/Button';
 import styles from '@/containers/home/MyCodyPreview/Preview.module.scss';
 
+const CODY_COUNT = 6;
+
 const MyCodyPreview = () => {
   const [codies] = useState([
     { id: 1, image: '/images/test1.jpg' },
@@ -26,8 +28,8 @@ const MyCodyPreview = () => {
               </div>
             );
           })}
-          {codies.length < 8 ? (
-            Array.from({ length: 8 - codies.length }, (_, i: number) => i).map((value) => {
+          {codies.length < CODY_COUNT ? (
+            Array.from({ length: CODY_COUNT - codies.length }, (_, i: number) => i).map((value) => {
               return <div key={-value} className={styles['cody-image']} />;
             })
           ) : (
