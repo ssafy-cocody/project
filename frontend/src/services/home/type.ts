@@ -1,3 +1,4 @@
+import { IFetchPostClothesRequest } from '@/services/clothes/type';
 import { IFetchGetCodyResponse } from '@/services/cody/type';
 
 type IFetchGetMyCodyResponse = IFetchGetCodyResponse;
@@ -10,4 +11,4 @@ interface IFetchGetCodyRecommendItemResponse {
   recommendId: number;
 }
 
-export type { IFetchGetCodyRecommendItemResponse, IFetchGetMyCodyResponse };
+export type { IFetchGetCodyRecommendItemResponse, IFetchGetMyCodyResponse, IFetchPostClothesRequest };
