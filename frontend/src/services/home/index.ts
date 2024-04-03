@@ -1,5 +1,5 @@
 import { api } from '@/services';
-import { IFetchGetMyCodyResponse } from '@/services/home/type';
+import { IFetchCreateCodyRequest, IFetchGetMyCodyResponse, IFetchPostOOTDCodyRequest } from '@/services/home/type';
 
 /**
  * 내가 만든 코디
@@ -8,5 +8,15 @@ import { IFetchGetMyCodyResponse } from '@/services/home/type';
 export const fetchGetMyCody = async () => {
   const size = 6;
   const data = await api.get<IFetchGetMyCodyResponse>(`/cody?size=${size}`);
+  return data;
+};
+
+export const fetchPostRecommendCodyToOOTD = async ({ date, codyId }: IFetchPostOOTDCodyRequest) => {
+  const data = await api.post('/ootd/cody', { date, codyId });
+  return data;
+};
+
+export const fetchPostCreateCody = async ({ codyId, name }: IFetchCreateCodyRequest) => {
+  const data = await api.post(`/cody/create?&codyId=${codyId}&name=${name}`);
   return data;
 };
