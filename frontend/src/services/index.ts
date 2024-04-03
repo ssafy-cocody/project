@@ -41,7 +41,11 @@ const request = async <TResponse>(path: string, config: RequestInit, body?: Body
     handleError(response.status, response.statusText);
   }
 
-  if (config.method === HTTPMethods.DELETE || config.method === HTTPMethods.POST) {
+  if (
+    config.method === HTTPMethods.DELETE ||
+    config.method === HTTPMethods.POST ||
+    config.method === HTTPMethods.PATCH
+  ) {
     return {} as TResponse;
   }
 
