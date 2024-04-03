@@ -29,7 +29,7 @@ public class ClosetCustomRepositoryImpl implements ClosetCustomRepository {
         return jpaQueryFactory
                 .selectFrom(qClothes)
                 .where(booleanBuilder)
-                .orderBy(qClothes.clothesId.asc())
+                .orderBy(qClothes.clothesId.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)
                 .fetch();

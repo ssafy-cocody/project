@@ -33,6 +33,7 @@ $tostOpacity: 0.9;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: var(--zIndex-tostMessage);
   @include tostAnimation(tostDisappearAnimation);
 
   .tost-message {
