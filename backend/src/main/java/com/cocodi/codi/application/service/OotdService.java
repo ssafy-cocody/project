@@ -1,6 +1,7 @@
 package com.cocodi.codi.application.service;
 
 import com.amazonaws.util.Base64;
+import com.cocodi.clothes.presentation.request.ClothesPythonRequest;
 import com.cocodi.codi.domain.model.Cody;
 import com.cocodi.codi.domain.model.Ootd;
 import com.cocodi.codi.domain.repository.CodyRepository;
@@ -64,10 +65,18 @@ public class OotdService {
     }
 
     public void createOotdByImage(OotdImageRequest ootdCreateRequest, String ootdImage, Long memberId) {
+        ClothesPythonRequest clothesPythonRequest =
+                new ClothesPythonRequest(
+                        ootdCreateRequest.top(),
+                        ootdCreateRequest.bottom(),
+                        ootdCreateRequest.outer(),
+                        ootdCreateRequest.shoes(),
+                        ootdCreateRequest.onepiece()
+                );
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberFindException("Cannot find Member"));
 
-        Cody cody = codyService.getCodyFromRequest(ootdCreateRequest.clothesRequest(), null);
+        Cody cody = codyService.getCodyFromRequest(clothesPythonRequest, null);
 
         Optional<Ootd> byMemberAndDate = ootdRepository.findByMemberAndDate(member, ootdCreateRequest.date());
         Ootd ootd;
