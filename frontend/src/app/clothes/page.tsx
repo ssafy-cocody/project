@@ -1,6 +1,6 @@
 'use client';
 
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 
 import Background from '@/components/Background';
@@ -22,11 +22,12 @@ const initClothes = {
 const Page = () => {
   const { step, goBackStep, goNextStep, initClothesStep, jumpStep } = useClothesStep();
   const [clothes, setClothes] = useState<INewClothes>(initClothes);
+  const queryClient = useQueryClient();
   // 옷 등록 폼 뮤테이션
   const clothesMutation = useMutation({
     mutationFn: fetchPostSaveClothes,
     onSuccess: () => {
-      // TODO closet 업데이트
+      queryClient.invalidateQueries({ queryKey: ['ClothesQueryKey'] });
     },
   });
   // 이미지 검색 후 등록 폼 뮤테이션
