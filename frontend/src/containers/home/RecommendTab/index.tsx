@@ -4,7 +4,6 @@ import { useAtomValue } from 'jotai';
 import Image from 'next/image';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
-import { ReloadIcon } from '@/../public/svgs';
 import styles from '@/containers/home/RecommendTab/Tab.module.scss';
 import { BASE_URL, getAccessToken } from '@/services';
 import { fetchWeatherInfo } from '@/services/weather';
@@ -170,25 +169,24 @@ const RecommendTab = ({ selectedCody, setSelectedCody }: Props) => {
         })}
       </div>
       <div className={styles['context-container']}>
-        <button className={styles['reload-button']} type="button">
-          <ReloadIcon />
-        </button>
         <div className={styles['text-area']}>
+          <div className={styles['welcome-text']}>
+            <div className={styles['greeting-text']}>반가워요, {user?.nickname}님</div>
+            <div className={styles['weather-description']}>
+              {DATE_TEXT[selectedTap]}
+              {description}
+            </div>
+          </div>
           {weatherInfo && (
             <div className={styles['temperature-container']}>
-              <div className={styles.temperature}>
-                {weatherInfo[dateDiff].TMN}° / {weatherInfo[dateDiff].TMX}°
-              </div>
               {weatherInfo[dateDiff].SKY === '1' && <Image src={weatherUrl} alt="날씨" width={28} height={25} />}
               {weatherInfo[dateDiff].SKY === '3' && <Image src={weatherUrl} alt="날씨" width={27} height={25} />}
               {weatherInfo[dateDiff].SKY === '4' && <Image src={weatherUrl} alt="날씨" width={35} height={25} />}
+              <div className={styles.temperature}>
+                {weatherInfo[dateDiff].TMN}° / {weatherInfo[dateDiff].TMX}°
+              </div>
             </div>
           )}
-          <div className={styles['greeting-text']}>반가워요, {user?.nickname}님</div>
-          <div className={styles['weather-description']}>
-            {DATE_TEXT[selectedTap]}
-            {description}
-          </div>
         </div>
         <div className={styles['cody-area']}>
           {recommendCodies &&
