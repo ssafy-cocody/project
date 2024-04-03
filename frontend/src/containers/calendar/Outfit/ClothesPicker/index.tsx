@@ -29,11 +29,15 @@ const ClothesPicker = ({ clothesByCategory, onSelectClothes }: ClothesPickerProp
   return (
     <div className={styles['clothes-picker']}>
       {categories.map((category) => {
+        const hasCategory = clothesByCategory[category].length > 0;
+
+        if (!hasCategory) return '';
+
         return (
           <div key={category} className={styles['clothes-by-category']}>
             <div className={styles.category}>{ClosetCategory[category]}</div>
             <div className={styles.clothes}>
-              {clothesByCategory[category].map(({ image, clothesId }: IClothes, index) => {
+              {clothesByCategory[category].map(({ imageUrl: image, clothesId }: IClothes, index) => {
                 return (
                   <div className={styles['clothes-image-container']} key={clothesId}>
                     <label htmlFor={clothesId.toString()}>
