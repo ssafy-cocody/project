@@ -19,7 +19,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ClosetService {
 
-    private final MemberRepository memberRepository;
     private final ClosetCustomRepository closetCustomRepository;
     private final ClosetRepository closetRepository;
     private final EntityManager entityManager;

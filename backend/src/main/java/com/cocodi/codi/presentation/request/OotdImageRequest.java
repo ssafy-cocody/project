@@ -1,11 +1,14 @@
 package com.cocodi.codi.presentation.request;
 
-import com.cocodi.clothes.presentation.request.ClothesRequest;
+import com.cocodi.clothes.presentation.request.ClothesPythonRequest;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
 public record OotdImageRequest(
-        ClothesRequest clothesRequest,
-        LocalDate date
+
+        ClothesPythonRequest clothesRequest,
+        LocalDate date,
+        MultipartFile ootdImage
 ) {
 }

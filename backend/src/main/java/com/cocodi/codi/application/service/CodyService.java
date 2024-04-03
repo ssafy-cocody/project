@@ -4,35 +4,41 @@ import com.cocodi.clothes.domain.model.Category;
 import com.cocodi.clothes.domain.model.Clothes;
 import com.cocodi.clothes.domain.repository.ClothesRepository;
 import com.cocodi.clothes.presentation.request.ClothesImageRequest;
-import com.cocodi.clothes.presentation.request.ClothesRequest;
+import com.cocodi.clothes.presentation.request.ClothesPythonRequest;
 import com.cocodi.codi.domain.model.Cody;
 import com.cocodi.codi.domain.model.MyCody;
-import com.cocodi.codi.domain.model.Ootd;
+import com.cocodi.codi.domain.model.RecommendCodyKey;
 import com.cocodi.codi.domain.repository.CodyRepository;
 import com.cocodi.codi.domain.repository.MyCodyRepository;
 import com.cocodi.codi.domain.repository.OotdRepository;
+import com.cocodi.codi.domain.repository.RecommendCodyKeyRepository;
+import com.cocodi.codi.presentation.request.ClothesImageListRequest;
 import com.cocodi.codi.presentation.request.CodyCreateRequest;
+import com.cocodi.codi.presentation.request.RecommendCodyRequest;
+import com.cocodi.codi.presentation.request.RecommendItemRequest;
 import com.cocodi.codi.presentation.response.CodyResponse;
-import com.cocodi.codi.presentation.response.RecommendCodyResponse;
 import com.cocodi.common.infrastructure.rabbit.util.RabbitMQUtil;
+import com.cocodi.member.domain.enums.Gender;
 import com.cocodi.member.domain.model.Member;
 import com.cocodi.member.domain.repository.MemberRepository;
 import com.cocodi.member.infrastructure.exception.MemberFindException;
 import com.cocodi.sse.domain.model.SseObject;
 import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Slf4j
 @Service
@@ -46,11 +52,13 @@ public class CodyService {
     private final EntityManager entityManager;
     private final ClothesRepository clothesRepository;
     private final RabbitMQUtil rabbitMQUtil;
+    private final RecommendCodyKeyRepository recommendCodyKeyRepository;
+    private final RedisTemplate<String, String> redisTemplate;
 
     public Slice<CodyResponse> findCody(Pageable pageable, Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberFindException("Cannot find Member"));
-        Slice<MyCody> myCodies = myCodyRepository.findMyCodiesByMember(member, pageable);
+        Slice<MyCody> myCodies = myCodyRepository.findMyCodiesByMemberOrderByMyCodiIdDesc(member, pageable);
         List<CodyResponse> codyResponses = myCodies.stream()
                 .map(myCody -> new CodyResponse(myCody.getMyCodiId(), myCody.getCody().getCodiId(), myCody.getName(), myCody.getCody().getImage()))
                 .toList();
@@ -60,10 +68,10 @@ public class CodyService {
 
     }
 
-    public boolean createCody(CodyCreateRequest codyCreateRequest, Long memberId) {
+    public boolean createCody(CodyCreateRequest codyCreateRequest, Long memberId, String sseKey) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberFindException("Cannot find Member"));
-        Cody cody = getCodyFromRequest(codyCreateRequest.clothesRequest(), null);
+        Cody cody = getCodyFromRequest(codyCreateRequest.clothesPythonRequest(), null);
         Optional<MyCody> findMyCody = myCodyRepository.findByMemberAndCody(member, cody);
         if (findMyCody.isPresent()) {
             return false;
@@ -74,64 +82,33 @@ public class CodyService {
                 .member(member)
                 .build();
         myCodyRepository.save(myCody);
+        saveCodyIdToRedis(sseKey, cody.getCodiId().toString());
         return true;
     }
 
-    public void deleteMyCody(Long codyId, Long memberId) {
+    public void deleteMyCody(Long myCodyId, Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberFindException("Cannot find Member"));
-        Cody cody = codyRepository.findById(codyId)
-                .orElseThrow(() -> new RuntimeException("Cannot find Cody"));
-        MyCody myCody = myCodyRepository.findByMemberAndCody(member, cody)
+        MyCody myCody = myCodyRepository.findByMemberAndMyCodiId(member, myCodyId)
                 .orElseThrow(() -> new RuntimeException("Cannot find MyCody"));
         myCodyRepository.delete(myCody);
     }
 
-    @Transactional
-    public List<RecommendCodyResponse> getRecommendCodyList(List<ClothesRequest> recommendCodyList, List<String> codyImages, LocalDate date, Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberFindException("Cannot find Member"));
-
-        Ootd ootd = ootdRepository.findByMemberAndDate(member, date).orElse(null);
-        List<RecommendCodyResponse> recommendCodyResponses = new ArrayList<>();
-        IntStream.range(0, recommendCodyList.size())
-                .forEach(i -> {
-                    ClothesRequest clothesRequest = recommendCodyList.get(i);
-                    String codyImage = codyImages.get(i);
-                    Cody cody = getCodyFromRequest(clothesRequest, codyImage);
-                    boolean isMyOotd = ootd != null && Objects.equals(ootd.getCody().getCodiId(), cody.getCodiId());
-                    recommendCodyResponses.add(
-                            new RecommendCodyResponse(
-                                    cody.getCodiId(),
-                                    isMyCody(member, cody),
-                                    isMyOotd,
-                                    cody.getImage()
-                            )
-                    );
-                });
-
-        return recommendCodyResponses;
-    }
-
-    public boolean isMyCody(Member member, Cody cody) {
-        return myCodyRepository.findByMemberAndCody(member, cody).isPresent();
-    }
-
-    public Cody getCodyFromRequest(ClothesRequest clothesRequest, String codyImage) {
-        return codyRepository.findByTopAndBottomAndOuterAndOnepieceAndShoes(
-                clothesRequest.topId(),
-                clothesRequest.bottomId(),
-                clothesRequest.outerId(),
-                clothesRequest.onepieceId(),
-                clothesRequest.shoesId()
+    public Cody getCodyFromRequest(ClothesPythonRequest clothesRequest, String codyImage) {
+        return codyRepository.findByTopClothesIdAndBottomClothesIdAndOuterClothesIdAndOnepieceClothesIdAndShoesClothesId(
+                clothesRequest.top(),
+                clothesRequest.bottom(),
+                clothesRequest.outer(),
+                clothesRequest.onepiece(),
+                clothesRequest.shoes()
         ).orElseGet(() -> {
             Cody cody = Cody.builder()
                     .image(codyImage)
-                    .top(getClothesOrNull(clothesRequest.topId()))
-                    .bottom(getClothesOrNull(clothesRequest.bottomId()))
-                    .outer(getClothesOrNull(clothesRequest.outerId()))
-                    .onepiece(getClothesOrNull(clothesRequest.onepieceId()))
-                    .shoes(getClothesOrNull(clothesRequest.shoesId()))
+                    .top(getClothesOrNull(clothesRequest.top()))
+                    .bottom(getClothesOrNull(clothesRequest.bottom()))
+                    .outer(getClothesOrNull(clothesRequest.outer()))
+                    .onepiece(getClothesOrNull(clothesRequest.onepiece()))
+                    .shoes(getClothesOrNull(clothesRequest.shoes()))
                     .build();
             return codyRepository.save(cody);
         });
@@ -145,8 +122,8 @@ public class CodyService {
         }
     }
 
-    public void createCodyImage(ClothesRequest clothesRequest, String sseKey) {
-        List<Long> clothesIdList = getClothesIdList(clothesRequest);
+    public void createCodyImage(ClothesPythonRequest clothesPythonRequest, String sseKey) {
+        List<Long> clothesIdList = getClothesIdList(clothesPythonRequest);
         List<Clothes> clothesList = clothesRepository.findByClothesIdIn(clothesIdList);
 
         Map<Category, String> imageMap = clothesList.stream()
@@ -161,9 +138,12 @@ public class CodyService {
                 imageMap.getOrDefault(Category.OUTER, null),
                 imageMap.getOrDefault(Category.SHOES, null)
         );
+        List<ClothesImageRequest> clothesImageRequests = new ArrayList<>();
+        clothesImageRequests.add(clothesImageRequest);
+        ClothesImageListRequest clothesImageListRequest = new ClothesImageListRequest(clothesImageRequests);
 
         try {
-            SseObject sseObject = new SseObject(sseKey, clothesImageRequest);
+            SseObject sseObject = new SseObject(sseKey, clothesImageListRequest);
             rabbitMQUtil.convertAndSend("cody_image_create", "order_direct_exchange", "cody_image_create", sseObject);
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -171,13 +151,60 @@ public class CodyService {
     }
 
     @NotNull
-    private static List<Long> getClothesIdList(ClothesRequest clothesRequest) {
+    private static List<Long> getClothesIdList(ClothesPythonRequest clothesRequest) {
         List<Long> clothesIdList = new ArrayList<>();
-        if (clothesRequest.topId() != null) clothesIdList.add(clothesRequest.topId());
-        if (clothesRequest.bottomId() != null) clothesIdList.add(clothesRequest.bottomId());
-        if (clothesRequest.outerId() != null) clothesIdList.add(clothesRequest.outerId());
-        if (clothesRequest.shoesId() != null) clothesIdList.add(clothesRequest.shoesId());
-        if (clothesRequest.onepieceId() != null) clothesIdList.add(clothesRequest.onepieceId());
+        if (clothesRequest.top() != null) clothesIdList.add(clothesRequest.top());
+        if (clothesRequest.bottom() != null) clothesIdList.add(clothesRequest.bottom());
+        if (clothesRequest.outer() != null) clothesIdList.add(clothesRequest.outer());
+        if (clothesRequest.shoes() != null) clothesIdList.add(clothesRequest.shoes());
+        if (clothesRequest.onepiece() != null) clothesIdList.add(clothesRequest.onepiece());
         return clothesIdList;
     }
+
+    public void getRecommendCodyList(Integer temp, List<Long> memberCloset, String sseKey) {
+        RecommendCodyRequest request =
+                new RecommendCodyRequest(memberCloset, temp, 6);
+
+        try {
+            log.info("사용자 옷장 정보 전달");
+            SseObject sseObject = new SseObject(sseKey, request);
+            rabbitMQUtil.convertAndSend("closet_cody_recommend", "order_direct_exchange", "closet_cody_recommend", sseObject);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+
+
+    }
+
+    public void getRecommendItemList(List<Long> memberCloset, Long memberId, Integer temp, String sseKey) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberFindException("Cannot find Member"));
+        String gender;
+        if (member.getGender() == Gender.FEMALE) {
+            gender = "여자";
+        } else {
+            gender = "남자";
+        }
+        RecommendItemRequest request =
+                new RecommendItemRequest(memberCloset, gender, temp);
+
+        try {
+            SseObject sseObject = new SseObject(sseKey, request);
+            rabbitMQUtil.convertAndSend("recommend_item", "order_direct_exchange", "recommend_item", sseObject);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+
+    }
+
+    public void saveIdAndDate(Long memberId, LocalDate date, String sseKey) {
+        RecommendCodyKey recommendCodyKey = new RecommendCodyKey(sseKey, memberId, date);
+        recommendCodyKeyRepository.save(recommendCodyKey);
+    }
+
+    public void saveCodyIdToRedis(String sseKey, String codyId) {
+        // Redis에 Cody ID를 String 값으로 저장
+        redisTemplate.opsForValue().set("cody:" + sseKey, codyId);
+    }
+
 }

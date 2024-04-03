@@ -13,11 +13,15 @@ import java.util.Optional;
 @Repository
 public interface MyCodyRepository extends JpaRepository<MyCody, Long> {
 
-    Slice<MyCody> findMyCodiesByMember(Member member, Pageable pageable);
+    Slice<MyCody> findMyCodiesByMemberOrderByMyCodiIdDesc(Member member, Pageable pageable);
 
     Optional<MyCody> findByMemberAndCody(Member member, Cody cody);
 
     Long countByMyCodiIdGreaterThan(Long myCodyId);
+
+    Optional<MyCody> findByMemberAndMyCodiId(Member member, Long myCodyId);
+
+    Optional<Object> findByMemberAndCodyCodiId(Member member, Long codyId);
 
 //    @Query("SELECT m FROM MyCody m JOIN m.cody c WHERE m.member = :member " +
 //            "AND c.top.clothesId = :topId " +

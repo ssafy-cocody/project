@@ -24,9 +24,8 @@ export const OUTFIT_QUERY_KEY = ['outfit'];
 
 const Calendar = () => {
   const router = useRouter();
-
-  const [year] = useState<number>(new Date().getFullYear());
-  const [month] = useState<number>(new Date().getMonth() + 1);
+  const [year, setYear] = useState<number>(new Date().getFullYear());
+  const [month, setMonth] = useState<number>(new Date().getMonth() + 1);
   const [date, setDate] = useState<number>();
   const [calendar, setCalendar] = useState<ICalendar[][]>([]);
   const ootdImageRef = useRef<File>();
@@ -57,7 +56,7 @@ const Calendar = () => {
   );
 
   const { data: ootds } = useQuery<ICalendar[], QueryKey>({
-    queryKey: ['CalendarQueryKey'],
+    queryKey: ['CalendarQueryKey', year, month],
     queryFn: () => fetchGetCalendar({ year: year.toString(), month: paddingMonth(month) }),
   });
 
@@ -77,7 +76,7 @@ const Calendar = () => {
           newCalendar[getWeek(i, dayOfWeekOfDay1) - 1][getDayOfWeek(i)] = ootdOfDay[0];
         } else {
           newCalendar[getWeek(i, dayOfWeekOfDay1) - 1][getDayOfWeek(i)] = {
-            ootdId: i,
+            ootdId: -i,
             day: i,
             image: '',
           };
@@ -109,13 +108,27 @@ const Calendar = () => {
 
     ootdImageMutation.mutate({ formData });
   };
+  const handleDate = (monthDiff: number) => {
+    const newDate = new Date(year, month + monthDiff);
+    const newYear = newDate.getFullYear();
+    const newMonth = newDate.getMonth() + 1;
+    setYear(newYear);
+    setMonth(newMonth);
+  };
+
+  const previousMonth = () => handleDate(-2);
+  const nextMonth = () => handleDate(0);
 
   return (
     <div className={styles['main-container']}>
       <div className={styles.date}>
-        <LeftArrow />
+        <button type="button" onClick={previousMonth}>
+          <LeftArrow />
+        </button>
         {year.toString()}.{paddingMonth(month)}
-        <RightArrow />
+        <button type="button" onClick={nextMonth}>
+          <RightArrow />
+        </button>
       </div>
       <div className={styles['calendar-container']}>
         <div className={styles['week-container']}>

@@ -19,14 +19,13 @@ public class AuthMemberController {
 
     /**
      * 회원 정보 수정
-     * @param memberUpdateRequest
-     * @param profile
      * @param principalDetails
      * @return
      */
     @PatchMapping
-    public ResponseEntity<String> updateMember(@RequestBody MemberUpdateRequest memberUpdateRequest, MultipartFile profile, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        if(memberService.updateMember(memberUpdateRequest, profile, principalDetails.getMemberId())) {
+    public ResponseEntity<String> updateMember(@RequestParam(required = false) String gender, @RequestParam(required = false) String birth, @RequestParam(required = false) String nickname, @RequestParam(required = false) MultipartFile profile, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        MemberUpdateRequest memberUpdateRequest = new MemberUpdateRequest(gender, birth, nickname, profile);
+        if(memberService.updateMember(memberUpdateRequest, principalDetails.getMemberId())) {
             return new ResponseEntity<>("success", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("fail", HttpStatus.INTERNAL_SERVER_ERROR);

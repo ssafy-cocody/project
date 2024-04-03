@@ -102,7 +102,7 @@ const Page = () => {
   return (
     <>
       <Background $backgroundColor="skyBlue" />
-      <Header title="내 코디 올리기" previousLink="/calendar" />
+      <Header title="내 코디 올리기" hasPreviousLink />
       <main className={styles['main-container']}>
         <div className={styles['taken-image-container']}>
           <Image src={ootdImageSrc} alt="내가 올린 코디 사진" fill className={styles['taken-image']} />

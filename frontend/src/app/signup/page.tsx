@@ -1,5 +1,6 @@
 'use client';
 
+import { useMutation } from '@tanstack/react-query';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { FormEvent, useEffect, useState } from 'react';
@@ -42,6 +43,15 @@ const Page = () => {
     birth: '',
     nickname: '',
   });
+  const signupMutation = useMutation({
+    mutationFn: fetchCreateMember,
+    onSuccess: () => {
+      router.push('/');
+    },
+    onError: () => {
+      window.alert('문제가 발생했습니다. 다시 시도해주세요.');
+    },
+  });
 
   const { gender, birth, nickname } = user;
 
@@ -51,7 +61,8 @@ const Page = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!birth || !nickname) return;
+    if (!birth || !nickname || !gender) return;
+    if (signupMutation.isPending) return;
 
     const birthErrorMessage = birthRegexp.test(birth) ? '' : '4자리로 입력해주세요.';
     const nicknameErrorMessage = nicknameRegexp.test(nickname)
@@ -61,12 +72,12 @@ const Page = () => {
 
     if (birthErrorMessage || nicknameErrorMessage) return;
 
-    try {
-      await fetchCreateMember(user);
-      router.push('/');
-    } catch (error) {
-      window.alert('문제가 발생했습니다. 다시 시도해주세요.');
-    }
+    const formData = new FormData();
+    formData.append('gender', gender);
+    formData.append('birth', birth);
+    formData.append('nickname', nickname);
+
+    signupMutation.mutate({ formData });
   };
 
   // form 유효성 검사
