@@ -12,8 +12,8 @@ import java.util.List;
 @Repository
 public interface ClosetRepository extends JpaRepository<Closet, Long> {
 
-    List<Long> findClothesClothesIdByMemberMemberId(Long memberId);
-
+    @Query(value = "SELECT c.clothes_clothes_id FROM closet c WHERE c.member_member_id = :memberId", nativeQuery = true)
+    List<Long> findCloset_Clothes_ClothesIdByMember_MemberId(Long memberId);
     @Modifying
     @Query("DELETE FROM Closet c WHERE c.clothes.clothesId = :clothesId AND c.member.memberId = :memberId")
     void deleteByClothesIdAndMemberId(@Param("clothesId") Long clothesId, @Param("memberId") Long memberId);

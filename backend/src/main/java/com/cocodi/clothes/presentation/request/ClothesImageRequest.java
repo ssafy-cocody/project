@@ -4,6 +4,7 @@ public record ClothesImageRequest(
         String top,
         String bottom,
         String outer,
-        String shoes
+        String shoes,
+        Long codyId
 ) {
 }
