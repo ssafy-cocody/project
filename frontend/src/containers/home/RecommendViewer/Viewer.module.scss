@@ -10,10 +10,11 @@ $inner-radius: 5px;
   background-color: var(--color-gray);
   box-sizing: border-box;
   justify-content: space-between;
+  gap: 16px;
 
   .recommend-image {
-    width: 45%;
     height: 240px;
+    flex-grow: 1;
     position: relative;
     background-color: var(--color-white);
     border-radius: $inner-radius;
@@ -29,7 +30,6 @@ $inner-radius: 5px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    width: 50%;
 
     .text-area {
       display: flex;

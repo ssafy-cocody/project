@@ -12,8 +12,8 @@ interface Props {
 }
 
 const RecommendViewer = ({ selectedCody }: Props) => {
-  const [title] = useState<string>('New 코디.');
-  const [description] = useState<string>(`코코디가 추천하는\n당신의 옷장 속 새로운 코디`);
+  const [title] = useState<string>('New 코디');
+  const [description] = useState<string>(`코코디가 추천하는\n당신의 옷장 속\n새로운 코디`);
   const [codyname] = useState<string>('');
   const { Modal, openModal } = useModal();
 
