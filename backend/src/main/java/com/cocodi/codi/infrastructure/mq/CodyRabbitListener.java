@@ -18,7 +18,6 @@ import com.cocodi.codi.domain.repository.RecommendCodyKeyRepository;
 import com.cocodi.codi.presentation.request.ClothesImageListRequest;
 import com.cocodi.codi.presentation.request.FindCodyImageRequest;
 import com.cocodi.codi.presentation.request.RecommendItemPythonRequest;
-import com.cocodi.codi.presentation.request.RecommendPythonRequest;
 import com.cocodi.codi.presentation.response.ImageResponse;
 import com.cocodi.codi.presentation.response.ImageSearchResponse;
 import com.cocodi.codi.presentation.response.RecommendCodyResponse;
@@ -64,45 +63,52 @@ public class CodyRabbitListener {
     public void makeImage(SseObject sseObject) {
         HashMap<?, ?> hashMap = (HashMap<?, ?>) sseObject.data();
         List<String> image = (List<String>) hashMap.get("img");
+        List<Integer> codyIds = (List<Integer>) hashMap.get("codyId");
 
         String findCodyListString = redisTemplate.opsForValue().get("findCody:" + sseObject.sseId());
         List<FindCodyImageRequest> findCodyImageRequests;
         if (findCodyListString != null) {
-            findCodyImageRequests = objectMapper.convertValue(findCodyListString, new TypeReference<>() {
-            });
+            try {
+                findCodyImageRequests = objectMapper.readValue(findCodyListString, new TypeReference<>() {
+                });
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException("변환 오류");
+            }
+
         } else {
             findCodyImageRequests = new ArrayList<>();
         }
-
-        for (String img : image) {
-            byte[] imageBytes = Base64.decode(img);
-            String uploadImageUrl = s3Service.uploadAI(UUID.randomUUID().toString(), imageBytes);
-            String stringId = redisTemplate.opsForValue().get("cody:" + sseObject.sseId());
-            if (stringId == null) {
-                throw new RuntimeException("id 조회 실패");
-            }
-            Long codyId = Long.parseLong(stringId);
-            Cody cody = codyRepository.findById(codyId).orElseThrow(() -> new RuntimeException("cody 조회 실패"));
-            cody.setImage(uploadImageUrl);
-            codyRepository.save(cody);
-            findCodyImageRequests.add(new FindCodyImageRequest(codyId, cody.getImage()));
-        }
+        String stringCodyId = redisTemplate.opsForValue().get("cody:" + sseObject.sseId());
+        makeImageDefault(stringCodyId, image, findCodyImageRequests);
 
         String codyItem = redisTemplate.opsForValue().get("codyItem:" + sseObject.sseId());
-        isCodyItem(sseObject, codyItem, findCodyImageRequests);
+        isCodyItem(sseObject, codyItem, image, codyIds);
 
         String alreadyFindCody = redisTemplate.opsForValue().get("alreadyFindCody:" + sseObject.sseId());
-        isAlreadyFindCody(sseObject, alreadyFindCody, findCodyImageRequests);
+        isAlreadyFindCody(sseObject, alreadyFindCody, image, codyIds, findCodyImageRequests);
 
     }
 
-    private void isAlreadyFindCody(SseObject sseObject, String alreadyFindCody, List<FindCodyImageRequest> findCodyImageRequests) {
+    private void makeImageDefault(String stringCodyId, List<String> image, List<FindCodyImageRequest> findCodyImageRequests) {
+        if (stringCodyId != null) {
+            for (String img : image) {
+                byte[] imageBytes = Base64.decode(img);
+                String uploadImageUrl = s3Service.uploadAI(UUID.randomUUID().toString(), imageBytes);
+                Long codyId = Long.parseLong(stringCodyId);
+                Cody cody = codyRepository.findById(codyId).orElseThrow(() -> new RuntimeException("cody 조회 실패"));
+                cody.setImage(uploadImageUrl);
+                codyRepository.save(cody);
+                findCodyImageRequests.add(new FindCodyImageRequest(codyId, cody.getImage()));
+            }
+        }
+    }
+
+    private void isAlreadyFindCody(SseObject sseObject, String alreadyFindCody, List<String> image, List<Integer> codyIds, List<FindCodyImageRequest> findCodyImageRequests) {
         if (alreadyFindCody != null) {
             StringTokenizer st = new StringTokenizer(alreadyFindCody);
             Long memberId = Long.parseLong(st.nextToken());
             String dateStr = st.nextToken();
             LocalDate date = LocalDate.parse(dateStr);
-
 
             // 코디 이미지 생성 후 받아와서 처리
             Member member = memberRepository.findById(memberId)
@@ -110,14 +116,24 @@ public class CodyRabbitListener {
 
             Ootd ootd = ootdRepository.findByMemberAndDate(member, date).orElse(null);
 
-            List<RecommendCodyResponse> recommendCodyResponses = new ArrayList<>();
+            IntStream.range(0, image.size())
+                    .forEach(i -> {
+                        String uploadImageUrl = s3Service.uploadAI(UUID.randomUUID().toString(), Base64.decode(image.get(i)));
+                        Optional<Cody> byId = codyRepository.findById(codyIds.get(i).longValue());
+                        byId.get().setImage(uploadImageUrl);
+                        codyRepository.save(byId.get());
+                        findCodyImageRequests.add(new FindCodyImageRequest(codyIds.get(i).longValue(), uploadImageUrl));
+                    });
+
+            HashMap<Long, RecommendCodyResponse> recommendCodyResponses = new HashMap<>();
 
             IntStream.range(0, findCodyImageRequests.size())
                     .forEach(i -> {
                         FindCodyImageRequest findCodyImageRequest = findCodyImageRequests.get(i);
                         Long codyId = findCodyImageRequest.codyId();
                         boolean isMyOotd = ootd != null && Objects.equals(ootd.getCody().getCodiId(), codyId);
-                        recommendCodyResponses.add(
+                        recommendCodyResponses.put(
+                                findCodyImageRequest.codyId(),
                                 new RecommendCodyResponse(
                                         findCodyImageRequest.codyId(),
                                         isMyCody(member, codyId),
@@ -136,12 +152,18 @@ public class CodyRabbitListener {
         }
     }
 
-    private void isCodyItem(SseObject sseObject, String codyItem, List<FindCodyImageRequest> findCodyImageRequests) {
+    private void isCodyItem(SseObject sseObject, String codyItem, List<String> image, List<Integer> codyIds) {
         if (codyItem != null) {
             Long recommend = getaLong(codyItem);
             Clothes clothes = clothesRepository.findById(recommend).orElseThrow(() -> new RuntimeException("옷 조회 실패"));
-            FindCodyImageRequest findCodyImageRequest = findCodyImageRequests.get(0);
-            RecommendItemResponse recommendItemResponse = new RecommendItemResponse(findCodyImageRequest.codyId(), findCodyImageRequest.image(), clothes.getImage(), clothes.getLink());
+            String imageUrl = image.get(0);
+            byte[] imageBytes = Base64.decode(imageUrl);
+            String uploadImageUrl = s3Service.uploadAI(UUID.randomUUID().toString(), imageBytes);
+            Long codyId = codyIds.get(0).longValue();
+            Cody cody = codyRepository.findById(codyId).orElseThrow(() -> new RuntimeException("옷 못찾음"));
+            cody.setImage(uploadImageUrl);
+            codyRepository.save(cody);
+            RecommendItemResponse recommendItemResponse = new RecommendItemResponse(codyId, uploadImageUrl, clothes.getImage(), clothes.getLink());
             try {
                 String recommendItemResponseString = objectMapper.writeValueAsString(recommendItemResponse);
                 sseService.sendMessageAndRemove(sseObject.sseId(), "message", recommendItemResponseString);
@@ -163,7 +185,7 @@ public class CodyRabbitListener {
                 case "recommend" -> recommend = Long.parseLong(value);
             }
         }
-        if(recommend == null) {
+        if (recommend == null) {
             throw new RuntimeException("추천 Id 조회 실패");
         }
         return recommend;
@@ -225,9 +247,12 @@ public class CodyRabbitListener {
     @RabbitMQDirectListener(name = "closet_cody_recommend", isolatedQueue = true, lazy = true)
     public void getRecommendCodyList(SseObject sseObject) {
         log.info("추천받은 코디 리스트 전달 받음");
-        HashMap<?, ?> hashMap = (HashMap<?, ?>) sseObject.data();
-        RecommendPythonRequest request = (RecommendPythonRequest) hashMap.get("codies");
-        List<ClothesPythonRequest> clothesRequests = request.codies();
+        // SseObject에서 data 필드를 추출
+        Map<String, Object> data = (Map<String, Object>) sseObject.data();
+        // "codies" 키에 해당하는 값 추출
+        List<Map<String, Integer>> codies = (List<Map<String, Integer>>) data.get("codies");
+        // ClothesPythonRequest 객체의 리스트로 변환
+        List<ClothesPythonRequest> clothesPythonRequests = convertToClothesPythonRequests(codies);
 
         // 코디가 존재하는 것들과 없는 것들끼리 따라 모아놔
         // 있는 것들은 redis 에 넣어놓고 없는 것들은 이미지 생성하는걸로 보내
@@ -236,35 +261,46 @@ public class CodyRabbitListener {
         List<FindCodyImageRequest> findCodyList = new ArrayList<>();
 
         ClothesImageListRequest clothesImageListRequest = new ClothesImageListRequest(clothesImageRequests);
-        for (ClothesPythonRequest clothesRequest : clothesRequests) {
+        for (ClothesPythonRequest clothesRequest : clothesPythonRequests) {
             Optional<Cody> findCody = codyRepository.findByTopClothesIdAndBottomClothesIdAndOuterClothesIdAndOnepieceClothesIdAndShoesClothesId(
                     clothesRequest.top(), clothesRequest.bottom(), clothesRequest.outer(), clothesRequest.onepiece(), clothesRequest.shoes()
             );
             if (findCody.isEmpty()) {
+                Cody cody = createCody(clothesRequest);
+                Cody save = codyRepository.save(cody);
                 clothesImageRequests.add(new ClothesImageRequest(
-                        clothesRequest.top() != null ? clothesRequest.top().toString() : clothesRequest.onepiece().toString(),
-                        clothesRequest.bottom().toString(),
-                        clothesRequest.outer().toString(),
-                        clothesRequest.shoes().toString()
+                        clothesRequest.top() != null ? clothesRepository.findById(clothesRequest.top()).get().getImage() : clothesRepository.findById(clothesRequest.onepiece()).get().getImage(),
+                        clothesRequest.bottom() == null ? null : clothesRepository.findById(clothesRequest.bottom()).get().getImage(),
+                        clothesRequest.outer() == null ? null : clothesRepository.findById(clothesRequest.outer()).get().getImage(),
+                        clothesRequest.shoes() == null ? null : clothesRepository.findById(clothesRequest.shoes()).get().getImage(),
+                        save.getCodiId()
                 ));
+            } else if (findCody.get().getImage() != null) {
+                findCodyList.add(new FindCodyImageRequest(findCody.get().getCodiId(), findCody.get().getImage()));
             } else {
-                Cody cody = findCody.get();
-                findCodyList.add(new FindCodyImageRequest(cody.getCodiId(), cody.getImage()));
+                clothesImageRequests.add(new ClothesImageRequest(
+                        clothesRequest.top() != null ? clothesRepository.findById(clothesRequest.top()).get().getImage() : clothesRepository.findById(clothesRequest.onepiece()).get().getImage(),
+                        clothesRequest.bottom() == null ? null : clothesRepository.findById(clothesRequest.bottom()).get().getImage(),
+                        clothesRequest.outer() == null ? null : clothesRepository.findById(clothesRequest.outer()).get().getImage(),
+                        clothesRequest.shoes() == null ? null : clothesRepository.findById(clothesRequest.shoes()).get().getImage(),
+                        findCody.get().getCodiId()
+                ));
             }
         }
 
         String sseKey = sseObject.sseId();
         // 날짜, memberId도 받아서 처리해줘야함
-        RecommendCodyKey recommendCodyKey = recommendCodyKeyRepository.findBySseKey(sseKey);
-        if (recommendCodyKey == null) {
+        String idAndDate = redisTemplate.opsForValue().get("idAndDate:" + sseKey);
+        if (idAndDate == null) {
             throw new RuntimeException("recommendCodyKey 조회 실패");
         }
-        deleteKeyFromRedis("cody:" + sseKey);
+//        deleteKeyFromRedis("cody:" + sseKey);
+        StringTokenizer st = new StringTokenizer(idAndDate);
 
-        Long memberId = recommendCodyKey.getMemberId();
-        LocalDate date = recommendCodyKey.getDate();
+        Long memberId = Long.parseLong(st.nextToken());
+        LocalDate date = LocalDate.parse(st.nextToken());
 
-        redisTemplate.opsForValue().set("alreadyFindCody:" + sseObject.sseId(), memberId.toString() + " " + date.toString());
+        redisTemplate.opsForValue().set("alreadyFindCody:" + sseObject.sseId(), memberId + " " + date);
 
         try {
             redisTemplate.opsForValue().set("findCody:" + sseObject.sseId(), objectMapper.writeValueAsString(findCodyList));
@@ -278,6 +314,37 @@ public class CodyRabbitListener {
 
     }
 
+    private Cody createCody(ClothesPythonRequest clothesRequest) {
+        return Cody.builder()
+                .top(clothesRepository.findById(clothesRequest.top() == null ? 0L : clothesRequest.top()).orElse(null))
+                .bottom(clothesRepository.findById(clothesRequest.bottom() == null ? 0L : clothesRequest.bottom()).orElse(null))
+                .outer(clothesRepository.findById(clothesRequest.outer() == null ? 0L : clothesRequest.outer()).orElse(null))
+                .onepiece(clothesRepository.findById(clothesRequest.onepiece() == null ? 0L : clothesRequest.onepiece()).orElse(null))
+                .shoes(clothesRepository.findById(clothesRequest.shoes() == null ? 0L : clothesRequest.shoes()).orElse(null))
+                .build();
+    }
+
+    private Long convertLongFromMap(String key, Map<String, Integer> data) {
+        return data.getOrDefault(key, null) == null ? null : data.get(key).longValue();
+    }
+
+    private List<ClothesPythonRequest> convertToClothesPythonRequests(List<Map<String, Integer>> codies) {
+        List<ClothesPythonRequest> clothesPythonRequests = new ArrayList<>();
+
+        for (Map<String, Integer> cody : codies) {
+            Long top = convertLongFromMap("top", cody);
+            Long bottom = convertLongFromMap("bottom", cody);
+            Long outer = convertLongFromMap("outer", cody);
+            Long shoes = convertLongFromMap("shoes", cody);
+            Long onepiece = convertLongFromMap("onepiece", cody);
+
+            ClothesPythonRequest clothesPythonRequest = new ClothesPythonRequest(top, bottom, outer, shoes, onepiece);
+            clothesPythonRequests.add(clothesPythonRequest);
+        }
+
+        return clothesPythonRequests;
+    }
+
     public boolean isMyCody(Member member, Long codyId) {
         return myCodyRepository.findByMemberAndCodyCodiId(member, codyId).isPresent();
     }
@@ -288,6 +355,7 @@ public class CodyRabbitListener {
         ClothesPythonRequest clothesRequest = request.cody();
         Long recommendId = request.recommend();
 
+        //
         Clothes clothes = clothesRepository.findById(recommendId).orElseThrow(() -> new RuntimeException("clothes find fail"));
 
         Optional<Cody> findCody = codyRepository.findByTopClothesIdAndBottomClothesIdAndOuterClothesIdAndOnepieceClothesIdAndShoesClothesId(
@@ -307,21 +375,15 @@ public class CodyRabbitListener {
         }
         // 없다면 파이썬에 옷 ID 들을 보내고 image를 받아와서 코디를 등록하고 위와 같이 내려줌
         // 코디 먼저 등록
-        Cody cody = Cody.builder()
-                .top(clothesRepository.findById(clothesRequest.top()).orElseThrow(() -> new RuntimeException("옷 조회 실패")))
-                .bottom(clothesRepository.findById(clothesRequest.bottom()).orElseThrow(() -> new RuntimeException("옷 조회 실패")))
-                .outer(clothesRepository.findById(clothesRequest.outer()).orElseThrow(() -> new RuntimeException("옷 조회 실패")))
-                .onepiece(clothesRepository.findById(clothesRequest.onepiece()).orElseThrow(() -> new RuntimeException("옷 조회 실패")))
-                .shoes(clothesRepository.findById(clothesRequest.shoes()).orElseThrow(() -> new RuntimeException("옷 조회 실패")))
-                .build();
+        Cody cody = createCody(clothesRequest);
         Cody save = codyRepository.save(cody);
 
-        ClothesImageListRequest clothesImageListRequest = getClothesImageListRequest(clothesRequest);
+        ClothesImageListRequest clothesImageListRequest = getClothesImageListRequest(clothesRequest, save.getCodiId());
 
         log.info("추천받은 코디가 없어서 코디 이미지 생성 요청");
         // redis에 넣어놓을 값 옷 ID들, 추천받은 옷 ID
         String result = "codyId " + save.getCodiId();
-        result += "recommend " + recommendId;
+        result += " recommend " + recommendId;
 
         redisTemplate.opsForValue().set("codyItem:" + sseObject.sseId(), result);
         SseObject sseObjectImage = new SseObject(sseObject.sseId(), clothesImageListRequest);
@@ -329,13 +391,14 @@ public class CodyRabbitListener {
 
     }
 
-    private static ClothesImageListRequest getClothesImageListRequest(ClothesPythonRequest clothesRequest) {
+    private ClothesImageListRequest getClothesImageListRequest(ClothesPythonRequest clothesRequest, Long codiId) {
         List<ClothesImageRequest> clothesImageRequests = new ArrayList<>();
         clothesImageRequests.add(new ClothesImageRequest(
-                clothesRequest.top() != null ? clothesRequest.top().toString() : clothesRequest.onepiece().toString(),
-                clothesRequest.bottom().toString(),
-                clothesRequest.outer().toString(),
-                clothesRequest.shoes().toString()
+                clothesRequest.top() != null ? clothesRepository.findById(clothesRequest.top()).get().getImage() : clothesRepository.findById(clothesRequest.onepiece()).get().getImage(),
+                clothesRequest.bottom() == null ? null : clothesRepository.findById(clothesRequest.bottom()).get().getImage(),
+                clothesRequest.outer() == null ? null : clothesRepository.findById(clothesRequest.outer()).get().getImage(),
+                clothesRequest.shoes() == null ? null : clothesRepository.findById(clothesRequest.shoes()).get().getImage(),
+                codiId
         ));
         return new ClothesImageListRequest(clothesImageRequests);
     }

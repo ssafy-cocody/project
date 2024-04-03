@@ -43,7 +43,7 @@ public class AuthOotdController {
      * Ootd 사진으로 옷 검색
      * @return
      */
-    @GetMapping("/image")
+    @PostMapping("/imageSearch")
     public SseEmitter uploadOotdImage(MultipartFile ootdImage, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         Long memberId = principalDetails.getMemberId();
         // 파이썬한테 이미지 전달
