@@ -35,9 +35,18 @@ const request = async <TResponse>(path: string, config: RequestInit, body?: Body
   };
 
   const response = await fetch(`${BASE_URL}/auth/v1${path}`, { ...options, credentials: 'include' });
+
   if (!response.ok) {
     response.json().then((res) => console.log(res));
     handleError(response.status, response.statusText);
+  }
+
+  if (
+    config.method === HTTPMethods.DELETE ||
+    config.method === HTTPMethods.POST ||
+    config.method === HTTPMethods.PATCH
+  ) {
+    return {} as TResponse;
   }
 
   return response.json().then((data) => data as TResponse);
@@ -48,10 +57,13 @@ export const api = {
 
   post: <TResponse, TBody>(path: string, bodyObject?: TBody): Promise<TResponse> => {
     const body = JSON.stringify(bodyObject);
-    return request<TResponse>(path, { method: HTTPMethods.POST, body });
+    return request<TResponse>(path, { method: HTTPMethods.POST }, body);
   },
 
-  delete: <T>(path: string): Promise<T> => request<T>(path, { method: HTTPMethods.DELETE }),
+  delete: <TResponse, TBody>(path: string, bodyObject?: TBody): Promise<TResponse> => {
+    const body = JSON.stringify(bodyObject);
+    return request<TResponse>(path, { method: HTTPMethods.DELETE }, body);
+  },
 
   put: <T, U>(path: string, bodyObject?: U): Promise<T> => {
     const body = JSON.stringify(bodyObject);
@@ -60,6 +72,6 @@ export const api = {
 
   patch: <T>(path: string, bodyObject: T): Promise<T> => {
     const body = JSON.stringify(bodyObject);
-    return request<T>(path, { method: HTTPMethods.PATCH, body });
+    return request<T>(path, { method: HTTPMethods.PATCH }, body);
   },
 };

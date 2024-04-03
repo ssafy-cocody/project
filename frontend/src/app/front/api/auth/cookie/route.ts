@@ -20,7 +20,11 @@ export async function GET() {
       return Promise.reject(error);
     }
 
-    const { accessToken, ...data } = await response.json();
+    const { ...data } = await response.json();
+    const bearerRegexp = /^Bearer\s+(.*)$/;
+    const authHeader = response.headers.get('Authorization');
+    const matches = authHeader!.match(bearerRegexp);
+    const accessToken = matches ? matches[1] : '';
 
     cookies().set({ name: ACCESS_TOKEN, value: accessToken, httpOnly: true, secure: true });
 

@@ -32,9 +32,9 @@ const CLOTHES_OPTIONS = [
 
 const BasicForm = ({ onClickButton, onChange: handleChange, readOnly, image, ...initValue }: BasicFormProps) => {
   const [formInput, setFormInput] = useState({
-    category: initValue.category,
-    name: initValue.name,
-    color: initValue.color,
+    category: initValue.category || '',
+    name: initValue.name || '',
+    color: initValue.color || '',
   });
   const [isValid, setIsValid] = useState(!Object.values(formInput).some((v) => v === ''));
 
@@ -72,9 +72,8 @@ const BasicForm = ({ onClickButton, onChange: handleChange, readOnly, image, ...
             value={formInput.name}
             onChange={(e) => handleFormChange({ key: 'name', value: e.target.value })}
           />
-          {/* TODO: 색상은 1개만 선택 가능 */}
           <ColorSelect
-            color={formInput.color}
+            color={formInput.color as keyof typeof Color}
             disabled={readOnly}
             onChange={(color) => handleFormChange({ key: 'color', value: color })}
           />

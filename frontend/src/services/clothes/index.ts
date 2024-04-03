@@ -65,7 +65,6 @@ const fetchGetClothesInfo = async ({ uuid }: IFetchGetClothesInfoRequest) => {
  * 옷 등록
  */
 const fetchPostSaveClothes = async ({ uuid, clothes }: IFetchPostSaveClothesRequest) => {
-  // FIXME api 모듈로 formData 보내기
   const response = await fetch(`${BASE_URL}/auth/v1/clothes/temp/save/${uuid}`, {
     method: 'POST',
     body: clothes,
@@ -74,7 +73,30 @@ const fetchPostSaveClothes = async ({ uuid, clothes }: IFetchPostSaveClothesRequ
     },
   });
 
-  return response.json();
+  if (!response.ok) throw new Error(response.status.toString());
+
+  return response.json;
 };
 
-export { fetchGetClothesInfo, fetchPostClothesImage, fetchPostSaveClothes };
+/**
+ * 누끼딴 옷 이미지 조회
+ */
+const fetchGetClothesTempImg = async (uuid: string) => {
+  const response = await fetch(`${BASE_URL}/auth/v1/clothes/temp/img/${uuid}`, {
+    headers: {
+      Authorization: `Bearer ${getAccessToken()}`,
+    },
+  });
+
+  const blob = await response.blob();
+  const reader = new FileReader();
+  await new Promise((resolve, reject) => {
+    reader.onload = resolve;
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+
+  return reader.result;
+};
+
+export { fetchGetClothesInfo, fetchGetClothesTempImg, fetchPostClothesImage, fetchPostSaveClothes };

@@ -17,6 +17,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ClosetService {
+
     private final ClosetCustomRepository closetCustomRepository;
     private final ClosetRepository closetRepository;
     private final EntityManager entityManager;
@@ -36,5 +37,9 @@ public class ClosetService {
 
     public List<Clothes> findClothesBy_MemberAndCategory(Long memberId, Category category, Pageable pageable) {
         return closetCustomRepository.findClothesBy_MemberAndCategory(memberId, category, pageable);
+    }
+
+    public List<Long> findClothesListByMember(Long memberId) {
+        return closetRepository.findCloset_Clothes_ClothesIdByMember_MemberId(memberId);
     }
 }

@@ -51,7 +51,7 @@ const Page = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!birth || !nickname) return;
+    if (!birth || !nickname || !gender) return;
 
     const birthErrorMessage = birthRegexp.test(birth) ? '' : '4자리로 입력해주세요.';
     const nicknameErrorMessage = nicknameRegexp.test(nickname)
@@ -62,7 +62,12 @@ const Page = () => {
     if (birthErrorMessage || nicknameErrorMessage) return;
 
     try {
-      await fetchCreateMember(user);
+      const formData = new FormData();
+      formData.append('gender', gender);
+      formData.append('birth', birth);
+      formData.append('nickname', nickname);
+
+      await fetchCreateMember({ formData });
       router.push('/');
     } catch (error) {
       window.alert('문제가 발생했습니다. 다시 시도해주세요.');

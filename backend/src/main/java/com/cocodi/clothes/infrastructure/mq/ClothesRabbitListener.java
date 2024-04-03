@@ -34,7 +34,7 @@ public class ClothesRabbitListener {
         if (listObj instanceof List<?>) {
             List<Long> longList = getLongs((List<?>) listObj);
             String uuid = UUID.randomUUID().toString();
-            saveWithRetry(new ClothesTemp(uuid, hashMap.get("img").toString(), longList), 3, 1000)
+            saveWithRetry(new ClothesTemp(uuid, hashMap.get("image").toString(), longList), 3, 1000)
                     .thenRun(() -> sseService.sendMessageAndRemove(sseObject.sseId(), "message", uuid)).exceptionally(ex -> {
                         log.info("Failed to save ClothesTemp after retries: " + ex.getMessage());
                         return null;});
