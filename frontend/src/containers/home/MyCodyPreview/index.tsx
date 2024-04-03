@@ -22,7 +22,15 @@ const MyCodyPreview = () => {
       <div className={styles.showcase}>
         <div className={styles.codies}>
           {/** 로딩 중일때 빈 박스 */}
-          {isLoading && loadingArray.map((idx) => <div key={idx} className={styles['cody-image']} />)}
+          {isLoading &&
+            loadingArray.map((idx) => (
+              <div key={idx} className={styles['cody-image']}>
+                <div className={styles['loading-text']}>
+                  내 코디
+                  <br /> 준비중 ₊⁺
+                </div>
+              </div>
+            ))}
 
           {codies &&
             codies.length > 0 &&
