@@ -64,12 +64,12 @@ const Page = () => {
   const ootdImageSrc = outfit?.ootdImage ? URL.createObjectURL(outfit?.ootdImage) : '';
 
   // TODO 새로고침시 등록을 취소하겠습니까?
-  useEffect(() => {
-    if (!outfit || Object.values(outfit).some((v) => v === '')) {
-      window.alert('잘못된 접근입니다.');
-      router.replace('/calendar');
-    }
-  }, [outfit]);
+  // useEffect(() => {
+  //   if (!outfit || Object.values(outfit).some((v) => v === '')) {
+  //     window.alert('잘못된 접근입니다.');
+  //     router.replace('/calendar');
+  //   }
+  // }, [outfit]);
 
   return (
     <>
