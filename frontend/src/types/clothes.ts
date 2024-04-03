@@ -97,5 +97,17 @@ type INewClothes = {
   image?: string;
 } & Pick<IClothes, 'clothesId' | 'category' | 'name' | 'color' | 'brand' | 'productNo' | 'price' | 'link'>;
 
+// 홈 코디 아이템 추천
+interface IRecommendItem {
+  codyId?: number;
+  image?: string; // 코디 이미지
+  link?: string; // 구매 링크
+  recommendClothesImage?: string; // 추천 상품 이미지
+  recommendId?: string; // 상품 추천 아이디
+  brand?: string; // 브랜드
+  price?: number; // 가격
+  name?: string; // 상품명
+}
+
 export { ClosetCategory, CLOTHES_TAB, ClothesCategory, Color, DONE, Step };
-export type { IClothes, INewClothes, ISelectedClothes };
+export type { IClothes, INewClothes, IRecommendItem, ISelectedClothes };
