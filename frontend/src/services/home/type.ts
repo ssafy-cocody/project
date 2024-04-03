@@ -2,4 +2,12 @@ import { IFetchGetCodyResponse } from '@/services/cody/type';
 
 type IFetchGetMyCodyResponse = IFetchGetCodyResponse;
 
-export type { IFetchGetMyCodyResponse };
+interface IFetchGetCodyRecommendItemResponse {
+  codyId: number;
+  image: string;
+  recommendClothesImage: string;
+  link: string;
+  recommendId: number;
+}
+
+export type { IFetchGetCodyRecommendItemResponse, IFetchGetMyCodyResponse };

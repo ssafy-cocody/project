@@ -1,58 +1,24 @@
 'use client';
 
+import { EventSourcePolyfill } from 'event-source-polyfill';
+import { useAtomValue } from 'jotai';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { RightArrow } from '@/../public/svgs';
+// import { RightArrow } from '@/../public/svgs';
 import Button from '@/components/Button';
 import styles from '@/containers/home/RecommendItems/Items.module.scss';
 import useModal from '@/hooks/useModal';
+import { BASE_URL, getAccessToken } from '@/services';
+import { todayTempAtom } from '@/stores/home';
+import { IRecommendItem } from '@/types/clothes';
 
 const RecommendItems = () => {
-  const [recommendItems] = useState([
-    {
-      itemUrl: '/images/test1.jpg',
-      brandName: '폴로 랄프 로렌',
-      itemName: '페어 아일 코튼 블렌드 스웨터 베스트',
-      price: 536928,
-      codyUrl: '/images/test1.jpg',
-      buyUrl: 'https://google.com',
-    },
-    {
-      itemUrl: '/images/test2.jpg',
-      brandName: '폴로 랄프 로렌',
-      itemName: '페어 아일 코튼 블렌드 스웨터 베스트',
-      price: 536928,
-      codyUrl: '/images/test2.jpg',
-      buyUrl: 'https://google.com',
-    },
-    {
-      itemUrl: '/images/test3.jpg',
-      brandName: '폴로 랄프 로렌',
-      itemName: '페어 아일 코튼 블렌드 스웨터 베스트',
-      price: 536928,
-      codyUrl: '/images/test3.jpg',
-      buyUrl: 'https://google.com',
-    },
-    {
-      itemUrl: '/images/test4.jpg',
-      brandName: '폴로 랄프 로렌',
-      itemName: '페어 아일 코튼 블렌드 스웨터 베스트',
-      price: 536928,
-      codyUrl: '/images/test4.jpg',
-      buyUrl: 'https://google.com',
-    },
-    {
-      itemUrl: '/images/test5.jpg',
-      brandName: '폴로 랄프 로렌',
-      itemName: '페어 아일 코튼 블렌드 스웨터 베스트',
-      price: 536928,
-      codyUrl: '/images/test5.jpg',
-      buyUrl: 'https://google.com',
-    },
-  ]);
-  const [currentItem, setCurrentItem] = useState(0);
+  const todayTemp = useAtomValue(todayTempAtom);
+
+  const [recommendItems, setRecommendItems] = useState<IRecommendItem[]>([]); // TODO: 현재 1개만 추천 받음. 추천 받을 떄마다 새로운 요청
+  const [currentItem] = useState(0);
   const [isToggled, toggle] = useState<boolean>(false);
   const { Modal, openModal } = useModal();
 
@@ -60,53 +26,87 @@ const RecommendItems = () => {
     openModal();
   };
 
+  console.log(recommendItems);
+
+  useEffect(() => {
+    if (!todayTemp) return;
+
+    const eventSource = new EventSourcePolyfill(`${BASE_URL}/auth/v1/cody/recommend/item?temp=${todayTemp}`, {
+      headers: {
+        Authorization: `Bearer ${getAccessToken()}`,
+      },
+    });
+
+    eventSource.onmessage = (event) => {
+      const data = JSON.parse(event.data) as Record<string, IRecommendItem>;
+      setRecommendItems((prev) => [...prev, data]);
+      eventSource.close();
+    };
+  }, [todayTemp]);
+
+  const isLoading = recommendItems.length === 0;
+
   return (
     <>
       <div className={styles['recommend-items-container']}>
         <h1 className={styles.title}>코코디가 추천하는 아이템</h1>
-        <button
+        {/** TODO: 다음 아이템 보여주기 <button
           type="button"
           onClick={() => setCurrentItem((currentItem + 1) % recommendItems.length)}
           className={styles['next-button']}
-        >
           <RightArrow />
         </button>
+  > */}
         <div className={styles['items-info']}>
           <button
             type="button"
             onClick={() => toggle(false)}
             className={`${styles.info} ${styles.item} ${isToggled ? styles.under : styles.over}`}
           >
-            <div className={styles['item-image']}>
-              <Image src={recommendItems[currentItem].itemUrl} alt="추천 상품 이미지" fill />
-            </div>
-            <div className={styles['brand-name']}>{recommendItems[currentItem].brandName}</div>
-            <div className={styles['item-name']}>{recommendItems[currentItem].itemName}</div>
-            <div className={styles.price}>{recommendItems[currentItem].price.toLocaleString()}원</div>
+            {isLoading && <>추천 아이템 준비중 ₊⁺</>}
+            {!isLoading && (
+              <>
+                <div className={styles['item-image']}>
+                  <Image src={recommendItems[currentItem].recommendClothesImage!} alt="추천 상품 이미지" fill />
+                </div>
+                <div className={styles['brand-name']}>{recommendItems[currentItem].brand}</div>
+                <div className={styles['item-name']}>{recommendItems[currentItem].name}</div>
+                <div className={styles.price}>{recommendItems[currentItem].price!}원</div>
+              </>
+            )}
           </button>
           <button
             type="button"
             onClick={() => toggle(true)}
             className={`${styles.info} ${styles.cody} ${isToggled ? styles.over : styles.under}`}
           >
-            <div className={styles['cody-image']}>
-              <Image src={recommendItems[currentItem].codyUrl} alt="추천 상품 코디 이미지" fill />
-            </div>
+            {isLoading && <>추천 아이템 준비중 ₊⁺</>}
+            {!isLoading && (
+              <div className={styles['cody-image']}>
+                <Image src={recommendItems[currentItem].image!} alt="추천 상품 코디 이미지" fill />
+              </div>
+            )}
           </button>
         </div>
         <div className={styles['buy-button']}>
-          <Link href={recommendItems[currentItem].buyUrl} target="_blank">
-            <Button onClick={handleBuyItem}>
-              <span className={styles['button-text']}>아이템 사러 가기</span>
-            </Button>
-          </Link>
+          {/* eslint-disable-next-line react/jsx-no-useless-fragment */}
+          {isLoading && <></>}
+          {!isLoading && (
+            <Link href={recommendItems[currentItem].link!} target="_blank">
+              <Button onClick={handleBuyItem}>
+                <span className={styles['button-text']}>아이템 사러 가기</span>
+              </Button>
+            </Link>
+          )}
         </div>
       </div>
       <div id="modal">
         <Modal title="이 옷 구매하셨나요?">
           <div className={styles['modal-container']}>
             <div className={styles['recommend-item-image']}>
-              <Image src={recommendItems[currentItem].itemUrl} alt="추천 상품 이미지" fill />
+              {!isLoading && (
+                <Image src={recommendItems[currentItem].recommendClothesImage!} alt="추천 상품 이미지" fill />
+              )}
             </div>
             <div className={styles['button-container']}>
               <Button>
