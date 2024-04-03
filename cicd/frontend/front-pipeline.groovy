@@ -51,6 +51,8 @@ pipeline {
                         echo "NEXT_PUBLIC_API_PUBLIC_ENDPOINT=public" >> ./source/.env
                         echo "NEXT_PUBLIC_KAKAO_SIGNIN_URL=https://j10a307.p.ssafy.io/api/oauth2/authorization/kakao" >> ./source/.env
                         echo "NEXT_PUBLIC_S3_URI=jmg-portfolio.kr.object.ncloudstorage.com" >> ./source/.env
+                        echo "NEXT_PUBLIC_WEATHER_SERVICE_URL=https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst" >> ./source/.env
+                        echo "NEXT_PUBLIC_WEATHER_SERVICE_KEY=sHuXv7Cuw9bI2CjRUFE4mhD7gtGXfcO%2BNPXMrG2bZIyGWEMMwM4nI7ezE%2FhLo2xbqjjXENSOGy9x0NNDz6%2F0cA%3D%3D" >> ./source/.env
                         '''
 
                         def buildTag = "build-${env.BUILD_NUMBER}"
