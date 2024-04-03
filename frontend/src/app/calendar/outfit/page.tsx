@@ -68,7 +68,7 @@ const Page = () => {
                   {clothesByCategory[category].map(({ image, clothesId }: IClothes, index) => {
                     return (
                       <div className={styles['clothes-image-container']} key={clothesId}>
-                        <label htmlFor={clothesId.toString()}>
+                        <label htmlFor={clothesId!.toString()}>
                           <Image
                             src={image!}
                             alt={`${category}${index + 1}`}
@@ -86,7 +86,7 @@ const Page = () => {
                         </label>
                         <input
                           type="radio"
-                          id={clothesId.toString()}
+                          id={clothesId!.toString()}
                           value={category}
                           radioGroup={category}
                           onChange={handleClickItem}
