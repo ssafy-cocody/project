@@ -15,17 +15,24 @@ public record RecommendItemPythonRequest(
         Map<String, Object> codiesData = (Map<String, Object>) data.get("codies");
 
         // 'cody'를 추출하여 ClothesPythonRequest로 매핑
-        Map<String, Long> codyData = (Map<String, Long>) codiesData.get("cody");
+        Map<String, Integer> codyData = (Map<String, Integer>) codiesData.get("cody");
+
+        Integer top = codyData.getOrDefault("top", null);
+        Integer bottom = codyData.getOrDefault("bottom", null);
+        Integer outer = codyData.getOrDefault("outer", null);
+        Integer shoes = codyData.getOrDefault("shoes", null);
+        Integer onepiece = codyData.getOrDefault("onepiece", null);
+
         ClothesPythonRequest cody = new ClothesPythonRequest(
-                codyData.get("top"),
-                codyData.get("bottom"),
-                codyData.get("outer"),
-                codyData.get("shoes"),
-                codyData.get("onepiece")
+                top==null?null:top.longValue(),
+                bottom==null?null:bottom.longValue(),
+                outer==null?null:outer.longValue(),
+                shoes==null?null:shoes.longValue(),
+                onepiece==null?null:onepiece.longValue()
         );
 
         // 'recommend'를 추출
-        Long recommend = (Long) codiesData.get("recommend");
+        Long recommend = ((Integer)codiesData.get("recommend")).longValue();
 
         return new RecommendItemPythonRequest(cody, recommend);
     }
