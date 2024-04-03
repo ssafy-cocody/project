@@ -57,6 +57,7 @@ const SearchResult = ({ onSelect, onClickSelfBasicForm, clothesList }: SearchRes
           onClick={() => {
             onClickSelfBasicForm();
           }}
+          variant="white"
         >
           직접 등록하기
         </Button>
