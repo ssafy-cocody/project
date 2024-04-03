@@ -1,3 +1,5 @@
+import { paddingDigit } from './date';
+
 /**
  * 공공 데이터 날씨 API의 시간 포맷으로 변환하는 함수
  * 2시부터 3시간 간격의 시간 중 가장 최근 시간으로 지정
@@ -19,5 +21,5 @@ export const getTimeForWeather = () => {
     }
   }
 
-  return `${closestHours}00`;
+  return `${paddingDigit(closestHours)}00`;
 };
