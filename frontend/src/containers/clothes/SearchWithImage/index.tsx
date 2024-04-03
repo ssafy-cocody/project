@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 
 import Button from '@/components/Button';
 import ImageInput from '@/components/ImageInput';
-import LoadingFullScreen from '@/containers/clothes/LoadingFullScreen';
+import LoadingFullScreen from '@/components/LoadingFullScreen';
 import SearchResult from '@/containers/clothes/SearchResult';
 import style from '@/containers/clothes/SearchWithImage/SearchWithImage.module.scss';
 import useClothesStep from '@/hooks/useClothesStep';
