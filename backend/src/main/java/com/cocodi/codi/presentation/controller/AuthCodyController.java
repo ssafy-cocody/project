@@ -57,8 +57,9 @@ public class AuthCodyController {
     @PostMapping
     public ResponseEntity<?> createCody(@RequestBody CodyCreateRequest codyCreateRequest, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         String sseKey = sseService.createInstance();
-        if (codyService.createCody(codyCreateRequest, principalDetails.getMemberId(), sseKey)) {
-            codyService.createCodyImage(codyCreateRequest.clothesPythonRequest(), sseKey);
+        Long codyId = codyService.createCody(codyCreateRequest, principalDetails.getMemberId(), sseKey);
+        if (codyId != -1L) {
+            codyService.createCodyImage(codyCreateRequest.clothesPythonRequest(), sseKey, codyId);
             return ResponseEntity.ok().build();
         }
         throw new RuntimeException("already exist cody :" + "AuthCodyController.createCody");
