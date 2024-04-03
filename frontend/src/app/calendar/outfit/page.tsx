@@ -6,7 +6,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useAtom } from 'jotai';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import Background from '@/components/Background';
 import Button from '@/components/Button';
