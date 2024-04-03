@@ -5,8 +5,7 @@ import Button from '@/components/Button';
 import TextInput from '@/components/TextInput';
 import styles from '@/containers/home/RecommendViewer/Viewer.module.scss';
 import useModal from '@/hooks/useModal';
-
-import { IRecommendCody } from '../type';
+import { IRecommendCody } from '@/types/recommend';
 
 interface Props {
   selectedCody: IRecommendCody;
@@ -26,7 +25,7 @@ const RecommendViewer = ({ selectedCody }: Props) => {
     <>
       <div className={styles['viewer-container']}>
         <div className={styles['recommend-image']}>
-          <Image src={selectedCody.image} alt="추천 코디" fill />
+          <Image src={selectedCody.codyImage} alt="추천 코디" fill />
         </div>
         <div className={styles['context-area']}>
           <div className={styles['text-area']}>
@@ -47,7 +46,7 @@ const RecommendViewer = ({ selectedCody }: Props) => {
         <Modal title="코디 이름을 설정해주세요.">
           <div className={styles['modal-container']}>
             <div className={styles['ootd-image']}>
-              <Image src={selectedCody.image} alt={title} fill />
+              <Image src={selectedCody.codyImage} alt={title} fill />
             </div>
             <div className={styles['input-container']}>
               <TextInput label={codyname} placeholder="코디 이름" />
