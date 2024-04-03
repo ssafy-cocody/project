@@ -67,6 +67,7 @@ const SearchWithImage = ({ onSelectResult, onClickSelfBasicForm }: SearchWithIma
       return (
         <SearchResult
           onSelect={(clothes) => onSelectResult({ ...clothes, uuid: clothesUuid })}
+          onClickSelfBasicForm={() => onClickSelfBasicForm({ uuid: clothesUuid })}
           clothesList={clothesSearchItemQuery.data}
         />
       );

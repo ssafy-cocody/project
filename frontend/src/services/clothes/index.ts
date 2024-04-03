@@ -4,6 +4,7 @@ import {
   IFetchGetClothesInfoResponse,
   IFetchPostClothesImageRequest,
   IFetchPostClothesImageResponse,
+  IFetchPostClothesRequest,
   IFetchPostSaveClothesRequest,
 } from '@/services/clothes/type';
 
@@ -63,7 +64,16 @@ const fetchGetClothesInfo = async ({ uuid }: IFetchGetClothesInfoRequest) => {
 };
 
 /**
- * 옷 등록
+ * 이미지 검색 후 등록
+ */
+const fetchPostClothes = async ({ clothesId }: IFetchPostClothesRequest) => {
+  const response = await api.post('/closet', { clothesId });
+
+  return response;
+};
+
+/**
+ * 옷 직접 등록
  */
 const fetchPostSaveClothes = async ({ uuid, clothes }: IFetchPostSaveClothesRequest) => {
   const response = await fetch(`${BASE_URL}/auth/v1/clothes/temp/save/${uuid}`, {
@@ -100,4 +110,4 @@ const fetchGetClothesTempImg = async (uuid: string) => {
   return reader.result;
 };
 
-export { fetchGetClothesInfo, fetchGetClothesTempImg, fetchPostClothesImage, fetchPostSaveClothes };
+export { fetchGetClothesInfo, fetchGetClothesTempImg, fetchPostClothes, fetchPostClothesImage, fetchPostSaveClothes };
