@@ -44,13 +44,13 @@ const ClothesList = ({ handleModal, className, onSelectClothes, currentCategory 
                   <button
                     type="button"
                     className={styles['clothes-image-container']}
-                    key={clothesId.toString()}
+                    key={clothesId!.toString()}
                     onClick={() => {
                       handleModal ? handleModal() : '';
                       onSelectClothes ? onSelectClothes(item) : '';
                     }}
                   >
-                    <Image src={image!} alt={clothesId.toString()} fill className={styles.clothes} />
+                    <Image src={image!} alt={clothesId!.toString()} fill className={styles.clothes} />
                   </button>
                 );
               }
