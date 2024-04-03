@@ -84,6 +84,7 @@ interface IClothes {
   price?: number;
   link?: string;
   image?: string;
+  imageUrl?: string; // 내 코디 올리기 imageUrl
 }
 
 type ISelectedClothes = {

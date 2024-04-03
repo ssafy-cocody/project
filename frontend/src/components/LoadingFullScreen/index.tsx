@@ -1,4 +1,4 @@
-import styles from '@/containers/clothes/LoadingFullScreen/LoadingFullScreen.module.scss';
+import styles from '@/components/LoadingFullScreen/LoadingFullScreen.module.scss';
 
 const LoadingFullScreen = ({ text, isLoading }: { text: JSX.Element; isLoading?: boolean }) => {
   if (!isLoading) return '';
