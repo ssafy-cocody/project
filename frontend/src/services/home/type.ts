@@ -2,4 +2,9 @@ import { IFetchGetCodyResponse } from '@/services/cody/type';
 
 type IFetchGetMyCodyResponse = IFetchGetCodyResponse;
 
-export type { IFetchGetMyCodyResponse };
+interface IFetchPostOOTDCodyRequest {
+  date: string;
+  codyId: number;
+}
+
+export type { IFetchGetMyCodyResponse, IFetchPostOOTDCodyRequest };

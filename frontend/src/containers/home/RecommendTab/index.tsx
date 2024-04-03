@@ -1,12 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
 import { EventSourcePolyfill } from 'event-source-polyfill';
-import { useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import Image from 'next/image';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
 import styles from '@/containers/home/RecommendTab/Tab.module.scss';
 import { BASE_URL, getAccessToken } from '@/services';
 import { fetchWeatherInfo } from '@/services/weather';
+import { dateDiffAtom } from '@/stores/home';
 import { userAtom } from '@/stores/user';
 import { IRecommendCody } from '@/types/recommend';
 import { DATE_DIFF_VALUES, DATE_TEXT, ILatLon, ILocXY, IWeatherInfo, IWeatherResponse } from '@/types/weather';
@@ -27,9 +28,7 @@ const RecommendTab = ({ selectedCody, setSelectedCody }: Props) => {
   const [selectedTap, setSelectedTap] = useState<(typeof DATE_DIFF_VALUES)[keyof typeof DATE_DIFF_VALUES]>(
     DATE_DIFF_VALUES.TODAY,
   );
-  const [dateDiff, setDateDiff] = useState<(typeof DATE_DIFF_VALUES)[keyof typeof DATE_DIFF_VALUES]>(
-    DATE_DIFF_VALUES.TODAY,
-  );
+  const [dateDiff, setDateDiff] = useAtom(dateDiffAtom);
 
   // 날씨 fetch
   const [latlon, setLatLon] = useState<ILatLon>();
