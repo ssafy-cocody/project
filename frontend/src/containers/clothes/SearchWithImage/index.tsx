@@ -90,7 +90,7 @@ const SearchWithImage = ({ onSelectResult, onClickSelfBasicForm }: SearchWithIma
   };
 
   const handleImageChange = (file: File) => {
-    setIsFormValid((prev) => !prev);
+    setIsFormValid(true);
     setMultipartFile(file);
   };
 
