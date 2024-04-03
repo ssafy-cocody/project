@@ -1,14 +1,16 @@
 import { BASE_URL, getAccessToken } from '@/services';
 import { IFetchGetOotdImageRequest, IFetchGetOotdImageResponse } from '@/services/calendar/outfit/type';
+import { IClothes } from '@/types/clothes';
 
 /**
  * 내 코디 올리기
  * @return SSE 통신
  */
-export const fetchGetOotdImage = async ({
+// FIXME  closed 되는지 확인 필요
+export const fetchPostOotdImageSearch = async ({
   formData,
 }: IFetchGetOotdImageRequest): Promise<IFetchGetOotdImageResponse> => {
-  const response = await fetch(`${BASE_URL}/auth/v1/ootd/image`, {
+  const response = await fetch(`${BASE_URL}/auth/v1/ootd/imageSearch`, {
     method: 'POST',
     body: formData,
     headers: {
@@ -28,8 +30,11 @@ export const fetchGetOotdImage = async ({
     // eslint-disable-next-line no-await-in-loop
     const { value, done } = await reader.read();
     isDone = done;
-    if (done) break;
-
+    if (done) {
+      // eslint-disable-next-line no-await-in-loop
+      await reader.closed;
+      break;
+    }
     const res = value?.split('\n'); // value 리턴타입: "event: message|remove \n data: '' "
     const eventTypeMatchResult = res[0].match(/[^event: ].+/);
     const eventType = eventTypeMatchResult ? eventTypeMatchResult[0] : '';
@@ -39,11 +44,16 @@ export const fetchGetOotdImage = async ({
       break;
     }
 
-    data = res[1].split(':')[1];
+    data = res[1].slice(5);
   }
 
-  // TODO data타입 확인
-  if (data) return data;
+  try {
+    data = JSON.parse(data);
+  } catch (e) {
+    throw Error('json parsing');
+  }
+
+  if (data) return { data: data as unknown as IClothes[] };
   return Promise.reject(new Error('upload error'));
 };
 
@@ -51,7 +61,7 @@ export const fetchGetOotdImage = async ({
  * 내 코디 등록
  */
 export const fetchPostOotdImage = async ({ formData }: IFetchGetOotdImageRequest) => {
-  const response = await fetch(`${BASE_URL}/v1/auth/ootd/image`, {
+  const response = await fetch(`${BASE_URL}/auth/v1/ootd/image`, {
     method: 'POST',
     body: formData,
     headers: {
