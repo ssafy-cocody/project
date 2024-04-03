@@ -9,6 +9,7 @@ import {
 
 /**
  * 옷 이미지 등록
+ * 옷 uuid 반환
  */
 const fetchPostClothesImage = async ({
   formData,

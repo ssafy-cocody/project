@@ -9,6 +9,8 @@
 
 .container {
   position: absolute;
+  left: 0;
+  top: 0;
   z-index: var(--zIndex-overlay);
 
   display: flex;
@@ -17,9 +19,11 @@
   height: 100svh;
 
   background: var(--color-black);
-  opacity: 0.6;
+  opacity: 0.5;
 
   color: var(--color-white);
+
+  pointer-events: none;
 
   .text-container {
     position: relative;
