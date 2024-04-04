@@ -278,8 +278,10 @@ public class CodyRabbitListener {
             } else if (findCody.get().getImage() != null) {
                 findCodyList.add(new FindCodyImageRequest(findCody.get().getCodiId(), findCody.get().getImage()));
             } else {
+                String topImage = clothesRequest.top() == null ? null : clothesRepository.findById(clothesRequest.top()).get().getImage();
+                String onepieceImage = clothesRequest.onepiece() == null ? null : clothesRepository.findById(clothesRequest.onepiece()).get().getImage();
                 clothesImageRequests.add(new ClothesImageRequest(
-                        clothesRequest.top() != null ? clothesRepository.findById(clothesRequest.top()).get().getImage() : clothesRepository.findById(clothesRequest.onepiece()).get().getImage(),
+                        topImage == null ? onepieceImage : null,
                         clothesRequest.bottom() == null ? null : clothesRepository.findById(clothesRequest.bottom()).get().getImage(),
                         clothesRequest.outer() == null ? null : clothesRepository.findById(clothesRequest.outer()).get().getImage(),
                         clothesRequest.shoes() == null ? null : clothesRepository.findById(clothesRequest.shoes()).get().getImage(),
