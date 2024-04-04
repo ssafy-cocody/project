@@ -50,3 +50,16 @@ vi www.example.com
 NodeJs
 Gradle
 ```
+
+## Milvus 설치
+```
+wget https://raw.githubusercontent.com/milvus-io/milvus/master/scripts/standalone_embed.sh
+bash standalone_embed.sh start
+```
+
+## AI 포팅메뉴얼
+ai 폴더 내부에 있는 Dockerfile 실행
+```angular2html
+docker build -t name .
+docker run -d name
+```
