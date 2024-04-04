@@ -16,10 +16,11 @@
     position: relative;
 
     .taken-image {
+      position: absolute;
       border: 2px solid var(--color-black);
       box-sizing: border-box;
       border-radius: 20px;
-      object-fit: cover;
+      object-fit: contain;
     }
   }
 

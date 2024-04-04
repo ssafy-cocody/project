@@ -35,6 +35,8 @@
           border: 1px solid var(--color-black);
           border-radius: 12px;
           box-sizing: border-box;
+
+          object-fit: cover;
         }
         .checked-icon-overlay {
           width: 100%;
