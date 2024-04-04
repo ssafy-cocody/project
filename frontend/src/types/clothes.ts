@@ -1,7 +1,6 @@
 enum Step {
   SEARCH_WITH_CAMERA,
   SEARCH_WITH_CAMERA_BASIC_FORM,
-  SEARCH_WITH_CAMERA_ADDITIONAL_FORM,
   SEARCH_WITH_CODE,
   SEARCH_WITH_CODE_BASIC_FORM,
   SEARCH_WITH_CODE_ADDITIONAL_FORM,
@@ -76,7 +75,7 @@ const ClosetCategory = {
 } as const;
 
 interface IClothes {
-  clothesId: number;
+  clothesId?: number;
   category?: keyof typeof ClothesCategory;
   name?: string;
   color?: keyof typeof Color;
@@ -85,6 +84,7 @@ interface IClothes {
   price?: number;
   link?: string;
   image?: string;
+  imageUrl?: string; // 내 코디 올리기 imageUrl
 }
 
 type ISelectedClothes = {
@@ -95,7 +95,19 @@ type ISelectedClothes = {
 type INewClothes = {
   uuid?: string;
   image?: string;
-} & Pick<IClothes, 'category' | 'name' | 'color' | 'brand' | 'productNo' | 'price' | 'link'>;
+} & Pick<IClothes, 'clothesId' | 'category' | 'name' | 'color' | 'brand' | 'productNo' | 'price' | 'link'>;
+
+// 홈 코디 아이템 추천
+interface IRecommendItem {
+  codyId?: number;
+  image?: string; // 코디 이미지
+  link?: string; // 구매 링크
+  recommendClothesImage?: string; // 추천 상품 이미지
+  recommendId?: string; // 상품 추천 아이디
+  brand?: string; // 브랜드
+  price?: number; // 가격
+  name?: string; // 상품명
+}
 
 export { ClosetCategory, CLOTHES_TAB, ClothesCategory, Color, DONE, Step };
-export type { IClothes, INewClothes, ISelectedClothes };
+export type { IClothes, INewClothes, IRecommendItem, ISelectedClothes };

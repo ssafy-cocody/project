@@ -163,7 +163,7 @@ public class CodyRabbitListener {
             Cody cody = codyRepository.findById(codyId).orElseThrow(() -> new RuntimeException("옷 못찾음"));
             cody.setImage(uploadImageUrl);
             codyRepository.save(cody);
-            RecommendItemResponse recommendItemResponse = new RecommendItemResponse(codyId, uploadImageUrl, clothes.getImage(), clothes.getLink(), recommend);
+            RecommendItemResponse recommendItemResponse = new RecommendItemResponse(codyId, uploadImageUrl, clothes.getImage(), clothes.getLink(), recommend, clothes.getBrand(), clothes.getPrice(), clothes.getName());
             try {
                 String recommendItemResponseString = objectMapper.writeValueAsString(recommendItemResponse);
                 sseService.sendMessageAndRemove(sseObject.sseId(), "message", recommendItemResponseString);
@@ -278,8 +278,10 @@ public class CodyRabbitListener {
             } else if (findCody.get().getImage() != null) {
                 findCodyList.add(new FindCodyImageRequest(findCody.get().getCodiId(), findCody.get().getImage()));
             } else {
+                String topImage = clothesRequest.top() == null ? null : clothesRepository.findById(clothesRequest.top()).get().getImage();
+                String onepieceImage = clothesRequest.onepiece() == null ? null : clothesRepository.findById(clothesRequest.onepiece()).get().getImage();
                 clothesImageRequests.add(new ClothesImageRequest(
-                        clothesRequest.top() != null ? clothesRepository.findById(clothesRequest.top()).get().getImage() : clothesRepository.findById(clothesRequest.onepiece()).get().getImage(),
+                        topImage == null ? onepieceImage : null,
                         clothesRequest.bottom() == null ? null : clothesRepository.findById(clothesRequest.bottom()).get().getImage(),
                         clothesRequest.outer() == null ? null : clothesRepository.findById(clothesRequest.outer()).get().getImage(),
                         clothesRequest.shoes() == null ? null : clothesRepository.findById(clothesRequest.shoes()).get().getImage(),
@@ -364,7 +366,7 @@ public class CodyRabbitListener {
         RecommendItemResponse recommendItemResponse;
         if (findCody.isPresent()) {
             Cody cody = findCody.get();
-            recommendItemResponse = new RecommendItemResponse(cody.getCodiId(), cody.getImage(), clothes.getImage(), clothes.getLink(), recommendId);
+            recommendItemResponse = new RecommendItemResponse(cody.getCodiId(), cody.getImage(), clothes.getImage(), clothes.getLink(), recommendId, clothes.getBrand(), clothes.getPrice(), clothes.getName());
             try {
                 String recommendItemResponseString = objectMapper.writeValueAsString(recommendItemResponse);
                 sseService.sendMessageAndRemove(sseObject.sseId(), "message", recommendItemResponseString);

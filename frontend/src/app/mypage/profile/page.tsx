@@ -42,14 +42,14 @@ const Page = () => {
   });
 
   const handleSubmit = () => {
-    if (!profileImage || !input.birth || !input.nickname || !input.gender) return;
+    if (!input.birth || !input.nickname || !input.gender) return;
     if (updateUserMutation.isPending) return;
 
     const formData = new FormData();
     formData.append('birth', input?.birth);
     formData.append('gender', input?.gender);
     formData.append('nickname', input?.nickname);
-    formData.append('profile', profileImage);
+    formData.append('profile', profileImage || '');
 
     updateUserMutation.mutate({ formData });
   };
