@@ -72,11 +72,13 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String token) {
         try {
-            if (token.startsWith(BEARER_TYPE)) {
-                token = token.substring(7);
+            if (token.length() >= 7) {
+                if (token.startsWith(BEARER_TYPE)) {
+                    token = token.substring(7);
+                }
+                Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+                return true;
             }
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             log.info("Invalid JWT Token", e);
         } catch (ExpiredJwtException e) {

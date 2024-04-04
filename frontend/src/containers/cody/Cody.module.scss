@@ -10,7 +10,9 @@
     flex-direction: column;
     gap: 4px;
     justify-content: flex-start;
-    width: calc(calc(100% - 16px) / 2);
+    flex: 1;
+    min-width: calc(calc(100% - 16px) / 2);
+    max-width: calc(calc(100% - 16px) / 2);
 
     .cody-name {
       font-weight: 400;

@@ -1,0 +1,7 @@
+pip install Pillow
+pip install towhee
+pip install pika
+pip install rembg
+pip install opencv-python-headless
+pip install ultralytics
+pip install tqdm
