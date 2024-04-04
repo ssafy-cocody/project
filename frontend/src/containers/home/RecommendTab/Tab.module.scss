@@ -56,7 +56,7 @@ $border-radius: 10px;
     justify-content: center;
     gap: 20px;
     position: relative;
-    margin: $tab-size 0;
+    margin: calc($tab-size - 0.5px) 0 $tab-size;
 
     .reload-button {
       position: absolute;
