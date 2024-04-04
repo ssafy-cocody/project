@@ -41,14 +41,15 @@ const MyCodyPreview = () => {
                 </div>
               );
             })}
-          {codies && codies.length < CODY_COUNT ? (
+          {codies &&
+            codies.length < CODY_COUNT &&
             Array.from({ length: CODY_COUNT - codies.length }, (_, i: number) => i).map((value) => {
-              return <div key={-value} className={styles['cody-image']} />;
-            })
-          ) : (
-            // eslint-disable-next-line react/jsx-no-useless-fragment
-            <></>
-          )}
+              return (
+                <div key={value} className={styles['cody-image']}>
+                  <Image src="/images/logo.png" fill alt="새 코디를 만들어주세요" />
+                </div>
+              );
+            })}
         </div>
         <div className={`${styles.support} `} />
         <div className={`${styles.support} `} />
