@@ -108,6 +108,12 @@ public class AuthCodyController {
         return sseService.getInstance(sseKey);
     }
 
+    @PostMapping("/create")
+    public ResponseEntity<?> createCodyById(@RequestParam Long codyId, @RequestParam String name, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        codyService.createCodyById(codyId, name, principalDetails.getMemberId());
+        return new ResponseEntity<>("success", HttpStatus.OK);
+    }
+
 //    @GetMapping("/home")
 //    public ResponseEntity<?> getHomeInfo(@RequestParam Integer temp, @RequestParam LocalDate date, @RequestParam(defaultValue = "0") int page,
 //                                         @RequestParam(defaultValue = "8") int size, @AuthenticationPrincipal PrincipalDetails principalDetails) {

@@ -59,8 +59,14 @@ public class CodyService {
         List<CodyResponse> codyResponses = myCodies.stream()
                 .map(myCody -> new CodyResponse(myCody.getMyCodiId(), myCody.getCody().getCodiId(), myCody.getName(), myCody.getCody().getImage()))
                 .toList();
-        Long lastMyCodyId = codyResponses.get(codyResponses.size() - 1).myCodyId();
-        boolean hasNext = myCodyRepository.countByMyCodiIdGreaterThan(lastMyCodyId) > 0;
+        boolean hasNext;
+        Long lastMyCodyId;
+        if(codyResponses.isEmpty()) {
+            hasNext = false;
+        } else {
+            lastMyCodyId = codyResponses.get(codyResponses.size() - 1).myCodyId();
+            hasNext = myCodyRepository.countByMyCodiIdGreaterThan(lastMyCodyId) > 0;
+        }
         return new SliceImpl<>(codyResponses, pageable, hasNext);
 
     }
@@ -204,4 +210,14 @@ public class CodyService {
         redisTemplate.opsForValue().set("cody:" + sseKey, codyId);
     }
 
+    public void createCodyById(Long codyId, String name, Long memberId) {
+        Cody cody = codyRepository.findById(codyId).orElseThrow(() -> new RuntimeException("cody can't find"));
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new RuntimeException("member find error"));
+        MyCody myCody = MyCody.builder()
+                .name(name)
+                .cody(cody)
+                .member(member)
+                .build();
+        myCodyRepository.save(myCody);
+    }
 }
