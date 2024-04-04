@@ -59,8 +59,14 @@ public class CodyService {
         List<CodyResponse> codyResponses = myCodies.stream()
                 .map(myCody -> new CodyResponse(myCody.getMyCodiId(), myCody.getCody().getCodiId(), myCody.getName(), myCody.getCody().getImage()))
                 .toList();
-        Long lastMyCodyId = codyResponses.get(codyResponses.size() - 1).myCodyId();
-        boolean hasNext = myCodyRepository.countByMyCodiIdGreaterThan(lastMyCodyId) > 0;
+        boolean hasNext;
+        Long lastMyCodyId;
+        if(codyResponses.isEmpty()) {
+            hasNext = false;
+        } else {
+            lastMyCodyId = codyResponses.get(codyResponses.size() - 1).myCodyId();
+            hasNext = myCodyRepository.countByMyCodiIdGreaterThan(lastMyCodyId) > 0;
+        }
         return new SliceImpl<>(codyResponses, pageable, hasNext);
 
     }
