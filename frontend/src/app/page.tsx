@@ -9,11 +9,11 @@ import MyCodyPreview from '@/containers/home/MyCodyPreview';
 import RecommendItems from '@/containers/home/RecommendItems';
 import RecommendTab from '@/containers/home/RecommendTab';
 import RecommendViewer from '@/containers/home/RecommendViewer';
-import { IRecommendCody } from '@/containers/home/type';
+import { IRecommendCody } from '@/types/recommend';
 
 const Home = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [selectedCody, setSelectedCody] = useState<IRecommendCody>({ id: 0, image: '/images/logo.png' });
+  const [selectedCody, setSelectedCody] = useState<IRecommendCody>({ codyId: 0, codyImage: '/images/logo.png' });
 
   return (
     <main ref={scrollRef}>

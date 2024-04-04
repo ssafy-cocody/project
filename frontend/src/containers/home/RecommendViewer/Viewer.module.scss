@@ -1,21 +1,26 @@
+$border-radius: 10px;
+$inner-radius: 5px;
+
 .viewer-container {
   display: flex;
   width: 100%;
   padding: 20px;
-  border: 2px solid var(--color-black);
-  border-radius: 5px;
+  border: 1px solid var(--color-black);
+  border-radius: $border-radius;
   background-color: var(--color-gray);
   box-sizing: border-box;
   justify-content: space-between;
+  gap: 16px;
 
   .recommend-image {
-    width: 45%;
     height: 240px;
+    flex-grow: 1;
     position: relative;
     background-color: var(--color-white);
+    border-radius: $inner-radius;
+    border: 1px solid var(--color-black);
 
     > img {
-      border: 2px solid var(--color-black);
       box-sizing: border-box;
       object-fit: contain;
     }
@@ -25,7 +30,6 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    width: 50%;
 
     .text-area {
       display: flex;
@@ -52,6 +56,14 @@
       align-items: flex-end;
       gap: 8px;
 
+      > button {
+        border-radius: $inner-radius;
+
+        > div {
+          border-radius: $inner-radius;
+        }
+      }
+
       .regist-button,
       .cody-save-button {
         width: 95px;
@@ -60,7 +72,6 @@
         font-size: 12px;
         font-weight: 700;
         border: 1px solid var(--color-black);
-        border-radius: 0;
       }
 
       .regist-button {
