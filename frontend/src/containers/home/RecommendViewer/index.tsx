@@ -43,7 +43,6 @@ const RecommendViewer = ({ selectedCody }: Props) => {
   };
 
   const handleCodyNameChange = (e: ChangeEvent<HTMLInputElement>) => {
-    // codyName.current = getValidCodyName(e.target.value);
     codyName.current = e.target.value;
   };
 
