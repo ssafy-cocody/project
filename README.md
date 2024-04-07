@@ -102,17 +102,16 @@
 
 |보유한 옷을 옷장에 등록합니다. 동일한 옷을 검색하여 쉽게 옷을 등록할 수 있습니다.|
 |---|
-||
-
+|<img width="320" src="https://github.com/ssafy-cocody/project/assets/123740296/bd2f0834-4c74-4695-a4ba-a31f41669fb1"/>|
 ### 코디 만들기
 
 |등록한 옷으로 코디룩을 만들 수 있습니다.|
 |---|
-||
+|<img width="320" src="https://github.com/ssafy-cocody/project/assets/123740296/6bc6449b-3965-4801-8fc3-0fe6a312aa06"/>|
 
 ### OOTD 등록
 
 |입은 옷을 등록해 그날의 코디를 정확하게 기록할 수 있습니다.|
 |---|
-||
+|<img width="320" src="https://github.com/ssafy-cocody/project/assets/123740296/8ea6c5ca-2159-48b1-bccd-710273a4d606"/>|
 
